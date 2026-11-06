@@ -10,3 +10,6 @@ Thumbs.db
 # /portfolio-intake 재료 (로컬 전용 — 재료집·촬영목록은 기술 문서를 쓰는 동안만 쓰는 메모, 리포트에는 비밀값 위치·작성자 정보가 있을 수 있음)
 src/*/_intake/
 report-intake.md
+
+# Python 실행 캐시 (스킬의 점검 스크립트를 돌리면 생김)
+__pycache__/

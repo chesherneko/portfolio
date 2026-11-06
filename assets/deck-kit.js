@@ -4,7 +4,7 @@
 //   주석의 설계 근거(docs/design/…의 portfolio-structure·deck-vs-scroll·01 §, R0, 결정 F·Q·# 번호)와 원본 시안(spikes/…)은 템플릿 유지관리용 maintainer 브랜치에 있습니다. 이 레포에 없어도 정상입니다.
 //   블록 A: docs/design/01 §8-2 준비 게이트(R0 【시험대 1~5】 포함)
 //   블록 B: 덱 키트 — 덱 보기(기본)·한 번에 보기, 배율 k = min(vw/1280, (vh−HUD)/720), HUD 띠, 키보드·휠·터치·가장자리 클릭,
-//           주소(#s=<장면 id> · #n · #s-n), 개요 격자, 포커스·aria-live, 세로 화면 안내, [PDF로 저장], 감사(audit·outside-deck)
+//           주소(#s=<장면 id> · #n · #s-n), 개요 격자, 포커스·aria-live, 세로 화면 안내, [PDF로 저장], [PPTX로 저장](opts.pptx — 만드는 일은 deck-pptx.js), 감사(audit·outside-deck)
 //   deck-vs-scroll §3 알려진 결함 중 덱 보기에 해당하는 것을 고침:
 //     휠·트랙패드 넘기기 기본 켬(몸짓 하나 = 한 장) · 데스크톱 장면 클릭 넘기기 없앰(HUD·가장자리·터치만) · 세로 스와이프 + 회전 안내 ·
 //     보기 선택이 페이지를 넘어 유지 · 공유 주소는 장면 id(#s=hl-2) · HUD 번호 "NN / NN" · 한 번에 보기의 링크 첫 클릭 삼켜짐
@@ -72,6 +72,9 @@
   const reduced = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
   const isPrint = () => matchMedia('print').matches;
   const pad2 = (n) => String(n).padStart(2, '0');
+  // 화면 조작 문구: 문구 표(assets/strings.js의 PFStr — 이 파일보다 늦게 싣지만 mount 때는 있음). L = 글자, LH = HTML에 넣는 글자
+  const L = (k, v) => (typeof PFStr === 'object' ? PFStr.t(k, v) : k);
+  const LH = (k, v) => L(k, v).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
   // ── 준비 상태 관찰 ──
   const readyWaiters = [];
@@ -359,7 +362,7 @@
     hint = document.createElement('div');
     hint.className = 'pf-rotate pf-screen-only'; hint.dataset.pfUi = 'rotate'; hint.hidden = true;
     hint.setAttribute('role', 'note');
-    hint.innerHTML = `<span class="tx">가로로 돌리면 더 크게 보입니다.${opts.hint ? ' ' + opts.hint : ''}</span><button type="button" aria-label="안내 닫기">✕</button>`;
+    hint.innerHTML = `<span class="tx">${LH('ui.rotate')}${opts.hint ? ' ' + opts.hint : ''}</span><button type="button" aria-label="안내 닫기">✕</button>`;
     hint.querySelector('button').addEventListener('click', () => { hintClosed = true; hint.hidden = true; try { sessionStorage.setItem(HINT_KEY, '1'); } catch { /* */ } });
     deck.before(hint);
   }
@@ -370,7 +373,7 @@
     hint.hidden = !(view === 'deck' && vh > vw && kRot > kNow * 1.2 && !hintClosed);
   }
 
-  // ── HUD(아래 44px 띠: 이전·다음, "03 / 12", 섹션명, 진행 막대, 새 탭 안내, 개요, PDF로 저장 + ?, 보기 전환) ──
+  // ── HUD(아래 44px 띠: 이전·다음, "03 / 12", 섹션명, 진행 막대, 새 탭 안내, 개요, PDF로 저장, PPTX로 저장(opts.pptx) + ?, 보기 전환) ──
   const isLocal = /^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname);
   let live = null;
   function say(i, pre = '') {
@@ -384,8 +387,13 @@
     <li><b>대상</b>에서 <b>"PDF로 저장"</b>을 고릅니다. "Microsoft Print to PDF"·프린터가 골라져 있으면 A4로 바뀌고 날짜·주소가 찍힙니다.</li>
     <li><b>여백</b>은 <b>기본</b> 그대로 둡니다. Edge는 <b>시트당 페이지 수</b>도 1 그대로 둡니다. 용지 크기·배율 항목이 보이지 않는 것이 정상입니다.</li>
     <li>미리보기의 쪽 수가 버튼에 적힌 쪽 수와 같으면 저장합니다.</li></ol>
-    <p>Mac, 휴대폰·태블릿, Safari·Firefox는 지원 범위 밖입니다.</p>
-    ${isLocal ? '<p class="warn">지금은 미리보기(로컬 서버)입니다. 여기서 저장한 PDF의 링크는 이 컴퓨터 주소를 가리키므로, 제출용은 배포된 주소에서 저장하세요.</p>' : ''}`;
+    <p>Mac, 휴대폰·태블릿, Safari·Firefox는 지원 범위 밖입니다.</p>`;
+  // [PPTX로 저장](opts.pptx가 있을 때만) — assets/deck-pptx.js
+  const HELP_PPTX = `<p><b>PPTX로 저장하기 — PowerPoint에서 고쳐 쓰는 파일</b></p>
+    <p>글·카드·표·코드는 PowerPoint에서 바로 고칠 수 있는 글상자·도형·표로, 그림은 원본 그림으로 들어갑니다. 다이어그램은 SVG 그림이라 PowerPoint 365에서 오른쪽 클릭 → <b>[도형으로 변환]</b>하면 상자와 글자를 하나씩 고칠 수 있습니다.</p>
+    <p>글꼴은 화면과 같은 이름(Pretendard 등)으로 들어갑니다. PC에 그 글꼴이 없으면 PowerPoint가 다른 글꼴로 보여 줘 줄바꿈이 달라질 수 있습니다. 글꼴을 설치하거나 <b>[홈 → 바꾸기 → 글꼴 바꾸기]</b>로 한 번에 바꾸세요.</p>
+    <p>PPTX에서 고친 내용은 발표 덱(웹)에 돌아오지 않습니다. 내용이 틀렸으면 기술 문서를 고치고 다시 빌드하세요.</p>`;
+  const HELP_LOCAL = (pptx) => (isLocal ? `<p class="warn">지금은 미리보기(로컬 서버)입니다. 여기서 저장한 PDF${pptx ? '·PPTX' : ''}의 링크는 이 컴퓨터 주소를 가리키므로, 제출용은 배포된 주소에서 저장하세요.</p>` : '');
   const helpOpen = () => !!hud && !hud.querySelector('.pf-hud-help').hidden;
   function toggleHelp(on) {
     if (!hud) return;
@@ -395,26 +403,27 @@
   }
   function buildHud() {
     const skip = document.createElement('a');
-    skip.className = 'pf-skiplink pf-screen-only'; skip.href = '#deck'; skip.textContent = '본문으로 건너뛰기';
+    skip.className = 'pf-skiplink pf-screen-only'; skip.href = '#deck'; skip.textContent = L('ui.skip');
     skip.addEventListener('click', (e) => { e.preventDefault(); const s = scenes[cur]; if (!s) return; if (view === 'scroll') scrollToScene(s); s.focus({ preventScroll: true }); });
     hud = document.createElement('nav');
     hud.className = 'pf-hud pf-screen-only'; hud.setAttribute('aria-label', '슬라이드 조작'); hud.dataset.pfUi = 'hud';
     const hasDoc = scenes.some((s) => s.dataset.pfPart === 'doc');
-    hud.innerHTML = `<button type="button" data-a="prev" aria-label="이전 슬라이드" title="이전 (←)">‹</button>
-      <button type="button" data-a="next" aria-label="다음 슬라이드" title="다음 (→, Space, 휠)">›</button>
+    hud.innerHTML = `<button type="button" data-a="prev" aria-label="이전 슬라이드" title="${LH('ui.prev')}">‹</button>
+      <button type="button" data-a="next" aria-label="다음 슬라이드" title="${LH('ui.next')}">›</button>
       <span class="pf-hud-count" aria-hidden="true"></span>
       <span class="pf-hud-sec" aria-hidden="true"></span>
       <span class="pf-hud-prog" aria-hidden="true"><span></span></span>
-      <span class="pf-hud-note">링크는 새 탭에서 열립니다</span>
-      <button type="button" data-a="overview" aria-haspopup="dialog" title="모든 슬라이드 보기 (O)"><span aria-hidden="true">▦</span> <span class="l">개요</span></button>
+      <span class="pf-hud-note">${LH('ui.newtab')}</span>
+      <button type="button" data-a="overview" aria-haspopup="dialog" title="${LH('ui.overview-tip')}"><span aria-hidden="true">▦</span> <span class="l">${LH('ui.overview')}</span></button>
       ${opts.scope && hasDoc ? '<button type="button" data-a="scope" aria-pressed="false" title="PDF에서 부록 빼기"><span class="l">요약만</span><span class="s">요약</span></button>' : ''}
-      <button type="button" data-a="print" class="pf-print"><span class="l">PDF로 저장</span><span class="s">PDF</span><small></small></button>
-      <button type="button" data-a="help" aria-expanded="false" aria-controls="pf-hud-help" aria-label="PDF 저장 안내" title="PDF 저장 안내">?</button>
+      <button type="button" data-a="print" class="pf-print"><span class="l">${LH('ui.pdf')}</span><span class="s">${LH('ui.pdf-short')}</span><small></small></button>
+      ${opts.pptx ? `<button type="button" data-a="pptx" class="pf-pptx" title="${LH('ui.pptx-tip')}"><span class="l">${LH('ui.pptx')}</span><span class="s">${LH('ui.pptx-short')}</span></button>` : ''}
+      <button type="button" data-a="help" aria-expanded="false" aria-controls="pf-hud-help" aria-label="저장 안내" title="저장 안내(PDF${opts.pptx ? '·PPTX' : ''})">?</button>
       <button type="button" data-a="view"><span class="l"></span><span class="s"></span></button>
-      <button type="button" data-a="anyway" hidden>그래도 인쇄</button>
+      <button type="button" data-a="anyway" hidden>${LH('ui.print-anyway')}</button>
       ${isLocal ? '<span class="pf-hud-badge" role="img" hidden title="미리보기에서만 보이는 장면 배치 점검 결과(찾은 항목 수). 배포된 페이지·PDF에는 나오지 않습니다. 슬라이드에 &quot;내용이 잘렸습니다&quot; 띠가 있으면 그 장면의 글이 나온 파일(src/의 기술 문서)을 줄이거나 /portfolio-edit로 장면을 나누고 /portfolio-build를 다시 실행하세요."></span>' : ''}
       <span class="pf-hud-msg" role="status" aria-live="polite"></span>
-      <div class="pf-hud-help" id="pf-hud-help" hidden>${HELP}</div>
+      <div class="pf-hud-help" id="pf-hud-help" hidden>${HELP}${opts.pptx ? HELP_PPTX : ''}${HELP_LOCAL(!!opts.pptx)}</div>
       <span class="pf-sr" aria-live="polite" aria-atomic="true"></span>`;
     live = hud.querySelector('.pf-sr');
     hud.addEventListener('click', (e) => {
@@ -424,6 +433,7 @@
       else if (a === 'overview') openOverview();
       else if (a === 'scope') setScope(scope === 'summary' ? 'all' : 'summary');
       else if (a === 'print') print();
+      else if (a === 'pptx') { toggleHelp(false); opts.pptx(b); }
       else if (a === 'help') toggleHelp();
       else if (a === 'view') setView(view === 'deck' ? 'scroll' : 'deck');
       else if (a === 'anyway') PF.printAnyway();
@@ -431,6 +441,7 @@
     deck.before(skip, hud);                                   // DOM 순서: 건너뛰기 → HUD → 덱
   }
   let msg = '';
+  function hudMsg(t) { msg = t || ''; hudSync(); }                    // 아래 띠 알림(PPTX 만드는 중 등). 빈 글자 = 지움
   function hudSync() {
     if (!hud) return;
     const N = scenes.length, s = scenes[cur];
@@ -440,16 +451,16 @@
     hud.querySelector('[data-a=prev]').setAttribute('aria-disabled', String(cur <= 0));
     hud.querySelector('[data-a=next]').setAttribute('aria-disabled', String(cur >= N - 1));
     const vb = hud.querySelector('[data-a=view]');
-    vb.querySelector('.l').textContent = view === 'deck' ? '한 번에 보기' : '슬라이드로 보기';
-    vb.querySelector('.s').textContent = view === 'deck' ? '전체' : '슬라이드';
-    vb.title = view === 'deck' ? '모든 슬라이드를 세로로 이어서 보기(찾기 Ctrl+F가 모든 장에 닿음)' : '한 번에 한 장씩 보기';
+    vb.querySelector('.l').textContent = L(view === 'deck' ? 'ui.to-scroll' : 'ui.to-deck');
+    vb.querySelector('.s').textContent = L(view === 'deck' ? 'ui.to-scroll-short' : 'ui.to-deck-short');
+    vb.title = L(view === 'deck' ? 'ui.to-scroll-tip' : 'ui.to-deck-tip');
     const sc = hud.querySelector('[data-a=scope]');
     if (sc) sc.setAttribute('aria-pressed', String(scope === 'summary'));
-    hud.querySelector('.pf-print small').textContent = `${printed().length}쪽`;
+    hud.querySelector('.pf-print small').textContent = L('ui.pages', { n: printed().length });
     const r = root.dataset.pfReady;
     hud.querySelector('[data-a=anyway]').hidden = r !== 'timeout';
     const imgs = deck ? [...deck.querySelectorAll('img')] : [];
-    hud.querySelector('.pf-hud-msg').textContent = r === 'timeout' ? `아직 다 그리지 못했습니다(이미지 ${imgs.filter((i) => i.complete).length}/${imgs.length})` : msg;
+    hud.querySelector('.pf-hud-msg').textContent = r === 'timeout' ? L('ui.not-ready', { done: imgs.filter((i) => i.complete).length, total: imgs.length }) : msg;
   }
   function badge() {
     const b = hud?.querySelector('.pf-hud-badge'); if (!b) return;
@@ -465,7 +476,7 @@
   function buildOverview() {
     ov = document.createElement('dialog');
     ov.className = 'pf-ov'; ov.setAttribute('aria-labelledby', 'pf-ov-h'); ov.dataset.pfUi = 'overview';
-    ov.innerHTML = `<div class="pf-ov-head"><h2 id="pf-ov-h">슬라이드 개요 <small></small></h2><p class="pf-ov-hint">화살표로 고르고 Enter · 닫기 Esc</p><button type="button" class="pf-ov-close" aria-label="개요 닫기">✕</button></div><div class="pf-ov-grid"></div>`;
+    ov.innerHTML = `<div class="pf-ov-head"><h2 id="pf-ov-h">${LH('ui.ov-title')} <small></small></h2><p class="pf-ov-hint">${LH('ui.ov-hint')}</p><button type="button" class="pf-ov-close" aria-label="개요 닫기">✕</button></div><div class="pf-ov-grid"></div>`;
     ov.querySelector('.pf-ov-close').addEventListener('click', () => ov.close());
     ov.addEventListener('click', (e) => {
       if (e.target === ov) { ov.close(); return; }
@@ -507,7 +518,7 @@
       frag.appendChild(b);
     });
     grid.replaceChildren(frag);
-    ov.querySelector('h2 small').textContent = `${scenes.length}장`;
+    ov.querySelector('h2 small').textContent = L('ui.ov-count', { n: scenes.length });
     ovBuilt = true;
   }
   let ovReturn = null;
@@ -558,7 +569,7 @@
       const imgs = [...(deck || document).querySelectorAll('img')];
       const tickMsg = () => {                                          // 그림을 다 받았는데 다른 일(글꼴·다시 채우기)로 기다리는 중이면 "준비 중"
         const n = imgs.filter((i) => i.complete).length;
-        msg = n < imgs.length ? `이미지 ${n}/${imgs.length} 불러오는 중` : '인쇄 준비 중…'; hudSync();
+        msg = n < imgs.length ? L('ui.loading-images', { done: n, total: imgs.length }) : L('ui.print-wait'); hudSync();
       };
       tickMsg(); const iv = setInterval(tickMsg, 300);
       await whenReady(); clearInterval(iv); msg = ''; hudSync();
@@ -786,7 +797,7 @@
     if (isLocal && root.dataset.pfReady === 'yes') badge();
   }
 
-  Object.assign(PF, { mount, refresh, whenReady, go, print, setScope, setView, openOverview, closeOverview, audit, sceneIssues, report, refUrl, fit, hashTarget });
+  Object.assign(PF, { mount, refresh, whenReady, go, print, setScope, setView, openOverview, closeOverview, audit, sceneIssues, report, refUrl, fit, hashTarget, hudMsg });
   Object.defineProperty(PF, 'k', { get() { return K; }, configurable: true });
   Object.defineProperty(PF, 'count', { get() { return scenes.length; }, configurable: true });
   Object.defineProperty(PF, 'scope', { get() { return scope; }, configurable: true });

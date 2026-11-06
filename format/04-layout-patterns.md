@@ -1,7 +1,7 @@
 # 기준 ④ 레이아웃 — 덱 장면 틀 · 포트폴리오 문서 절 · 문서 패턴 13종 → 세 페이지
 
 > 원본: 「유니티 개발자 취업·기술 문서 작성 가이드 v2」 **Part 3 레이아웃**(8유형·3원칙) · **레이아웃 패턴 카탈로그**(13종)
-> (https://koohoo-dev.github.io/portfolio-guide/guide.html#3 · https://koohoo-dev.github.io/portfolio-guide/showcase/)
+> (https://koohoo-dev.github.io/edu-lecture-portfolio-guide/guide.html#3 · https://koohoo-dev.github.io/edu-lecture-portfolio-guide/showcase/)
 > 이 파일은 고정 렌더러의 세 페이지가 **어떤 틀로 무엇을 보여주는지**, 그리고 직접 생성 모드(`/portfolio-custom`)에서
 > Claude가 **어떤 틀·패턴을 써야 하는지** 정리한 표입니다.
 
@@ -78,4 +78,4 @@
 - **다이어그램이 주인공**일 때는 그림을 크게, 위 짧은 제목 + 아래 한 줄 캡션. 덱에 넣는 다이어그램은 노드 10개 안팎·가로(`LR`) 권장(기준 ③).
 - 색은 **배경 / 텍스트 / 강조 3색 안에서** 통일. 강조색은 `profile.md`의 `강조색` 하나.
 - 코드는 다크 블록, 나머지는 밝은 문서형. (**미니멀 / 문서형**이 기본값)
-- 최종 제출은 **PDF** — 제출 기본은 **포트폴리오 문서 PDF**(머리 막대의 **[PDF로 저장]**, A4). 발표 덱은 덱 아래 띠의 [PDF로 저장]으로 프로젝트별 16:9 PDF, 상세 문서는 Ctrl+P로 A4(기준 ⑥).
+- 최종 제출은 **PDF** — 제출 기본은 **포트폴리오 문서 PDF**(머리 막대의 **[PDF로 저장]**, A4). 발표 덱은 덱 아래 띠의 [PDF로 저장]으로 프로젝트별 16:9 PDF(고쳐 쓰려면 [PPTX로 저장] — PowerPoint 파일), 상세 문서는 Ctrl+P로 A4(기준 ⑥).
