@@ -386,7 +386,7 @@
     <ol><li><b>배포된 주소</b>(github.io)에서 화면이 다 나타난 뒤 <b>[파일로 저장] → [PDF로 저장]</b>을 누릅니다(Ctrl+P도 됩니다).</li>
     <li><b>대상</b>에서 <b>"PDF로 저장"</b>을 고릅니다. "Microsoft Print to PDF"·프린터가 골라져 있으면 A4로 바뀌고 날짜·주소가 찍힙니다.</li>
     <li><b>여백</b>은 <b>기본</b> 그대로 둡니다. Edge는 <b>시트당 페이지 수</b>도 1 그대로 둡니다. 용지 크기·배율 항목이 보이지 않는 것이 정상입니다.</li>
-    <li>미리보기의 쪽 수가 버튼에 적힌 쪽 수와 같으면 저장합니다.</li></ol>
+    <li>미리보기의 쪽 수가 이 덱의 쪽 수(<b class="pf-help-pages"></b>)와 같으면 저장합니다.</li></ol>
     <p>Mac, 휴대폰·태블릿, Safari·Firefox는 지원 범위 밖입니다.</p>`;
   // [PPTX로 저장](opts.pptx가 있을 때만) — assets/deck-pptx.js
   const HELP_PPTX = `<p><b>PPTX로 저장하기 — PowerPoint에서 고쳐 쓰는 파일</b></p>
@@ -418,8 +418,8 @@
       ${opts.scope && hasDoc ? '<button type="button" data-a="scope" aria-pressed="false" title="PDF에서 부록 빼기"><span class="l">요약만</span><span class="s">요약</span></button>' : ''}
       <span class="pf-save"><button type="button" data-a="save" aria-haspopup="true" aria-expanded="false" aria-controls="pf-save-menu"><span class="l">${LH('ui.save')}</span><span class="s">${LH('ui.save-short')}</span></button>
         <span class="pf-save-menu" id="pf-save-menu"><span class="pf-save-box">
-          <button type="button" data-a="print" class="pf-print"><span class="l">${LH('ui.pdf')}</span><span class="s">${LH('ui.pdf-short')}</span><small></small></button>
-          ${opts.pptx ? `<button type="button" data-a="pptx" class="pf-pptx" title="${LH('ui.pptx-tip')}"><span class="l">${LH('ui.pptx')}</span><span class="s">${LH('ui.pptx-short')}</span></button>` : ''}
+          <button type="button" data-a="print" class="pf-print" aria-label="${LH('ui.pdf')}">${LH('ui.pdf-short')}</button>
+          ${opts.pptx ? `<button type="button" data-a="pptx" class="pf-pptx" aria-label="${LH('ui.pptx')}" title="${LH('ui.pptx-tip')}">${LH('ui.pptx-short')}</button>` : ''}
         </span></span></span>
       <button type="button" data-a="help" aria-expanded="false" aria-controls="pf-hud-help" aria-label="저장 안내" title="저장 안내(PDF${opts.pptx ? '·PPTX' : ''})">?</button>
       <button type="button" data-a="view"><span class="l"></span><span class="s"></span></button>
@@ -475,7 +475,9 @@
     vb.title = L(view === 'deck' ? 'ui.to-scroll-tip' : 'ui.to-deck-tip');
     const sc = hud.querySelector('[data-a=scope]');
     if (sc) sc.setAttribute('aria-pressed', String(scope === 'summary'));
-    hud.querySelector('.pf-print small').textContent = L('ui.pages', { n: printed().length });
+    const pages = L('ui.pages', { n: printed().length });                // PDF 쪽 수: 목록에는 확장자만 두고, PDF 항목 툴팁과 저장 안내 4단계에 적음
+    hud.querySelector('.pf-print').title = `${L('ui.pdf')} · ${pages}`;
+    hud.querySelectorAll('.pf-help-pages').forEach((e) => { e.textContent = pages; });
     const r = root.dataset.pfReady;
     hud.querySelector('[data-a=anyway]').hidden = r !== 'timeout';
     const imgs = deck ? [...deck.querySelectorAll('img')] : [];

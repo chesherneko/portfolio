@@ -51,7 +51,6 @@
   .pf-hud .pf-hud-prog { flex: 1 1 80px; min-width: 40px; height: 5px; border-radius: 3px; background: #E7E9F4; overflow: hidden; }
   .pf-hud .pf-hud-prog > span { display: block; height: 100%; width: 0; background: var(--accent, #2F6FEB); transition: width .2s; }
   .pf-hud .pf-hud-note { flex: none; font-size: 12px; font-weight: 500; color: #5D6280; white-space: nowrap; }
-  .pf-hud .pf-print small { display: inline; font-size: 12px; font-weight: 600; color: #5D6280; opacity: 1; }
   /* [파일로 저장] 목록(PDF·PPTX) — 단추 위로 펼침. 아래 8px 여백이 단추와 목록 사이를 이어 마우스가 지나가도 닫히지 않음 */
   .pf-hud .pf-save { position: relative; flex: none; display: inline-flex; }
   .pf-hud .pf-save-menu { display: none; position: absolute; left: 50%; bottom: 100%; transform: translateX(-50%); padding-bottom: 8px; z-index: 2; }
@@ -59,7 +58,7 @@
   @media (hover: hover) { .pf-hud .pf-save:hover .pf-save-menu { display: block; } }   /* 터치 화면은 누를 때만(누른 뒤 :hover가 남아 안 닫히는 것을 막음) */
   .pf-hud .pf-save-box { display: flex; flex-direction: column; gap: 6px; padding: 8px; border-radius: 12px; background: #fff; border: 1px solid #E1E4EE;
     box-shadow: 0 18px 50px -18px rgba(30, 33, 58, .45); }
-  .pf-hud .pf-save-box button { width: 100%; justify-content: space-between; gap: 12px; }
+  .pf-hud .pf-save-box button { width: 100%; min-width: 64px; }   /* 확장자만(PDF·PPTX) — 쪽 수는 PDF 항목 툴팁·저장 안내에 */
   .pf-hud .s { display: none; }
   .pf-hud .pf-hud-msg { position: absolute; right: 16px; bottom: calc(100% + 8px); max-width: 22em; padding: 6px 10px; border-radius: 8px;
     background: #1E2138; color: #fff; font-size: 12px; font-weight: 600; text-align: left; }
@@ -86,7 +85,7 @@
     .pf-hud .pf-hud-badge { position: absolute; left: 8px; bottom: calc(100% + 6px); box-shadow: 0 2px 8px rgba(30, 33, 58, .25); }
   }
   @media (max-width: 430px) {
-    .pf-hud .pf-hud-prog, .pf-hud .pf-print small { display: none; }   /* PDF 쪽 수는 창이 좁아도 보이게(PDF 저장 5단계가 이 숫자를 씀) */
+    .pf-hud .pf-hud-prog { display: none; }
     .pf-hud .pf-hud-count { min-width: 0; margin-right: auto; }
     .pf-hud button[data-a="help"], .pf-hud button[data-a="pptx"] { display: none; }   /* 휴대폰 폭: PDF 저장만(PPTX는 PC에서) */
   }
@@ -143,7 +142,7 @@
   html[data-mode="dark"] .pf-hud button:not(.pf-mode):hover { background: #15161D; border-color: var(--accent); color: var(--accent-ink); }
   html[data-mode="dark"] .pf-hud button[aria-pressed="true"], html[data-mode="dark"] .pf-hud button[aria-expanded="true"] { background: var(--accent-soft); border-color: var(--accent); color: var(--accent-ink); }
   html[data-mode="dark"] .pf-hud .pf-hud-count { color: #EEF0F6; }
-  html[data-mode="dark"] .pf-hud :is(.pf-hud-sec, .pf-hud-note), html[data-mode="dark"] .pf-hud .pf-print small { color: #A2A6B8; }
+  html[data-mode="dark"] .pf-hud :is(.pf-hud-sec, .pf-hud-note) { color: #A2A6B8; }
   html[data-mode="dark"] .pf-hud .pf-hud-prog { background: #272936; }
   html[data-mode="dark"] .pf-hud .pf-hud-msg { background: #2A2D40; }
   html[data-mode="dark"] .pf-hud .pf-hud-help { background: #15161D; border-color: #2E3040; color: #EEF0F6; box-shadow: 0 18px 50px -18px rgba(0, 0, 0, .7); }
