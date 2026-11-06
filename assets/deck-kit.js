@@ -383,7 +383,7 @@
     live.textContent = `${pre ? pre + ' ' : ''}슬라이드 ${i + 1} / ${scenes.length}${s.dataset.sec ? ', ' + s.dataset.sec : ''}${t && t !== s.dataset.sec ? ', ' + t : ''}`;
   }
   const HELP = `<p><b>PDF로 저장하기 — Windows PC의 Chrome·Edge에서 저장하세요</b></p>
-    <ol><li><b>배포된 주소</b>(github.io)에서 화면이 다 나타난 뒤 <b>[PDF로 저장]</b>을 누릅니다(Ctrl+P도 됩니다).</li>
+    <ol><li><b>배포된 주소</b>(github.io)에서 화면이 다 나타난 뒤 <b>[파일로 저장] → [PDF로 저장]</b>을 누릅니다(Ctrl+P도 됩니다).</li>
     <li><b>대상</b>에서 <b>"PDF로 저장"</b>을 고릅니다. "Microsoft Print to PDF"·프린터가 골라져 있으면 A4로 바뀌고 날짜·주소가 찍힙니다.</li>
     <li><b>여백</b>은 <b>기본</b> 그대로 둡니다. Edge는 <b>시트당 페이지 수</b>도 1 그대로 둡니다. 용지 크기·배율 항목이 보이지 않는 것이 정상입니다.</li>
     <li>미리보기의 쪽 수가 버튼에 적힌 쪽 수와 같으면 저장합니다.</li></ol>
@@ -416,8 +416,11 @@
       <span class="pf-hud-note">${LH('ui.newtab')}</span>
       <button type="button" data-a="overview" aria-haspopup="dialog" title="${LH('ui.overview-tip')}"><span aria-hidden="true">▦</span> <span class="l">${LH('ui.overview')}</span></button>
       ${opts.scope && hasDoc ? '<button type="button" data-a="scope" aria-pressed="false" title="PDF에서 부록 빼기"><span class="l">요약만</span><span class="s">요약</span></button>' : ''}
-      <button type="button" data-a="print" class="pf-print"><span class="l">${LH('ui.pdf')}</span><span class="s">${LH('ui.pdf-short')}</span><small></small></button>
-      ${opts.pptx ? `<button type="button" data-a="pptx" class="pf-pptx" title="${LH('ui.pptx-tip')}"><span class="l">${LH('ui.pptx')}</span><span class="s">${LH('ui.pptx-short')}</span></button>` : ''}
+      <span class="pf-save"><button type="button" data-a="save" aria-haspopup="true" aria-expanded="false" aria-controls="pf-save-menu"><span class="l">${LH('ui.save')}</span><span class="s">${LH('ui.save-short')}</span></button>
+        <span class="pf-save-menu" id="pf-save-menu"><span class="pf-save-box">
+          <button type="button" data-a="print" class="pf-print"><span class="l">${LH('ui.pdf')}</span><span class="s">${LH('ui.pdf-short')}</span><small></small></button>
+          ${opts.pptx ? `<button type="button" data-a="pptx" class="pf-pptx" title="${LH('ui.pptx-tip')}"><span class="l">${LH('ui.pptx')}</span><span class="s">${LH('ui.pptx-short')}</span></button>` : ''}
+        </span></span></span>
       <button type="button" data-a="help" aria-expanded="false" aria-controls="pf-hud-help" aria-label="저장 안내" title="저장 안내(PDF${opts.pptx ? '·PPTX' : ''})">?</button>
       <button type="button" data-a="view"><span class="l"></span><span class="s"></span></button>
       ${typeof PFMode !== 'undefined' ? PFMode.button('pf-hud-mode') : ''}
@@ -433,13 +436,28 @@
       if (a === 'prev') go(cur - 1, { focus: false }); else if (a === 'next') go(cur + 1, { focus: false });
       else if (a === 'overview') openOverview();
       else if (a === 'scope') setScope(scope === 'summary' ? 'all' : 'summary');
-      else if (a === 'print') print();
-      else if (a === 'pptx') { toggleHelp(false); opts.pptx(b); }
+      else if (a === 'save') toggleSave();
+      else if (a === 'print') { toggleSave(false); print(); }
+      else if (a === 'pptx') { toggleSave(false); toggleHelp(false); opts.pptx(b); }
       else if (a === 'help') toggleHelp();
       else if (a === 'view') setView(view === 'deck' ? 'scroll' : 'deck');
       else if (a === 'anyway') PF.printAnyway();
     });
+    // [파일로 저장] 목록: 바깥을 누르거나 Esc면 닫음(마우스를 올렸을 때 열리는 것은 CSS :hover)
+    document.addEventListener('click', (e) => { if (!e.target.closest?.('.pf-save')) toggleSave(false); });
+    hud.querySelector('.pf-save').addEventListener('keydown', (e) => {
+      if (e.key !== 'Escape' || !saveOpen()) return;
+      e.stopPropagation(); toggleSave(false); hud.querySelector('[data-a=save]').focus();
+    });
     deck.before(skip, hud);                                   // DOM 순서: 건너뛰기 → HUD → 덱
+  }
+  // [파일로 저장] — PDF·PPTX를 고르는 목록. 누르면 열고 닫음(터치·키보드), 마우스를 올려도 열림(CSS)
+  const saveOpen = () => !!hud?.querySelector('.pf-save.open');
+  function toggleSave(on) {
+    if (!hud) return;
+    const w = hud.querySelector('.pf-save');
+    on = on ?? !w.classList.contains('open');
+    w.classList.toggle('open', on); w.querySelector('[data-a=save]').setAttribute('aria-expanded', String(on));
   }
   let msg = '';
   function hudMsg(t) { msg = t || ''; hudSync(); }                    // 아래 띠 알림(PPTX 만드는 중 등). 빈 글자 = 지움

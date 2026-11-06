@@ -97,6 +97,8 @@ doc.links-list	상세 문서 · 인쇄(PDF) 문서 끝 · 10자	링크 목록
 doc.print-web	상세 문서 · 인쇄(PDF) 맨 위 주소 이름 · 10자	웹에서 보기	
 ui.pdf	포트폴리오 문서 맨 위 버튼 · 발표 덱 아래 띠 · 8자	PDF로 저장	
 ui.pdf-short	발표 덱 · 아래 띠(좁은 화면) · 4자	PDF	
+ui.save	발표 덱 · 아래 띠 버튼(누르거나 마우스를 올리면 PDF·PPTX 고르는 목록) · 8자	파일로 저장	
+ui.save-short	발표 덱 · 아래 띠(좁은 화면) · 4자	저장	
 ui.pages	발표 덱 · 아래 띠 PDF 버튼 옆 쪽 수 · 5자	{n}쪽	
 ui.pptx	발표 덱 · 아래 띠 버튼(PowerPoint 파일) · 8자	PPTX로 저장	
 ui.pptx-short	발표 덱 · 아래 띠(좁은 화면) · 4자	PPTX	
