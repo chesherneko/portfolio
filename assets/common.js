@@ -100,19 +100,36 @@ const PF = (() => {
   const mix = (a, b, t) => a.map((v, i) => v + (b[i] - v) * t);           // t = b 쪽 비율
   const lum = (c) => { const f = (v) => { v /= 255; return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4; }; return 0.2126 * f(c[0]) + 0.7152 * f(c[1]) + 0.0722 * f(c[2]); };
   const contrast = (a, b) => { const x = lum(a), y = lum(b); return (Math.max(x, y) + 0.05) / (Math.min(x, y) + 0.05); };
-  function themeTokens(hex) {
+  //   어두운 모드(mode.js)에서는 바탕이 어두우므로 옅은 칠은 바탕 쪽으로 섞고, 글자용 강조색은 밝게 올려 같은 대비 기준을 맞춤
+  const DARK_BG = [13, 14, 19];                                           // 어두운 모드 바탕(#0D0E13) — 각 CSS의 html[data-mode="dark"] --paper와 같게
+  function themeTokens(hex, mode = 'light') {
     if (!/^#[0-9a-f]{6}$/i.test(hex || '')) return null;
     const A = hexRgb(hex), WHITE = [255, 255, 255], BLACK = [0, 0, 0];
-    const soft = mix(A, WHITE, 0.91), chip = mix(A, WHITE, 0.82), mid = mix(A, WHITE, 0.45);
-    let ink = A;                                                          // 글자용 진한 강조색: 흰 바탕 6.5:1·옅은 칠 6:1 이상(작은 글자 4.5:1에 여유)
-    for (let t = 0; t <= 1 && (contrast(ink, WHITE) < 6.5 || contrast(ink, soft) < 6); t += 0.02) ink = mix(A, BLACK, t);
-    const fill = contrast(A, WHITE) >= 4.5 ? A : ink;                    // 흰 글자를 올리는 칠(표 머리·배지)
+    const dark = mode === 'dark', BG = dark ? DARK_BG : WHITE, TO = dark ? WHITE : BLACK;
+    const soft = mix(A, BG, dark ? 0.84 : 0.91), chip = mix(A, BG, dark ? 0.72 : 0.82), mid = mix(A, BG, dark ? 0.4 : 0.45);
+    let ink = A;                                                          // 글자용 강조색: 바탕 6.5:1·옅은 칠 6:1 이상(작은 글자 4.5:1에 여유)
+    for (let t = 0; t <= 1 && (contrast(ink, BG) < 6.5 || contrast(ink, soft) < 6); t += 0.02) ink = mix(A, TO, t);
+    let fill = contrast(A, WHITE) >= 4.5 ? A : ink;                      // 흰 글자를 올리는 칠(표 머리·배지)
+    if (dark) for (let t = 0; t <= 1 && contrast(fill, WHITE) < 4.5; t += 0.02) fill = mix(A, BLACK, t);   // 어두운 모드의 ink는 밝아서 칠로 못 씀 → 강조색을 어둡게
     return { '--accent': rgbHex(A), '--accent-ink': rgbHex(ink), '--accent-fill': rgbHex(fill), '--accent-soft': rgbHex(soft), '--accent-chip': rgbHex(chip), '--accent-mid': rgbHex(mid) };
   }
-  function applyTheme(hex) {
-    const t = themeTokens(hex);
+  // 강조색을 지금 모드에 맞춰 root에 씀. 모드가 바뀌면(pf-mode) 다시 쓰고, 인쇄할 때는 밝은 값으로 바꿨다가 끝나면 되돌림(인쇄는 늘 흰 종이)
+  let themeHex = null;
+  const modeNow = () => (typeof PFMode !== 'undefined' ? PFMode.get() : 'light');   // mode.js의 const(전역이지만 window 속성은 아님)
+  function writeTheme(mode) {
+    const t = themeTokens(themeHex, mode);
     if (t) Object.entries(t).forEach(([k, v]) => document.documentElement.style.setProperty(k, v));
     return t;
+  }
+  function applyTheme(hex) {
+    const first = themeHex === null;
+    themeHex = hex;
+    if (first) {
+      addEventListener('pf-mode', () => writeTheme(modeNow()));
+      addEventListener('beforeprint', () => writeTheme('light'));
+      addEventListener('afterprint', () => writeTheme(modeNow()));
+    }
+    return writeTheme(modeNow());
   }
 
   // ── 안내 문구(옛 렌더러와 같은 글) ──

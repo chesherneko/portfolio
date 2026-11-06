@@ -124,3 +124,31 @@
     .pf-hud .pf-hud-prog > span { transition: none; }
   }
 }
+
+/* ── 어두운 모드(assets/mode.js가 html[data-mode="dark"]를 정함) — 화면 전용(덱 PDF도 밝게). 아래 띠·개요 창·불러오는 글자 ──
+   위 규칙들이 색을 직접 쓰므로 같은 자리만 덮음. 강조색(--accent-*)은 PF.applyTheme가 모드에 맞춰 씀 */
+@media screen {
+  .pf-hud button.pf-mode { height: auto; min-width: 0; padding: 0; border: 0; background: none; }   /* 아래 띠 단추 모양(테두리·높이)을 스위치에서 걷어냄 */
+  html[data-mode="dark"] .pf-loading { color: #A2A6B8; }
+  html[data-mode="dark"] .pf-hud { background: rgba(13, 14, 19, .92); border-top-color: #272936; color: #EEF0F6; }
+  html[data-mode="dark"] .pf-hud button:not(.pf-mode), html[data-mode="dark"] .pf-hud button[aria-disabled="true"] { background: #15161D; border-color: #2E3040; color: #EEF0F6; }
+  html[data-mode="dark"] .pf-hud button:not(.pf-mode):hover { background: #15161D; border-color: var(--accent); color: var(--accent-ink); }
+  html[data-mode="dark"] .pf-hud button[aria-pressed="true"], html[data-mode="dark"] .pf-hud button[aria-expanded="true"] { background: var(--accent-soft); border-color: var(--accent); color: var(--accent-ink); }
+  html[data-mode="dark"] .pf-hud .pf-hud-count { color: #EEF0F6; }
+  html[data-mode="dark"] .pf-hud :is(.pf-hud-sec, .pf-hud-note), html[data-mode="dark"] .pf-hud .pf-print small { color: #A2A6B8; }
+  html[data-mode="dark"] .pf-hud .pf-hud-prog { background: #272936; }
+  html[data-mode="dark"] .pf-hud .pf-hud-msg { background: #2A2D40; }
+  html[data-mode="dark"] .pf-hud .pf-hud-help { background: #15161D; border-color: #2E3040; color: #EEF0F6; box-shadow: 0 18px 50px -18px rgba(0, 0, 0, .7); }
+  html[data-mode="dark"] .pf-hud .pf-hud-help .warn { color: #F5B26B; }
+  html[data-mode="dark"] .pf-ov { background: #0D0E13; color: #EEF0F6; box-shadow: 0 30px 80px -20px rgba(0, 0, 0, .8); }
+  html[data-mode="dark"] .pf-ov::backdrop { background: rgba(0, 0, 0, .6); }
+  html[data-mode="dark"] .pf-ov-head { background: #15161D; border-bottom-color: #272936; }
+  html[data-mode="dark"] :is(.pf-ov-head h2 small, .pf-ov-hint, .pf-ov-cap) { color: #A2A6B8; }
+  html[data-mode="dark"] .pf-ov-close { background: #15161D; border-color: #272936; color: #EEF0F6; }
+  html[data-mode="dark"] .pf-ov-sec { border-bottom-color: #272936; }
+  html[data-mode="dark"] .pf-ov-thumb { background: #0D0E13; box-shadow: 0 0 0 1px #272936; }
+  html[data-mode="dark"] .pf-ov-cap b { color: #EEF0F6; }
+  html[data-mode="dark"] .pf-ov-item .pf-ov-id { color: #7C8094; }
+  html[data-mode="dark"][data-view="deck"] .pf-deck > .pf-scene { box-shadow: 0 24px 60px -24px rgba(0, 0, 0, .8), 0 0 0 1px #1E2029; }
+  html[data-mode="dark"][data-view="scroll"] .pf-deck > .pf-scene { box-shadow: 0 0 0 1px #1E2029; }
+}

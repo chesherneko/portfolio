@@ -54,7 +54,7 @@
         <p class="crumb">${link({ href: 'index.html', label: T('ui.back'), kind: 'page' })}<span aria-hidden="true">›</span><b>${esc(p.title)} — ${T('name.doc')}</b></p>
         <nav class="head-nav" aria-label="프로젝트 링크">
           ${deckBtn}${ext.join('')}
-          <span class="newtab-note">${T('ui.newtab')}</span>
+          <span class="newtab-note">${T('ui.newtab')}</span>${PFMode.button()}
         </nav>
       </div>
     </header>

@@ -182,7 +182,16 @@ code { font-family: var(--mono); font-size: .88em; background: var(--accent-soft
   .g-l { justify-content: flex-end; }
   .ct { grid-template-columns: minmax(0, 4fr) minmax(0, 7fr); gap: 56px; }
 }
-/* 좁은 화면: 머리 막대의 절 이동은 숨기고(내용은 위에서 아래로 그대로) 이름 · [PDF로 저장]만 */
+/* ── 어두운 모드(assets/mode.js가 html[data-mode="dark"]를 정함) — 화면 전용, 인쇄(제출 PDF)는 늘 밝게 ──
+   색 토큰만 바꾸고 배치·글자 크기는 그대로. 강조색(--accent-*)은 common.js PF.applyTheme가 모드에 맞춰 씀 */
+@media screen {
+  html[data-mode="dark"] { color-scheme: dark;
+    --ink: #EEF0F6; --body: #C3C6D2; --muted: #9A9EB0; --line: #262834; --tint: #13141B; --paper: #0D0E13; }
+  html[data-mode="dark"] .skip-link { color: var(--paper); }
+  html[data-mode="dark"] .notice pre { background: #06070A; }
+  html[data-mode="dark"] .cover img, html[data-mode="dark"] .shot img { filter: brightness(.94); }   /* 흰 바탕 스크린샷이 눈부시지 않게 살짝만 */
+}
+/* 좁은 화면: 머리 막대의 절 이동은 숨기고(내용은 위에서 아래로 그대로) 이름 · 모드 스위치 · [PDF로 저장]만 */
 @media (max-width: 759px) {
   .top nav { display: none; }
   .sec-head { flex-wrap: wrap; }

@@ -208,6 +208,25 @@ dialog.lightbox::backdrop { background: rgba(10, 11, 14, .82); }
 .md > .pf-figure { width: fit-content; }
 .md > .print-only { max-width: none; }
 
+/* ── 어두운 모드(assets/mode.js가 html[data-mode="dark"]를 정함) — 화면 전용, 인쇄는 늘 흰 종이 ──
+   색 토큰과 색을 직접 쓴 곳만 바꿈. 다이어그램 판은 밝게 둠(기술 문서의 mermaid 테마가 밝은 판 기준). 강조색(--accent-*)은 PF.applyTheme */
+@media screen {
+  html[data-mode="dark"] { color-scheme: dark;
+    --ink: #EEF0F6; --body: #C3C6D2; --muted: #9A9EB0; --faint: #868A9C; --line: #262834;
+    --paper: #0D0E13; --bg: #0A0B0F; --code-bg: #16171E;
+    --accent-line: color-mix(in srgb, var(--accent) 45%, var(--paper)); }
+  html[data-mode="dark"] .skip-link { color: var(--paper); }
+  html[data-mode="dark"] .error { color: #F97066; }
+  html[data-mode="dark"] :is(.rail-card, .glance) { background: #121319; }
+  html[data-mode="dark"] .tags li { background: #1C1D26; }
+  html[data-mode="dark"] .md th { background: #16171E; color: var(--ink); }
+  html[data-mode="dark"] .md pre { border: 1px solid var(--line); }
+  html[data-mode="dark"] .mmd .mermaid { background: #F4F5FA; border-color: #F4F5FA; }
+  html[data-mode="dark"] .mmd-src pre { background: #121319; }
+  html[data-mode="dark"] .pf-mmd-error { color: #F97066; }
+  html[data-mode="dark"] .md img { filter: brightness(.94); }
+}
+
 /* ── 반응형 (화면에만; 인쇄 폭에서 켜지지 않게 screen으로 한정) ── */
 @media screen and (max-width: 1799.98px) {
   .doc-page { grid-template-columns: var(--toc-w) minmax(0, 1fr); grid-template-areas: "toc main"; }

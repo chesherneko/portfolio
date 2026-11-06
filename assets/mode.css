@@ -1,0 +1,20 @@
+/* 화면 모드 스위치(assets/mode.js의 PFMode.button) — 세 페이지 공용. 해(밝게) ↔ 달(어둡게), 손잡이가 고른 쪽으로 감
+   색은 페이지의 토큰을 씀: --line(트랙 테두리) · --accent(켜짐) · --accent-ink(아이콘) — 토큰이 없는 곳을 위해 기본값을 둠 */
+.pf-mode { all: unset; box-sizing: border-box; flex: none; display: inline-flex; align-items: center; cursor: pointer; border-radius: 999px; }
+.pf-mode:focus-visible { outline: 2px solid var(--accent-ink, #2557B7); outline-offset: 2px; }
+.pf-mode-track { position: relative; display: flex; align-items: center; justify-content: space-between; width: 54px; height: 28px; padding: 0 7px;
+                 box-sizing: border-box; border-radius: 999px; border: 1px solid var(--line, #E1E4EE); background: var(--tint, #F7F8FC); transition: background .2s, border-color .2s; }
+.pf-mode-i { position: relative; z-index: 1; display: flex; width: 14px; height: 14px; }
+.pf-mode-i svg { width: 100%; height: 100%; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.pf-mode-i.moon svg { fill: currentColor; stroke: none; }
+.pf-mode-i.sun { color: var(--accent-ink, #2557B7); }
+.pf-mode-i.moon { color: var(--muted, #8A8FA8); }
+.pf-mode-knob { position: absolute; top: 2px; left: 2px; width: 22px; height: 22px; border-radius: 50%; background: #fff;
+                box-shadow: 0 1px 3px rgba(20, 22, 30, .3); transition: transform .2s; }
+.pf-mode[aria-checked="true"] .pf-mode-track { background: color-mix(in srgb, var(--accent, #2F6FEB) 22%, #14151C); border-color: color-mix(in srgb, var(--accent, #2F6FEB) 45%, #14151C); }
+.pf-mode[aria-checked="true"] .pf-mode-knob { transform: translateX(26px); background: #0D0E13; box-shadow: 0 0 0 1px rgb(255 255 255 / .12); }
+.pf-mode[aria-checked="true"] .pf-mode-i.sun { color: #8A8FA8; }
+.pf-mode[aria-checked="true"] .pf-mode-i.moon { color: #FFD66B; }
+/* 아이콘이 손잡이 위에 그려져(z-index) 지금 모드의 아이콘이 손잡이 안에 들어간 것처럼 보임 */
+@media (prefers-reduced-motion: reduce) { .pf-mode-track, .pf-mode-knob { transition: none; } }
+@media print { .pf-mode { display: none !important; } }
