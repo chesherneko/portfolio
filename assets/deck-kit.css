@@ -51,7 +51,7 @@
   .pf-hud .pf-hud-prog { flex: 1 1 80px; min-width: 40px; height: 5px; border-radius: 3px; background: #E7E9F4; overflow: hidden; }
   .pf-hud .pf-hud-prog > span { display: block; height: 100%; width: 0; background: var(--accent, #2F6FEB); transition: width .2s; }
   .pf-hud .pf-hud-note { flex: none; font-size: 12px; font-weight: 500; color: #5D6280; white-space: nowrap; }
-  /* [파일로 저장] 목록(PDF·PPTX) — 단추 위로 펼침. 아래 8px 여백이 단추와 목록 사이를 이어 마우스가 지나가도 닫히지 않음 */
+  /* [파일 변환] 목록(PDF·PPTX) — 단추 위로 펼침. 아래 8px 여백이 단추와 목록 사이를 이어 마우스가 지나가도 닫히지 않음 */
   .pf-hud .pf-save { position: relative; flex: none; display: inline-flex; }
   .pf-hud .pf-save-menu { display: none; position: absolute; left: 50%; bottom: 100%; transform: translateX(-50%); padding-bottom: 8px; z-index: 2; }
   .pf-hud .pf-save.open .pf-save-menu { display: block; }

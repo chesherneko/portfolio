@@ -383,7 +383,7 @@
     live.textContent = `${pre ? pre + ' ' : ''}슬라이드 ${i + 1} / ${scenes.length}${s.dataset.sec ? ', ' + s.dataset.sec : ''}${t && t !== s.dataset.sec ? ', ' + t : ''}`;
   }
   const HELP = `<p><b>PDF로 저장하기 — Windows PC의 Chrome·Edge에서 저장하세요</b></p>
-    <ol><li><b>배포된 주소</b>(github.io)에서 화면이 다 나타난 뒤 <b>[파일로 저장] → [PDF로 저장]</b>을 누릅니다(Ctrl+P도 됩니다).</li>
+    <ol><li><b>배포된 주소</b>(github.io)에서 화면이 다 나타난 뒤 <b>[파일 변환] → [PDF]</b>를 누릅니다(Ctrl+P도 됩니다).</li>
     <li><b>대상</b>에서 <b>"PDF로 저장"</b>을 고릅니다. "Microsoft Print to PDF"·프린터가 골라져 있으면 A4로 바뀌고 날짜·주소가 찍힙니다.</li>
     <li><b>여백</b>은 <b>기본</b> 그대로 둡니다. Edge는 <b>시트당 페이지 수</b>도 1 그대로 둡니다. 용지 크기·배율 항목이 보이지 않는 것이 정상입니다.</li>
     <li>미리보기의 쪽 수가 이 덱의 쪽 수(<b class="pf-help-pages"></b>)와 같으면 저장합니다.</li></ol>
@@ -443,7 +443,7 @@
       else if (a === 'view') setView(view === 'deck' ? 'scroll' : 'deck');
       else if (a === 'anyway') PF.printAnyway();
     });
-    // [파일로 저장] 목록: 바깥을 누르거나 Esc면 닫음(마우스를 올렸을 때 열리는 것은 CSS :hover)
+    // [파일 변환] 목록: 바깥을 누르거나 Esc면 닫음(마우스를 올렸을 때 열리는 것은 CSS :hover)
     document.addEventListener('click', (e) => { if (!e.target.closest?.('.pf-save')) toggleSave(false); });
     hud.querySelector('.pf-save').addEventListener('keydown', (e) => {
       if (e.key !== 'Escape' || !saveOpen()) return;
@@ -451,7 +451,7 @@
     });
     deck.before(skip, hud);                                   // DOM 순서: 건너뛰기 → HUD → 덱
   }
-  // [파일로 저장] — PDF·PPTX를 고르는 목록. 누르면 열고 닫음(터치·키보드), 마우스를 올려도 열림(CSS)
+  // [파일 변환] — PDF·PPTX를 고르는 목록. 누르면 열고 닫음(터치·키보드), 마우스를 올려도 열림(CSS)
   const saveOpen = () => !!hud?.querySelector('.pf-save.open');
   function toggleSave(on) {
     if (!hud) return;
