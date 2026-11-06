@@ -209,7 +209,7 @@ dialog.lightbox::backdrop { background: rgba(10, 11, 14, .82); }
 .md > .print-only { max-width: none; }
 
 /* ── 어두운 모드(assets/mode.js가 html[data-mode="dark"]를 정함) — 화면 전용, 인쇄는 늘 흰 종이 ──
-   색 토큰과 색을 직접 쓴 곳만 바꿈. 다이어그램 판은 밝게 둠(기술 문서의 mermaid 테마가 밝은 판 기준). 강조색(--accent-*)은 PF.applyTheme */
+   색 토큰과 색을 직접 쓴 곳만 바꿈. 다이어그램은 색 반전(아래). 강조색(--accent-*)은 PF.applyTheme */
 @media screen {
   html[data-mode="dark"] { color-scheme: dark;
     --ink: #EEF0F6; --body: #C3C6D2; --muted: #9A9EB0; --faint: #868A9C; --line: #262834;
@@ -221,7 +221,9 @@ dialog.lightbox::backdrop { background: rgba(10, 11, 14, .82); }
   html[data-mode="dark"] .tags li { background: #1C1D26; }
   html[data-mode="dark"] .md th { background: #16171E; color: var(--ink); }
   html[data-mode="dark"] .md pre { border: 1px solid var(--line); }
-  html[data-mode="dark"] .mmd .mermaid { background: #F4F5FA; border-color: #F4F5FA; }
+  /* 다이어그램: 기술 문서의 mermaid가 흑백(neutral) 테마라 색을 반전해 어두운 판으로 — 다시 그리지 않으므로 크기·배치 그대로.
+     흰 판 → #141414, 검은 글자·선 → #EBEBEB, 테두리 #E9E9EB → --line 정도. 크게 보기 창도 같게 */
+  html[data-mode="dark"] :is(.mmd .mermaid, .lb-stage.lb-svg) { background: #fff; border-color: #E9E9EB; filter: invert(.92) hue-rotate(180deg); }
   html[data-mode="dark"] .mmd-src pre { background: #121319; }
   html[data-mode="dark"] .pf-mmd-error { color: #F97066; }
   html[data-mode="dark"] .md img { filter: brightness(.94); }

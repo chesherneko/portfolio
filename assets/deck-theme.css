@@ -303,7 +303,7 @@ table.md-table img { max-height: 120px; max-width: 100%; height: auto; }   /* wi
                grid-template-columns: inherit; grid-template-rows: inherit; gap: inherit; }
 
 /* ── 어두운 모드(assets/mode.js) — 화면 전용(덱 PDF는 밝게). 색 토큰 + 색을 직접 쓴 곳만, 크기·배치는 그대로 ──
-   다이어그램 판은 밝게 둠(기술 문서의 mermaid 테마가 밝은 판 기준), 코드 판은 장면보다 한 단 어둡게 */
+   다이어그램은 색 반전(아래), 코드 판은 장면보다 한 단 어둡게 */
 @media screen {
   html[data-mode="dark"] { color-scheme: dark;
     --ink: #EEF0F6; --muted: #A2A6B8; --faint: #7C8094;
@@ -311,7 +311,12 @@ table.md-table img { max-height: 120px; max-width: 100%; height: auto; }   /* wi
     --code-bg: #08090D; }
   html[data-mode="dark"] .note { background: #131626; }
   html[data-mode="dark"] :is(.media, .vmedia) { background: var(--card); }
-  html[data-mode="dark"] .vbox[data-kind="mermaid"] .vmedia { background: #F4F5FA; border-color: #F4F5FA; }
+  /* 다이어그램: 기술 문서의 mermaid가 흑백(neutral) 테마라 색을 반전해 어두운 판으로 — 다시 그리지 않으므로 크기·배치 그대로.
+     흰 판 → #141414, 검은 글자·선 → #EBEBEB, 테두리 #E9E9EB → --line 정도. 크게 보기 창도 같게 */
+  html[data-mode="dark"] :is(.vbox[data-kind="mermaid"] .vmedia, .pf-lightbox .lb-stage.lb-svg) { background: #fff; border-color: #E9E9EB; filter: invert(.92) hue-rotate(180deg); }
+  html[data-mode="dark"] .pf-lightbox .lb-zoom { background: rgba(21, 22, 29, .94); border-color: #2E3040; }
+  html[data-mode="dark"] .pf-lightbox .lb-zoom output { color: #EEF0F6; }
+  html[data-mode="dark"] .pf-lightbox .lb-close { background: #15161D; color: #EEF0F6; box-shadow: inset 0 0 0 1px #2E3040; }
   html[data-mode="dark"] .vbox[data-kind="code"] .vmedia { box-shadow: inset 0 0 0 1px var(--line); }
   html[data-mode="dark"] .fstep.res { background: #0F2419; border-color: #1F5A3A; }
   html[data-mode="dark"] :is(.media, .vmedia) img { filter: brightness(.94); }
