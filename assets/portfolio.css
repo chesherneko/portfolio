@@ -11,6 +11,7 @@
   --ink: #20233A; --body: #3B3F57; --muted: #5C6178; --line: #E7E9F4; --tint: #F7F8FC; --paper: #FFFFFF;
   --sans: 'Pretendard', 'Noto Sans KR', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   --mono: 'D2Coding', Consolas, monospace;
+  --display: 'Montserrat', var(--sans);   /* 영문 눈썹 라벨(PORTFOLIO·PROJECT 01 / 03·FEATURE 01) — 템플릿처럼 굵은 기하학 글꼴, 한글은 Pretendard */
   --wrap: 1120px; --pad: clamp(16px, 4vw, 40px); --radius: 16px; --top-h: 56px;
 }
 
@@ -55,7 +56,7 @@ code { font-family: var(--mono); font-size: .88em; background: var(--accent-soft
 
 /* 틀 */
 .wrap { max-width: var(--wrap); margin: 0 auto; padding: 0 var(--pad); }
-.eyebrow { font-family: var(--mono); font-size: 12px; font-weight: 700; letter-spacing: .14em; color: var(--accent-ink); }
+.eyebrow { font-family: var(--display); font-size: 12px; font-weight: 800; letter-spacing: .16em; color: var(--accent-ink); }
 .sec { border-top: 1px solid var(--line); padding: clamp(56px, 8vw, 88px) 0; scroll-margin-top: var(--top-h); }
 .sec.tint { background: var(--tint); }
 .hero { scroll-margin-top: var(--top-h); }
@@ -128,7 +129,7 @@ code { font-family: var(--mono); font-size: .88em; background: var(--accent-soft
 .flist li { display: grid; grid-template-columns: 1fr; gap: 12px; padding: 20px 22px; border-top: 1px solid var(--line); transition: background .15s; }
 .flist li:first-child { border-top: 0; }
 .flist li.on { background: var(--tint); }
-.fk { font-family: var(--mono); font-size: 12px; font-weight: 700; letter-spacing: .1em; color: var(--accent-ink); }
+.fk { font-family: var(--display); font-size: 11.5px; font-weight: 800; letter-spacing: .14em; color: var(--accent-ink); }
 .flist h3 { margin-top: 4px; font-size: 18px; font-weight: 800; line-height: 1.35; }
 .flist .fr-t p:not(.fk) { margin-top: 6px; font-size: 15px; line-height: 1.65; color: var(--body); }
 .pill { display: inline-flex; align-items: center; padding: 7px 13px; border-radius: 999px; border: 1px solid var(--line); background: var(--paper);

@@ -120,7 +120,7 @@
         ${p.team?.role ? `<p class="g-role"><b>${T('name.role-short')}</b> ${inline(p.team.role)}</p>` : ''}</div>
       <div class="g-l">${projLinks(p)}</div></li>`).join('')}</ul>`, 'tint'));
 
-    // ⑥ 연락처 + 프로젝트별 링크(그 밖의 링크는 주소까지)
+    // ⑥ 연락처 + 프로젝트별 링크(추가 링크 links.extra는 프로젝트 소개·발표 덱·상세 문서에 있으므로 여기서는 뺌)
     out.push(`<footer id="contact" class="sec contact"><div class="wrap">
       <p class="eyebrow">${T('en.contact')}</p>
       <div class="ct">
@@ -129,8 +129,7 @@
           ${isUrl(prof.github) ? `<p>${link({ href: prof.github, label: `<span class="url">${esc(shortUrl(prof.github))}</span>` })}</p>` : ''}
           ${profLinks.map((l) => `<p><span class="k">${esc(l.label)}</span> ${link({ href: l.url, label: `<span class="url">${esc(shortUrl(l.url))}</span>` })}</p>`).join('')}
           <p class="print-only"><span class="url">${esc(PF.visibleUrl(''))}</span></p></div>
-        <div class="ct-lk">${projects.map((p) => `<div><b>${esc(p.title)}</b><span class="row">${projLinks(p)}</span>${(p.links?.extra || []).filter((l) => isUrl(l.url))
-          .map((l) => `<span class="ex">${esc(l.label)} ${link({ href: l.url, label: `<span class="url">${esc(shortUrl(l.url))}</span>` })}</span>`).join('')}</div>`).join('')}</div>
+        <div class="ct-lk">${projects.map((p) => `<div><b>${esc(p.title)}</b><span class="row">${projLinks(p)}</span></div>`).join('')}</div>
       </div></div></footer>`);
 
     const nav = [['intro', t('page.nav-intro'), prof.intro], ['stack', t('page.nav-stack'), (pf.skills || []).length], [projects[0] ? `p-${projects[0].id}` : '', t('page.nav-projects'), projects.length],
