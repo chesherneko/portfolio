@@ -1,0 +1,862 @@
+{
+  "id": "3-Project-Oddity",
+  "doc": "기술문서.md",
+  "schemaVersion": 2,
+  "title": "ODDITY",
+  "tagline": "염동력과 증강칩 스킬로 세 보스와 맞서는 3인칭 보스 액션 게임",
+  "cover": null,
+  "team": {
+    "type": "team",
+    "size": "4인",
+    "role": "팀장. 보스 AI 기반, 휴머노이드 보스, 전투 이벤트 기반"
+  },
+  "meta": [
+    {
+      "label": "장르",
+      "value": "3인칭 보스 액션"
+    },
+    {
+      "label": "기간",
+      "value": "약 3주 (2026-10-15 ~ 11-04)"
+    },
+    {
+      "label": "인원",
+      "value": "4명 (전원 프로그래머)"
+    },
+    {
+      "label": "환경",
+      "value": "Unity 6000.3.15f1 (URP)"
+    }
+  ],
+  "tags": [
+    "Unity 6.3",
+    "C#",
+    "FSM",
+    "전투 이벤트 큐",
+    "Kinematic Rigidbody",
+    "NavMesh",
+    "Odin Inspector"
+  ],
+  "links": {
+    "github": "",
+    "video": "",
+    "extra": []
+  },
+  "intent": {
+    "text": "보스를 관찰하고, 염동력과 스킬로 스스로 공격 기회를 만들어 자신만의 방식으로 보스를 공략하는 경험을 주고 싶었습니다.",
+    "verbatim": true
+  },
+  "highlights": [
+    {
+      "title": "전투 이벤트 큐",
+      "what": "여러 곳에서 생기는 피해·회복을 같은 경로, 같은 시점에 처리합니다.",
+      "how": "진입점을 `AddCombatEvent` 하나로 두고, 요청을 큐에 모았다가 매 프레임 한 지점에서 처리한 뒤 결과를 이벤트로 알립니다. 처리를 시작할 때 큐 개수를 한 번 읽고 그만큼만 꺼내, 처리 도중 새로 들어온 요청은 다음 프레임으로 넘깁니다.",
+      "why": "진입 함수를 직접 호출하면 결과에 반응한 처리(흡혈 회복 등)가 피해 처리 도중에 중첩 호출됩니다. 처리 시점을 한 곳으로 정해 연쇄 처리가 끼어들지 않게 한 대신 공격하는 쪽이 결과를 바로 받지 못하게 됐지만, 실제 피해량은 처리 뒤에야 알 수 있고 그 값으로 하는 일도 후속 반응뿐이어서 감수했습니다.",
+      "section": "6.1 전투 이벤트 큐",
+      "image": null
+    },
+    {
+      "title": "의도(Intent) 기반 보스 판단",
+      "what": "보스가 한 공격만 노리고 쫓아다니지 않고, 상황에 맞는 공격을 사용합니다.",
+      "how": "판단 상태에서 후보를 긴급 > 사거리 안 > 사거리 밖 순으로 좁히고 패턴마다 정한 가중치로 의도를 고릅니다. 거리·방향이 맞으면 공격하고, 아니면 회전·추격으로 맞춘 뒤 판단으로 돌아오며, 추격 중에도 1초마다 다시 판단합니다.",
+      "why": "처음에는 사거리 밖의 공격을 예약해 두고 추격했는데, 보스가 예약한 공격 하나를 쓰려고 플레이어를 계속 쫓기만 하는 단조로운 상황이 나왔습니다. 그래서 공격을 미리 걸어 두지 않고 판단할 때마다 다시 고르는 구조로 바꿨습니다.",
+      "section": "6.2 의도(Intent) 기반 보스 판단",
+      "image": null
+    },
+    {
+      "title": "패턴 구조",
+      "what": "기반을 만든 사람이 아니어도 패턴과 보스를 쉽게 추가할 수 있는 구조입니다.",
+      "how": "패턴마다 다른 값(사거리·각도·쿨다운·가중치·애니메이션 트리거)은 부모 클래스 `BossMeleePattern`의 인스펙터 필드로 두고, 판단 상태는 이 값으로 만든 조건만 묻습니다. 상태 기계는 상태를 타입으로 등록하고 찾습니다.",
+      "why": "Enum 키로 찾으면 패턴을 추가할 때마다 Enum 항목을 늘려 상태와 연결해야 합니다. 별도 키 없이 `typeof`나 `GetType`으로 간단히 상태를 바꿀 수 있는 편의성을 골랐고, 상태마다 클래스가 하나씩 생기는 것은 트레이드오프로 두었습니다.",
+      "section": "6.3 패턴 구조",
+      "image": null
+    },
+    {
+      "title": "Kinematic 이동과 경로 계산",
+      "what": "투사체 무게에 영향받지 않으면서 루트 모션을 쓰는 보스 이동입니다.",
+      "how": "Kinematic Rigidbody로 바꾸고, 상태의 이동 요청과 루트 모션을 모두 `BossMovement`에 요청만 하게 해 물리 스텝(`FixedUpdate`)에서 한 번에 적용합니다. 길 찾기는 NavMeshAgent 대신 NavMesh로 경로만 계산합니다.",
+      "why": "Dynamic Rigidbody에서는 투사체 무게에 따라 보스가 투사체를 밀어내지 못하거나 어색하게 밀어냈습니다. NavMeshAgent에 이동까지 맡기면 Agent와 루트 모션이 둘 다 위치를 옮겨 충돌하므로, 애니메이션에 담긴 움직임 그대로 도는 루트 모션을 택하고 경로 따라가기는 직접 만들었습니다.",
+      "section": "6.4 Kinematic 이동과 경로 계산",
+      "image": null
+    }
+  ],
+  "troubleshooting": [
+    {
+      "title": "Kinematic으로 바꾼 뒤 보스가 아주 조금씩만 회전함",
+      "problem": "이동을 Kinematic으로 바꾼 뒤, 보스가 몸을 돌리긴 하지만 확연히 적은 양만 회전했습니다.",
+      "cause": "Interpolate가 켜진 Rigidbody는 보간된 값으로 transform을 덮어써, transform에 직접 준 회전이 보간값으로 되돌려졌습니다.",
+      "solution": "이동·회전 요청을 쌓아 두고 `FixedUpdate`에서 `MovePosition`·`MoveRotation`으로 적용했습니다. `MoveRotation`은 물리 쪽 회전 상태를 갱신하므로 보간이 갱신된 값을 기준으로 진행됩니다.",
+      "result": "",
+      "lesson": "Interpolate가 transform을 어떻게 다루는지 이 문제로 알게 됐습니다.",
+      "section": "8.1 Kinematic으로 바꾼 뒤 보스가 아주 조금씩만 회전함"
+    },
+    {
+      "title": "애니메이션이 끝났는데 보스가 멈춰 있음",
+      "problem": "공격 애니메이션이 끝나면 `OnAttackEnded` 신호로 판단 상태에 돌아가야 하는데, 신호가 오지 않아 패턴이 멈추는 경우가 있었습니다.",
+      "cause": "신호는 애니메이션 진행률이 정해진 값을 지날 때 보내는 방식(강사 제공 구조)이라, 진행률이 정확히 1을 거치지 않고 다음 상태로 넘어가면 1에 걸어 둔 종료 신호가 나가지 않았습니다.",
+      "solution": "상태가 끝날 때 아직 못 보낸 신호를 마저 보내고, 이미 보낸 신호는 건너뜁니다. 끊긴 상태가 몰아 보낸 종료 신호로 투사체 반응이 바로 끝나지 않도록, 반응 패턴은 진입 후 0.2초 동안 신호를 무시합니다.",
+      "result": "",
+      "lesson": "",
+      "section": "8.3 애니메이션이 끝났는데 보스가 멈춰 있음"
+    },
+    {
+      "title": "(미해결) 보스가 가끔 맵 밖으로 나감",
+      "problem": "최종 빌드를 만들며 플레이 테스트하던 중, 보스가 아주 가끔 NavMesh 밖으로 나가 맵 밖을 걷는 문제를 발견했습니다. 주로 돌진 패턴에서 발생했습니다.",
+      "cause": "(추정) 터널링, 또는 NavMesh 경계 제한이 발밑 가까이에 NavMesh가 있을 때만 걸리기 때문에 순간이동이나 루트 모션으로 한 번 크게 벗어나면 제한이 걸리지 않는 점을 의심했습니다.",
+      "solution": "남은 일정으로는 원인을 확정하고 고칠 시간이 부족해, NavMesh 밖에 일정 시간 넘게 머물면 가장 가까운 NavMesh 위로 되돌리는 방어 컴포넌트(`BossNavMeshGuard`)를 넣었습니다.",
+      "result": "",
+      "lesson": "",
+      "section": "8.5 (미해결) 보스가 가끔 맵 밖으로 나감"
+    }
+  ],
+  "screenshots": [],
+  "retro": {
+    "achieved": [
+      "추격 중에도 1초마다 후보를 다시 골라, 공격 하나를 위해 계속 쫓는 흐름이 끊김",
+      "다른 팀원이 프리팹 조립과 인스펙터 값만으로 보스 하나를 만듦",
+      "피해·회복을 만드는 11개 파일이 모두 전투 이벤트 큐를 거침",
+      "휴머노이드 보스가 공용 상태·패턴을 전용 분기 없이 상속해 재사용"
+    ],
+    "regrets": [
+      "차원 베기가 \"결과의 평등\"을 만듦 — 피할 수 없이 발동하고, 잘하든 못하든 비슷한 비율로 체력을 깎는다는 피드백",
+      "보스들이 거리를 좁히는 기술이 너무 많음",
+      "분신과 본체 기술이 겹쳐 같이 맞음",
+      "보스가 가끔 맵 밖으로 나감 (8.5)"
+    ],
+    "plans": [
+      "원래 목적대로 기믹 수행형 패턴으로 변경",
+      "거리를 좁히는 패턴을 줄이고 원거리 기술을 추가해, 중·원거리에서 싸우는 플레이어에 맞는 패턴 구성으로 변경",
+      "분신의 패턴 수를 줄이고, 본체와 같은 기술을 동시에 쓰지 않도록 사용 조건을 조정",
+      "이동 로직 자체에 NavMesh 위인지 검사하는 가드를 두거나, 터널링이 일어나지 않도록 맵을 수정"
+    ],
+    "section": "9. 결과 및 배운 점"
+  },
+  "deck": {
+    "chapters": [
+      {
+        "key": "intro",
+        "title": "프로젝트 개요",
+        "sectionPath": [
+          "1. 프로젝트 개요"
+        ]
+      },
+      {
+        "key": "team",
+        "title": "팀 구성과 내 역할",
+        "sectionPath": [
+          "2. 팀 구성과 내 역할"
+        ]
+      },
+      {
+        "key": "arch",
+        "title": "전체 구조와 파트 간 연결",
+        "sectionPath": [
+          "3. 전체 구조와 파트 간 연결"
+        ]
+      },
+      {
+        "key": "goals",
+        "title": "담당 파트 개요",
+        "sectionPath": [
+          "4. 담당 파트 개요"
+        ]
+      },
+      {
+        "key": "struct",
+        "title": "담당 파트 시스템 구조",
+        "sectionPath": [
+          "5. 담당 파트 시스템 구조"
+        ]
+      },
+      {
+        "key": "core",
+        "title": "핵심 기능",
+        "sectionPath": [
+          "6. 핵심 기능"
+        ]
+      },
+      {
+        "key": "collab",
+        "title": "협업에서의 고민과 선택",
+        "sectionPath": [
+          "7. 협업에서의 고민과 선택"
+        ]
+      },
+      {
+        "key": "trouble",
+        "title": "트러블슈팅",
+        "sectionPath": [
+          "8. 트러블슈팅"
+        ]
+      },
+      {
+        "key": "result",
+        "title": "결과 및 배운 점",
+        "sectionPath": [
+          "9. 결과 및 배운 점"
+        ]
+      }
+    ],
+    "slides": [
+      {
+        "key": "loop",
+        "chapter": "intro",
+        "layout": "visual",
+        "tab": "개요",
+        "title": {
+          "text": "1.2 무엇을 만들었나",
+          "verbatim": true
+        },
+        "lead": {
+          "text": "ODDITY는 근미래를 배경으로 한 3인칭 보스 러시 액션입니다.",
+          "verbatim": true
+        },
+        "sectionPath": [
+          "1.2 무엇을 만들었나"
+        ],
+        "points": [
+          {
+            "label": "핵심 플레이 루프",
+            "text": "플레이어는 로비에서 미션을 받아 난이도별 보스에게 도전하고, 보스를 잡으면 보상으로 증강칩을 얻습니다.",
+            "verbatim": true
+          },
+          {
+            "label": "",
+            "text": "칩을 격자에 배치해 스킬과 능력치를 조합한 뒤 다음 보스에 도전합니다.",
+            "verbatim": true
+          },
+          {
+            "label": "",
+            "text": "전투에서는 염동력으로 주변 물체를 들어 던지고, 칩으로 얻은 스킬을 씁니다.",
+            "verbatim": true
+          }
+        ],
+        "visuals": [
+          {
+            "kind": "mermaid",
+            "n": 1,
+            "fp": "flowchart LR"
+          },
+          {
+            "kind": "table",
+            "n": 1,
+            "fp": "보스|난이도|유형"
+          }
+        ]
+      },
+      {
+        "key": "roles",
+        "chapter": "team",
+        "layout": "full",
+        "tab": "개요",
+        "title": {
+          "text": "2.1 역할 분담",
+          "verbatim": true
+        },
+        "lead": null,
+        "sectionPath": [
+          "2.1 역할 분담"
+        ],
+        "points": [],
+        "visuals": [
+          {
+            "kind": "table",
+            "n": 1,
+            "fp": "담당|맡은 일"
+          }
+        ]
+      },
+      {
+        "key": "overall",
+        "chapter": "arch",
+        "layout": "visual",
+        "tab": "구조",
+        "title": {
+          "text": "3.1 전체 구조",
+          "verbatim": true
+        },
+        "lead": {
+          "text": "피해는 누가 만들든 ① 전투 이벤트 큐를 거치고, 세 보스는 모두 ② 보스 AI 기반 위에서 움직입니다.",
+          "verbatim": true
+        },
+        "sectionPath": [
+          "3.1 전체 구조"
+        ],
+        "points": [
+          {
+            "label": "전투 이벤트 큐",
+            "text": "피해·회복 요청을 모아 매 프레임 처리하고 결과를 알림. 피해량 계산은 하지 않음",
+            "verbatim": true
+          },
+          {
+            "label": "보스 AI 기반",
+            "text": "상태 기계, 의도 기반 판단, 근접 패턴 기반, 이동과 경로 계산",
+            "verbatim": true
+          },
+          {
+            "label": "휴머노이드 보스",
+            "text": "②를 상속해 만든 하드 난이도 보스",
+            "verbatim": true
+          },
+          {
+            "label": "효과음",
+            "text": "애니메이션 상태·컴포넌트·코드에서 쓰는 효과음과 BGM",
+            "verbatim": true
+          }
+        ],
+        "visuals": [
+          {
+            "kind": "mermaid",
+            "n": 1,
+            "fp": "flowchart LR"
+          }
+        ]
+      },
+      {
+        "key": "problems",
+        "chapter": "goals",
+        "layout": "full",
+        "tab": "개요",
+        "title": {
+          "text": "4.2 풀어야 했던 문제",
+          "verbatim": true
+        },
+        "lead": null,
+        "sectionPath": [
+          "4.2 풀어야 했던 문제"
+        ],
+        "points": [],
+        "visuals": [
+          {
+            "kind": "table",
+            "n": 1,
+            "fp": "문제|상황|다루는 절"
+          }
+        ]
+      },
+      {
+        "key": "class",
+        "chapter": "struct",
+        "layout": "visual",
+        "tab": "구조",
+        "title": {
+          "text": "5.1 클래스 구조",
+          "verbatim": true
+        },
+        "lead": {
+          "text": "판단은 ④ 한 곳에서, 실제 움직임은 ⑦ 한 곳에서 일어납니다.",
+          "verbatim": true
+        },
+        "sectionPath": [
+          "5.1 클래스 구조"
+        ],
+        "points": [
+          {
+            "label": "판단",
+            "text": "후보 패턴을 모아 의도를 고르고, 공격·회전·추격 중 하나로 넘김",
+            "verbatim": true
+          },
+          {
+            "label": "이동",
+            "text": "모든 이동·회전 요청을 모아 물리 스텝에서 적용, 벽에 막히면 벽면을 따라 미끄러짐",
+            "verbatim": true
+          },
+          {
+            "label": "",
+            "text": "상태와 패턴은 \"무엇을 할지\"와 \"얼마나 움직일지\"만 정하고, 위치를 직접 바꾸지 않습니다.",
+            "verbatim": true
+          }
+        ],
+        "visuals": [
+          {
+            "kind": "mermaid",
+            "n": 1,
+            "fp": "classDiagram"
+          }
+        ]
+      },
+      {
+        "key": "child-state",
+        "chapter": "struct",
+        "layout": "full",
+        "tab": "선택",
+        "title": {
+          "text": "5.2 상태를 자식 오브젝트로 둔 이유",
+          "verbatim": true
+        },
+        "lead": {
+          "text": "상태 하나를 오브젝트 하나에 맡기면 팀원이 상태를 추가하거나 고칠 때 서로의 작업과 충돌할 일이 적다고 판단해 이 방식을 골랐습니다.",
+          "verbatim": true
+        },
+        "sectionPath": [
+          "5.2 상태를 자식 오브젝트로 둔 이유"
+        ],
+        "points": [],
+        "visuals": [
+          {
+            "kind": "table",
+            "n": 1,
+            "fp": "|일반 C# 클래스 상태|자식 오브젝트 상태 (선택)"
+          }
+        ]
+      },
+      {
+        "key": "combat-queue",
+        "chapter": "core",
+        "layout": "visual",
+        "tab": "흐름",
+        "title": {
+          "text": "6.1 전투 이벤트 큐",
+          "verbatim": true
+        },
+        "lead": {
+          "text": "이 요청은 모두 `AddCombatEvent`로 들어와 큐에 쌓이고, 매 프레임 한 지점에서 들어온 순서대로 처리됩니다.",
+          "verbatim": true
+        },
+        "sectionPath": [
+          "6.1 전투 이벤트 큐",
+          "동작 방식"
+        ],
+        "points": [
+          {
+            "label": "DamageEvent",
+            "text": "받는 쪽의 `TakeDamage`가 호출되고, 받은 피해량이 `OnDamageEventExecuted`로 발행됨",
+            "verbatim": true
+          },
+          {
+            "label": "HealEvent",
+            "text": "받는 쪽의 `TakeHeal`이 호출되고, 받은 회복량이 `OnHealEventExecuted`로 발행됨",
+            "verbatim": true
+          },
+          {
+            "label": "",
+            "text": "`CombatManager`는 누가 피해를 보냈는지, 누가 결과를 쓰는지 알지 못합니다.",
+            "verbatim": true
+          }
+        ],
+        "visuals": [
+          {
+            "kind": "mermaid",
+            "n": 1,
+            "fp": "sequenceDiagram"
+          }
+        ]
+      },
+      {
+        "key": "queue-choice",
+        "chapter": "core",
+        "layout": "full",
+        "tab": "선택",
+        "title": {
+          "text": "설계 선택: 직접 호출이 아니라 큐인 이유",
+          "verbatim": true
+        },
+        "lead": {
+          "text": "정리하면, 처리 시점을 한 곳으로 정해 연쇄 처리가 끼어들지 않게 한 대신, 공격하는 쪽이 결과를 바로 받지 못하게 됐습니다.",
+          "verbatim": true
+        },
+        "sectionPath": [
+          "6.1 전투 이벤트 큐",
+          "설계 선택: 직접 호출이 아니라 큐인 이유"
+        ],
+        "points": [],
+        "visuals": [
+          {
+            "kind": "table",
+            "n": 1,
+            "fp": "|진입 함수를 직접 호출|큐에 모아 매 프레임 처리 (선택)"
+          }
+        ]
+      },
+      {
+        "key": "intent-flow",
+        "chapter": "core",
+        "layout": "visual",
+        "tab": "흐름",
+        "title": {
+          "text": "6.2 의도(Intent) 기반 보스 판단",
+          "verbatim": true
+        },
+        "lead": {
+          "text": "보스는 판단 상태에서 의도를 고르고, 거리와 방향이 맞으면 공격합니다.",
+          "verbatim": true
+        },
+        "sectionPath": [
+          "6.2 의도(Intent) 기반 보스 판단",
+          "동작 방식"
+        ],
+        "points": [
+          {
+            "label": "의도(Intent)",
+            "text": "보스가 지금 쓰려고 고른 공격입니다.",
+            "verbatim": true
+          },
+          {
+            "label": "",
+            "text": "회전과 추격은 끝나도 곧바로 공격하지 않고 판단으로 돌아옵니다.",
+            "verbatim": true
+          },
+          {
+            "label": "",
+            "text": "추격 중에도 1초마다 돌아오기 때문에, 그 사이 거리가 바뀌면 고르는 공격도 바뀝니다.",
+            "verbatim": true
+          }
+        ],
+        "visuals": [
+          {
+            "kind": "mermaid",
+            "n": 1,
+            "fp": "flowchart LR"
+          }
+        ]
+      },
+      {
+        "key": "candidates",
+        "chapter": "core",
+        "layout": "code",
+        "tab": "구현",
+        "title": {
+          "text": "후보를 고르는 규칙",
+          "verbatim": true
+        },
+        "lead": null,
+        "sectionPath": [
+          "6.2 의도(Intent) 기반 보스 판단",
+          "후보를 고르는 규칙"
+        ],
+        "points": [
+          {
+            "label": "",
+            "text": "후보는 긴급 > 사거리 안 > 사거리 밖 순으로 좁힙니다.",
+            "verbatim": true
+          },
+          {
+            "label": "",
+            "text": "더 높은 등급이 하나라도 있으면 그 등급만 남깁니다.",
+            "verbatim": true
+          },
+          {
+            "label": "",
+            "text": "남은 후보 중 하나는 패턴마다 정한 가중치로 고릅니다.",
+            "verbatim": true
+          },
+          {
+            "label": "이유",
+            "text": "피하기 어렵거나 피해가 큰 공격이 일반 공격보다 덜 나오게 하기 위해서입니다.",
+            "verbatim": true
+          }
+        ],
+        "visuals": [
+          {
+            "kind": "code",
+            "n": 1,
+            "lines": [
+              7,
+              25
+            ],
+            "fp": "foreach (BossMeleePattern melee in melees)"
+          }
+        ]
+      },
+      {
+        "key": "pattern-fields",
+        "chapter": "core",
+        "layout": "code",
+        "tab": "구현",
+        "title": {
+          "text": "6.3 패턴 구조",
+          "verbatim": true
+        },
+        "lead": {
+          "text": "패턴마다 다른 값은 모두 부모 클래스의 인스펙터 필드로 둡니다.",
+          "verbatim": true
+        },
+        "sectionPath": [
+          "6.3 패턴 구조",
+          "동작 방식"
+        ],
+        "points": [
+          {
+            "label": "",
+            "text": "판단 상태는 이 값으로 만든 조건만 묻고, 패턴끼리는 서로를 비교하지 않습니다.",
+            "verbatim": true
+          },
+          {
+            "label": "",
+            "text": "괴수형 보스의 근접 패턴 12개가 이렇게 이름만 있는 클래스입니다.",
+            "verbatim": true
+          },
+          {
+            "label": "",
+            "text": "돌진처럼 단계가 있는 패턴만 진입·종료 함수를 재정의합니다.",
+            "verbatim": true
+          }
+        ],
+        "visuals": [
+          {
+            "kind": "code",
+            "n": 2,
+            "fp": "[field: SerializeField] public float MinDistance { get; priv"
+          }
+        ]
+      },
+      {
+        "key": "state-lookup",
+        "chapter": "core",
+        "layout": "full",
+        "tab": "선택",
+        "title": {
+          "text": "설계 선택: 상태를 무엇으로 찾을 것인가",
+          "verbatim": true
+        },
+        "lead": {
+          "text": "Enum 키도 고려했지만, 별도 키 없이 코드에서 `typeof`나 `GetType`으로 간단히 상태를 바꿀 수 있는 편의성을 골랐습니다.",
+          "verbatim": true
+        },
+        "sectionPath": [
+          "6.3 패턴 구조",
+          "설계 선택: 상태를 무엇으로 찾을 것인가"
+        ],
+        "points": [],
+        "visuals": [
+          {
+            "kind": "table",
+            "n": 1,
+            "fp": "|Enum 키로 찾기|타입으로 찾기 (선택)"
+          }
+        ]
+      },
+      {
+        "key": "kinematic-flow",
+        "chapter": "core",
+        "layout": "visual",
+        "tab": "흐름",
+        "title": {
+          "text": "6.4 Kinematic 이동과 경로 계산",
+          "verbatim": true
+        },
+        "lead": {
+          "text": "보스를 움직이는 길은 둘입니다. 상태가 요청하는 이동(추격·회전)과 애니메이션의 루트 모션입니다.",
+          "verbatim": true
+        },
+        "sectionPath": [
+          "6.4 Kinematic 이동과 경로 계산",
+          "동작 방식"
+        ],
+        "points": [
+          {
+            "label": "",
+            "text": "둘 다 위치를 직접 바꾸지 않고 `BossMovement`에 이동량을 요청만 하며, `BossMovement`가 이를 모아 물리 스텝(`FixedUpdate`)에서 한 번에 적용합니다.",
+            "verbatim": true
+          },
+          {
+            "label": "",
+            "text": "길 찾기(`BossPathfinder`)도 위치를 바꾸지 않고 \"지금 향할 점\"만 알려 줍니다.",
+            "verbatim": true
+          }
+        ],
+        "visuals": [
+          {
+            "kind": "mermaid",
+            "n": 1,
+            "fp": "flowchart LR"
+          }
+        ]
+      },
+      {
+        "key": "state-map",
+        "chapter": "core",
+        "layout": "code",
+        "tab": "구현",
+        "title": {
+          "text": "6.5 휴머노이드 보스",
+          "verbatim": true
+        },
+        "lead": {
+          "text": "타입으로 상태를 바꾸는 구조(6.3)를 유지하기 위해, 보스 본체가 시작할 때 부모 타입을 실제 자식 상태에 연결해 두었습니다.",
+          "verbatim": true
+        },
+        "sectionPath": [
+          "6.5 휴머노이드 보스",
+          "기반 재사용: 부모 타입으로 불러도 자식 상태로"
+        ],
+        "points": [
+          {
+            "label": "",
+            "text": "공용 패턴이 `typeof(BossIdleState)`를 부르면 휴머노이드에서는 `HumanoidIdleState`로 바뀌어 넘어갑니다.",
+            "verbatim": true
+          },
+          {
+            "label": "",
+            "text": "괴수형 보스처럼 `BossIdleState`를 그대로 쓰는 보스는 실제 타입이 먼저 등록되어 있으므로 바뀌지 않고 그대로 동작합니다.",
+            "verbatim": true
+          }
+        ],
+        "visuals": [
+          {
+            "kind": "code",
+            "n": 1,
+            "lines": [
+              2,
+              21
+            ],
+            "fp": "// 실제 타입을 먼저 다 넣고, 그 타입의 상태가 따로 없을 때만 부모 타입을 상속한 상태에 연결"
+          }
+        ]
+      },
+      {
+        "key": "hands-off",
+        "chapter": "collab",
+        "layout": "full",
+        "tab": "선택",
+        "title": {
+          "text": "7.1 남의 코드는 크게 고치지 않는다",
+          "verbatim": true
+        },
+        "lead": {
+          "text": "다른 파트 코드는 약간의 수정이나 API 한두 개를 여는 정도까지만 고치고, 나머지는 보스 쪽에서 해결",
+          "verbatim": true
+        },
+        "sectionPath": [
+          "7.1 남의 코드는 크게 고치지 않는다"
+        ],
+        "points": [
+          {
+            "label": "이유",
+            "text": "남의 코드에 함부로 손대는 것 자체가 감정적인 문제로 번질 수 있습니다.",
+            "verbatim": true
+          },
+          {
+            "label": "이유",
+            "text": "코드를 만든 사람의 설계 의도를 해칠 수 있습니다.",
+            "verbatim": true
+          },
+          {
+            "label": "결과",
+            "text": "원칙은 일부만 지켜졌습니다.",
+            "verbatim": true
+          }
+        ],
+        "visuals": [
+          {
+            "kind": "table",
+            "n": 2,
+            "fp": "|필요하면 상대 코드를 직접 고침|상대 코드는 크게 고치지 않음 (선택)"
+          }
+        ]
+      },
+      {
+        "key": "ts-rotate",
+        "chapter": "trouble",
+        "layout": "problem",
+        "tab": "문제 해결",
+        "title": {
+          "text": "8.1 Kinematic으로 바꾼 뒤 보스가 아주 조금씩만 회전함",
+          "verbatim": true
+        },
+        "lead": null,
+        "sectionPath": [
+          "8.1 Kinematic으로 바꾼 뒤 보스가 아주 조금씩만 회전함"
+        ],
+        "points": [
+          {
+            "label": "문제",
+            "text": "이동을 Kinematic으로 바꾼 뒤(6.4), 보스가 몸을 돌리긴 하지만 확연히 적은 양만 회전",
+            "verbatim": true
+          },
+          {
+            "label": "원인",
+            "text": "Interpolate가 켜진 Rigidbody는 보간된 값으로 transform을 덮어씀. 그래서 transform에 직접 준 회전이 보간값으로 되돌려짐",
+            "verbatim": true
+          },
+          {
+            "label": "해결",
+            "text": "이동·회전 요청을 쌓아 두고 `FixedUpdate`에서 `MovePosition`·`MoveRotation`으로 적용",
+            "verbatim": true
+          },
+          {
+            "label": "배운 점",
+            "text": "Interpolate가 transform을 어떻게 다루는지 이 문제로 알게 됨",
+            "verbatim": true
+          }
+        ],
+        "visuals": []
+      },
+      {
+        "key": "ts-anim-end",
+        "chapter": "trouble",
+        "layout": "problem",
+        "tab": "문제 해결",
+        "title": {
+          "text": "8.3 애니메이션이 끝났는데 보스가 멈춰 있음",
+          "verbatim": true
+        },
+        "lead": null,
+        "sectionPath": [
+          "8.3 애니메이션이 끝났는데 보스가 멈춰 있음"
+        ],
+        "points": [
+          {
+            "label": "문제",
+            "text": "공격 애니메이션이 끝나면 `OnAttackEnded` 신호로 판단 상태에 돌아가야 하는데, 신호가 오지 않아 패턴이 멈추는 경우가 있음",
+            "verbatim": true
+          },
+          {
+            "label": "원인",
+            "text": "진행률이 정확히 1을 거치지 않고 다음 상태로 넘어가면, 1에 걸어 둔 종료 신호가 나가지 않음",
+            "verbatim": true
+          },
+          {
+            "label": "해결",
+            "text": "상태가 끝날 때 아직 못 보낸 신호를 마저 보냄. 이미 보낸 신호는 건너뜀",
+            "verbatim": true
+          },
+          {
+            "label": "부작용 처리",
+            "text": "반응 패턴은 진입 후 0.2초 동안 신호를 무시",
+            "verbatim": true
+          }
+        ],
+        "visuals": [
+          {
+            "kind": "code",
+            "n": 1,
+            "fp": "public override void OnStateExit(Animator animator, Animator"
+          }
+        ]
+      },
+      {
+        "key": "ts-offmap",
+        "chapter": "trouble",
+        "layout": "problem",
+        "tab": "문제 해결",
+        "title": {
+          "text": "8.5 (미해결) 보스가 가끔 맵 밖으로 나감",
+          "verbatim": true
+        },
+        "lead": null,
+        "sectionPath": [
+          "8.5 (미해결) 보스가 가끔 맵 밖으로 나감"
+        ],
+        "points": [
+          {
+            "label": "문제",
+            "text": "보스가 아주 가끔 NavMesh 밖으로 나가 맵 밖을 걷는 문제를 발견. 주로 돌진 패턴에서 발생",
+            "verbatim": true
+          },
+          {
+            "label": "추정 원인",
+            "text": "터널링, 또는 순간이동이나 루트 모션으로 한 번 크게 벗어나면 NavMesh 경계 제한이 걸리지 않는 점",
+            "verbatim": false
+          },
+          {
+            "label": "대응",
+            "text": "NavMesh 밖에 일정 시간 넘게 머물면 가장 가까운 NavMesh 위로 되돌리는 방어 컴포넌트(`BossNavMeshGuard`)를 넣음",
+            "verbatim": true
+          }
+        ],
+        "visuals": []
+      }
+    ]
+  }
+}

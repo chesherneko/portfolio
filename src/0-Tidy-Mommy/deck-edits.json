@@ -1,0 +1,222 @@
+{
+  "schemaVersion": 1,
+  "pin": [
+    {
+      "key": "what",
+      "chapter": "overview",
+      "layout": "overview",
+      "tab": "개요",
+      "title": {
+        "text": "1.2 무엇을 만들었나",
+        "verbatim": true
+      },
+      "lead": {
+        "text": "엄마의 삼단정리는 계속 쌓이는 블록을 제한 시간 안에 정리하는 2D 액션 퍼즐입니다.",
+        "verbatim": true
+      },
+      "sectionPath": [
+        "1. 프로젝트 개요",
+        "1.2 무엇을 만들었나"
+      ],
+      "points": [
+        {
+          "label": "",
+          "text": "플레이어는 세 줄 가운데 한 줄의 맨 앞 블록을 골라 다른 줄의 맨 앞으로 옮깁니다.",
+          "verbatim": true
+        },
+        {
+          "label": "",
+          "text": "옮긴 줄의 앞쪽 세 블록이 같은 색이면 사라지고, 점수와 남은 시간이 늘어납니다.",
+          "verbatim": true
+        },
+        {
+          "label": "",
+          "text": "블록은 시간이 지나면 줄 뒤쪽에 보충되며, 한 줄이 꽉 차거나 60초가 다 지나면 게임이 끝납니다.",
+          "verbatim": true
+        }
+      ],
+      "visuals": [
+        {
+          "kind": "image",
+          "src": "images/gameplay.gif",
+          "w": 300,
+          "h": 536,
+          "caption": {
+            "text": "맨 앞 블록을 옮겨 같은 색 세 개를 맞추는 장면",
+            "verbatim": true
+          }
+        }
+      ],
+      "from": {
+        "key": "what",
+        "sectionPath": [
+          "1. 프로젝트 개요",
+          "1.2 무엇을 만들었나"
+        ],
+        "sig": [
+          "1.2 무엇을 만들었나|image|images/gameplay.gif|1",
+          "1.2 무엇을 만들었나|mermaid|1|flowchart LR"
+        ]
+      },
+      "group": "split-play-loop"
+    },
+    {
+      "key": "why",
+      "chapter": "overview",
+      "layout": "visual",
+      "tab": "개요",
+      "title": {
+        "text": "1.3 왜 만들었나",
+        "verbatim": true
+      },
+      "lead": null,
+      "sectionPath": [
+        "1. 프로젝트 개요",
+        "1.3 왜 만들었나"
+      ],
+      "points": [
+        {
+          "label": "",
+          "text": "플레이어가 블록 배치를 빠르게 파악하고, 연속으로 맞춰 피버를 터뜨리는 경험을 하길 바랐습니다.",
+          "verbatim": true
+        },
+        {
+          "label": "",
+          "text": "그래서 블록이 한눈에 들어오도록 화면 구성은 단순하게 두고, 블록이 나오는 방식으로 난이도를 조절하는 데 집중했습니다",
+          "verbatim": true
+        }
+      ],
+      "visuals": [
+        {
+          "kind": "mermaid",
+          "n": 1,
+          "fp": "flowchart LR",
+          "sectionPath": [
+            "1. 프로젝트 개요",
+            "1.2 무엇을 만들었나"
+          ],
+          "caption": {
+            "text": "핵심 플레이 루프",
+            "verbatim": true
+          }
+        }
+      ],
+      "from": {
+        "key": "why",
+        "sectionPath": [
+          "1. 프로젝트 개요",
+          "1.3 왜 만들었나"
+        ],
+        "sig": []
+      },
+      "group": "merge-why"
+    },
+    {
+      "key": "problems",
+      "chapter": "goals",
+      "layout": "full",
+      "tab": "개요",
+      "title": {
+        "text": "설계 목표와 풀어야 했던 문제",
+        "verbatim": true
+      },
+      "lead": null,
+      "sectionPath": [
+        "2. 설계 목표와 풀어야 했던 문제",
+        "2.2 풀어야 했던 문제"
+      ],
+      "points": [],
+      "visuals": [
+        {
+          "kind": "table",
+          "n": 1,
+          "fp": "순위|목표",
+          "sectionPath": [
+            "2. 설계 목표와 풀어야 했던 문제",
+            "2.1 설계 목표"
+          ]
+        },
+        {
+          "kind": "table",
+          "n": 1,
+          "fp": "문제|상황|다루는 절"
+        }
+      ],
+      "from": {
+        "key": "problems",
+        "sectionPath": [
+          "2. 설계 목표와 풀어야 했던 문제",
+          "2.2 풀어야 했던 문제"
+        ],
+        "sig": [
+          "2.2 풀어야 했던 문제|table|1|문제|상황|다루는 절"
+        ]
+      }
+    },
+    {
+      "key": "color-weight",
+      "chapter": "core",
+      "layout": "overview",
+      "tab": "개요",
+      "title": {
+        "text": "4.1 화면 블록 수에 따른 색 가중치",
+        "verbatim": true
+      },
+      "lead": null,
+      "sectionPath": [
+        "4. 핵심 기능",
+        "4.1 화면 블록 수에 따른 색 가중치"
+      ],
+      "points": [
+        {
+          "label": "목적",
+          "text": "색 종류가 늘어도 급격히 어려워지지 않고, 쉽게 시작해 점점 어려워지는 난이도",
+          "verbatim": true
+        },
+        {
+          "label": "방식",
+          "text": "화면에 많은 색일수록 잘 나오게 가중치를 두고, 레벨이 오르면 가중치의 지수를 낮춤",
+          "verbatim": true
+        },
+        {
+          "label": "결과",
+          "text": "레벨 5까지는 색이 늘어도 같은 색이 잘 모이고, 레벨 8에서 모든 색이 고르게, 레벨 9부터는 적은 색이 더 잘 나옴",
+          "verbatim": true
+        }
+      ],
+      "visuals": [
+        {
+          "kind": "image",
+          "src": "images/level_low.png",
+          "w": 300,
+          "h": 536,
+          "caption": {
+            "text": "초반 (색 2가지)",
+            "verbatim": true
+          }
+        },
+        {
+          "kind": "image",
+          "src": "images/level_high.png",
+          "w": 300,
+          "h": 536,
+          "caption": {
+            "text": "후반 (색 6가지)",
+            "verbatim": true
+          }
+        }
+      ],
+      "from": {
+        "key": "color-weight",
+        "sectionPath": [
+          "4. 핵심 기능",
+          "4.1 화면 블록 수에 따른 색 가중치"
+        ],
+        "sig": [
+          "4.1 화면 블록 수에 따른 색 가중치|table|2|초반 (색 2가지)|후반 (색 6가지)"
+        ]
+      }
+    }
+  ],
+  "hide": []
+}

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-25",
+  "generatedAt": "2026-11-15",
   "profile": {
     "name": "정태현",
     "nameEn": "Jung Taehyeon",
@@ -18,7 +18,7 @@
       "name": "Unity",
       "evidence": [
         {
-          "text": "Instantiate/Destroy 대신 씬에 미리 둔 블록 36개를 `Queue`로 재사용",
+          "text": "Instantiate/Destroy 대신 씬에 미리 둔 블록 36개를 큐로 재사용",
           "project": "0-Tidy-Mommy"
         },
         {
@@ -28,6 +28,10 @@
         {
           "text": "보드 빌더로 칸 배치를 `Board.json`에 저장하고 게임 시작 시 보드 생성",
           "project": "2-Yggdrasil"
+        },
+        {
+          "text": "NavMesh로 경로만 계산하고 루트 모션을 살린 Kinematic 보스 이동",
+          "project": "3-Project-Oddity"
         }
       ]
     },
@@ -45,6 +49,10 @@
         {
           "text": "제네릭 `DataTable<DTO, Def>`로 TSV 표 읽기를 하나로 통합",
           "project": "2-Yggdrasil"
+        },
+        {
+          "text": "`typeof`·`GetType`으로 상태를 찾아 Enum 키 없이 패턴 상태 전환",
+          "project": "3-Project-Oddity"
         }
       ]
     },
@@ -62,6 +70,10 @@
         {
           "text": "Strategy + Factory로 칸 효과 7종을 `ITileEffect` 클래스로 분리",
           "project": "2-Yggdrasil"
+        },
+        {
+          "text": "상태 기계(`MonoBehaviourFSM`)와 전투 이벤트 큐로 보스 AI·전투 기반 설계",
+          "project": "3-Project-Oddity"
         }
       ]
     }
@@ -69,6 +81,7 @@
   "projects": [
     "0-Tidy-Mommy",
     "1-action-platformer",
-    "2-Yggdrasil"
+    "2-Yggdrasil",
+    "3-Project-Oddity"
   ]
 }
