@@ -208,6 +208,11 @@ table.kv td.role { color: var(--accent-ink); font-weight: 800; }
 .dk-side.flip { grid-template-columns: minmax(0, 1fr) minmax(0, var(--vw, 1.4fr)); }
 .dk-side.flip > .vis { order: 2; }
 .pf-sizing .dk-side { align-items: stretch; grid-template-rows: minmax(0, 1fr); }
+/* 카드 칸 아래 시각 자료(place: "cards"): 오른쪽 칸 = 카드 위, 표·그림 아래 */
+.side-col { display: flex; flex-direction: column; gap: 16px; min-width: 0; min-height: 0; justify-content: center; }
+.pf-sizing .side-col { justify-content: flex-start; }
+.pf-sizing .side-col > .vis-aside { flex: 1 1 auto; }
+.side-col > .vis-aside { min-height: 0; }
 .dk-stack { grid-template-rows: auto auto; gap: 20px; }
 .pf-sizing .dk-stack { grid-template-rows: minmax(0, 1fr) auto; }
 .dk-text { align-content: center; }
@@ -270,6 +275,41 @@ table.md-table img { max-height: 120px; max-width: 100%; height: auto; }   /* wi
 .flow.col .fstep { display: grid; grid-template-columns: 86px minmax(0, 1fr); gap: 12px; align-items: start; padding: 11px 14px; }
 .flow.col .fstep .labelchip { justify-content: center; }
 .flow.col .fstep > p:only-child { grid-column: 1 / -1; }   /* 라벨 없는 단계: 86px 라벨 칸에 글이 갇혀 한 낱말씩 줄바꿈되지 않게 폭 전체 사용 */
+/* 사진 넘기기(gallery): 그림을 한 칸에 겹쳐 두고 .on 하나만 보임. 아래 ‹ ● ● ● › */
+.dk.gal { grid-template-rows: auto auto auto; gap: 14px; }
+.pf-sizing .dk.gal { grid-template-rows: minmax(0, 1fr) auto auto; }
+.gal-main { display: flex; flex-direction: column; gap: 12px; min-width: 0; min-height: 0; }
+.pf-sizing .gal-main > .gal-stage { flex: 1 1 auto; }
+.gal-split { display: grid; grid-template-columns: minmax(0, var(--vw, 1fr)) minmax(0, 1.6fr); gap: 28px; align-items: center; min-height: 0; }
+.pf-sizing .gal-split { align-items: stretch; grid-template-rows: minmax(0, 1fr); }
+.gal-split > .vis table :is(th, td):first-child { white-space: nowrap; }   /* 왼쪽 칸이 좁아도 표 머리 칸(목적·방식…)이 한 글자씩 꺾이지 않게 */
+.gal-stage { display: grid; min-height: 0; min-width: 0; }
+.gal-stage > .gal-item { grid-area: 1 / 1; visibility: hidden; }
+.gal-stage > .gal-item.on { visibility: inherit; }                    /* visible이면 숨겨 둔 다른 장면(덱 보기) 위로 새어 나옴 → 장면의 보임을 따름 */
+.gal-nav { display: flex; justify-content: center; align-items: center; gap: 12px; }
+.gal-btn { border: 0; background: none; padding: 0; cursor: pointer; font: inherit; color: var(--muted); }
+.gal-arrow { width: 36px; height: 36px; border-radius: 50%; font-size: 26px; line-height: 1; display: flex; align-items: center; justify-content: center; }
+.gal-arrow:hover { background: var(--accent-soft); color: var(--accent-ink); }
+.gal-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--line); }
+.gal-dot.on { background: var(--accent); }
+.gal-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+/* 왼쪽 표와 묶인 사진 넘기기: 보이는 그림의 행 강조(크기가 바뀌지 않게 배경·안쪽 그림자만), 행을 누르면 그 그림으로.
+   화면 전용(PDF는 그림이 모두 나오므로 강조 없음). PPTX는 화면 상태를 재므로 슬라이드마다 그 그림의 행이 강조됨 */
+@media screen {
+  .dk.gal[data-gal-link] tr.gal-row { cursor: pointer; }
+  .dk.gal[data-gal-link] tr.gal-row > td { background: transparent; color: var(--muted); transition: background-color .2s ease, color .2s ease, box-shadow .2s ease; }
+  .dk.gal[data-gal-link] tr.gal-row:hover > td { color: var(--ink); }
+  .dk.gal[data-gal-link] tr.gal-row.on > td { background: var(--accent-soft); color: var(--accent-ink); }
+  .dk.gal[data-gal-link] tr.gal-row.on > td:first-child { box-shadow: inset 3px 0 0 var(--accent); }   /* 왼쪽 막대 하나로 "지금 보는 행" */
+}
+@media print {
+  .gal-nav { display: none !important; }
+  .gal-stage { display: flex !important; gap: 16px; align-items: center; }
+  .gal-stage > .gal-item { visibility: inherit !important; flex: 1 1 0; min-width: 0; }
+  .gal-stage .vbox { width: 100% !important; }
+  .gal-stage .vmedia { width: 100% !important; height: auto !important; }
+  .gal-stage .vbox[data-kind="image"] .vmedia img { height: auto !important; max-height: 440px; }
+}
 .scr-row { display: grid; grid-template-columns: repeat(var(--n, 3), minmax(0, 1fr)); gap: 22px; }
 .pf-sizing .scr-row { align-items: stretch; }
 .pf-vband { margin: 0; padding: 12px 14px; border-left: 4px solid #B42318; background: #FDECEA; color: #7A1A12; font-size: 13px; line-height: 1.45; border-radius: 8px; min-width: 260px; }
@@ -284,6 +324,32 @@ table.md-table img { max-height: 120px; max-width: 100%; height: auto; }   /* wi
 .ch-t { margin-top: 10px !important; font-size: 50px; font-weight: 800; line-height: 1.15; letter-spacing: -.03em; color: var(--ink); }
 .t-CH .dotrule { margin-top: 22px; max-width: 360px; }
 .ch-list .toc-list a { cursor: pointer; }
+/* 장면이 많은 장 표지: 제목을 위로 올리고 목록을 전체 폭 여러 단으로(위→아래로 채우고 다음 단) */
+.ch-mid:has(> .ch-list.cols) { grid-template-columns: minmax(0, 1fr); gap: 14px; align-items: start; align-content: start; }
+.ch-mid:has(> .ch-list.cols) .ch-t { font-size: 34px; }
+.ch-list.cols .toc-list { display: block; column-gap: 24px; }
+.ch-list.cols2 .toc-list { columns: 2; }
+.ch-list.cols3 .toc-list { columns: 3; }
+.ch-list.cols .toc-list li { break-inside: avoid; }
+.ch-list.cols .toc-list a { padding: 3px 0; gap: 8px; }
+.ch-list.cols .toc-list .d { display: none; }
+.ch-list.cols .toc-list .t { line-height: 1.25; }
+/* 장면이 많은 장 표지: 절(6.1·6.2…)마다 한 줄 — 다른 장 표지 목록(.toc-list.sub)과 같은 모양(번호 · 굵은 검정 제목 · 파란 쪽 번호),
+   설명 줄(.d) 자리에 그 절 안의 장면 이름을 회색 작은 글씨로 · 구분해 나열(누르면 그 장면) */
+.toc-groups { list-style: none; margin: 0; padding: 0; column-gap: 32px; }
+.ch-list.grp2 .toc-groups { columns: 2; }
+.ch-list.grp3 .toc-groups { columns: 3; }
+.toc-groups > li { break-inside: avoid; padding: 7px 0; border-bottom: 1px solid var(--line); }
+.tg-h { display: flex; align-items: center; gap: 12px; text-decoration: none; cursor: pointer; }
+.tg-h .n { flex: none; width: 26px; height: 26px; border-radius: 9px; background: var(--accent-soft); color: var(--accent-ink);
+           display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 800; }
+.tg-h .tx { flex: 1; min-width: 0; }
+.tg-h .t { display: block; font-size: 15px; font-weight: 700; line-height: 1.3; color: var(--ink); }   /* 링크 기본색(.pf-scene a)을 덮어 검정 */
+.tg-h .pg { flex: none; font-family: var(--mono); font-size: 15px; color: var(--accent-ink); white-space: pre; }
+.tg-subs { margin: 2px 0 0 38px; font-size: 13px; line-height: 1.5; color: var(--muted); }
+.tg-subs .tg-s { color: var(--muted); text-decoration: none; cursor: pointer; }   /* .pf-scene a(파랑)보다 앞서게 */
+.tg-sep { color: var(--line-strong, #B8BCCB); }   /* 구분점은 글자로 넣음(복사해도 · 가 남음) */
+.tg-subs .tg-s:hover, .tg-h:hover .t { color: var(--accent-ink); }
 /* 장면이 적은 장 표지(넉넉한 변형, 결정 I7): 목차 크기 목록 + 장면마다 도입 한두 줄 */
 .ch-list.roomy .toc-list a { align-items: flex-start; padding: 16px 0; }
 .ch-list.roomy .toc-list .pg { padding-top: 8px; }

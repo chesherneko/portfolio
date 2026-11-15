@@ -39,10 +39,10 @@ ROOT = Path(__file__).resolve().parents[3]
 EDITS = 'deck-edits.json'
 VERSION = 1
 KEY_RE = re.compile(r'^[a-z][a-z0-9-]{1,31}$')
-LAYOUTS = ('overview', 'visual', 'code', 'full', 'screens', 'problem')
+LAYOUTS = ('overview', 'visual', 'code', 'full', 'screens', 'gallery', 'problem')
 TABS = ('개요', '구조', '흐름', '구현', '선택', '문제 해결', '결과', '')
 KINDS = ('mermaid', 'code', 'table', 'image')
-SLIDE_FIELDS = ('key', 'chapter', 'layout', 'tab', 'title', 'lead', 'sectionPath', 'points', 'visuals')
+SLIDE_FIELDS = ('key', 'chapter', 'layout', 'tab', 'title', 'lead', 'sectionPath', 'points', 'visuals', 'sideRatio')   # sideRatio(이 레포): gallery 왼쪽 표 칸 폭(fr, 사진 칸 1.6 기준)
 KIND_KO = {'mermaid': '다이어그램', 'code': '코드', 'table': '표', 'image': '그림'}
 
 for _s in (sys.stdout, sys.stderr):                                # Claude가 읽는 파이프는 UTF-8로(한글 깨짐 방지)
@@ -432,8 +432,8 @@ def validate(p, chapters, doc):
         errs.append('points는 글 조각(label·text·verbatim) 0~4개여야 함(text가 비면 label 필요)')
         pts = []
     vis = p.get('visuals') if p.get('visuals') is not None else []
-    if not isinstance(vis, list) or len(vis) > 3:
-        errs.append('visuals는 0~3개여야 함')
+    if not isinstance(vis, list) or len(vis) > (10 if lay == 'gallery' else 3):
+        errs.append('visuals는 0~3개여야 함(gallery는 그림 8개 + 왼쪽 칸 2개까지)')
         vis = []
     for i, v in enumerate(vis):
         if not isinstance(v, dict) or v.get('kind') not in KINDS:
@@ -459,6 +459,10 @@ def validate(p, chapters, doc):
         errs.append('layout "%s"에는 시각 자료가 1개 이상 있어야 함' % lay)
     if lay == 'screens' and not (2 <= len(vis) <= 3 and all(isinstance(v, dict) and v.get('kind') == 'image' for v in vis)):
         errs.append('layout "screens"에는 그림이 2~3개 있어야 함')
+    if lay == 'gallery':
+        imgs = [v for v in vis if isinstance(v, dict) and v.get('kind') == 'image']
+        if not (2 <= len(imgs) <= 8 and len(vis) - len(imgs) <= 2):
+            errs.append('layout "gallery"에는 그림이 2~8개 있어야 함(그림이 아닌 표·다이어그램 등은 왼쪽 칸에 2개까지)')
     if errs or doc is None:
         return errs, warns, pieces, cross
 
@@ -684,9 +688,6 @@ def apply_edits(data, edits, doc, rep):
             rep.add('권장', '포트폴리오 문서 기능 "%s"의 [발표 덱에서 보기]가 연결된 장면이 빠졌습니다 → %s 이어집니다' % (hl.get('title', sec), where))
     if applied or removed:
         rep.add('참고', '고친 장면 %d개 · 숨긴 장면 %d개를 반영했습니다' % (len(applied), len(removed)))
-    n0, n1 = scene_count(chapters, base, data), scene_count(chapters, S, data)
-    if n1 > 30 and n1 > n0:
-        rep.add('참고', '장면이 약 %d장이 됩니다(권장 15~30장, 고치기 전 약 %d장). 코드가 길면 더 늘 수 있습니다' % (n1, n0))
     return S, base
 
 

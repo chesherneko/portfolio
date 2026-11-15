@@ -30,6 +30,7 @@
 | 코드 + 설명 `code` | `d-<key>`(나뉘면 `-2`…) | ⑤ 코드+설명 2단 | 3. 핵심 기능 | 코드 **20줄 안팎** + 왜(`points`). 넘으면 "계속" 장면, 참고 `long-code` | `visuals(kind: code, lines)` |
 | 큰 그림·표 한 장 가득 `full` | `d-<key>` | ④ · ⑥ 비교 | 2. 구조 · 4. 고민과 선택 | 큰 다이어그램, 비교 표, As-Is/To-Be 표 | `visuals(kind: mermaid·table·image)` |
 | 화면 모음 `screens` | `d-<key>` | (Part 1 §3.2 스크린샷) | 3. 핵심 기능 | 스크린샷·GIF 2~3열 + 캡션 | `visuals(kind: image)` 2~3개 |
+| 사진 넘기기 `gallery` | `d-<key>` | (이 레포에서 더함) | 아무 장 | 그림 한 장을 크게 + 아래 ‹ ● ● › 넘기기 + 캡션. 표 등은 왼쪽 칸에 고정(표 행 수 = 그림 수면 행과 그림이 서로 따라 움직임). PDF는 나란히, PPTX는 그림마다 슬라이드 | `visuals(kind: image)` 2~8개 + 왼쪽 칸 2개까지 |
 | 문제 해결 `problem` | `d-<key>` | (Part 1 §3.2 이슈 해결) | 5. 결과 (트러블슈팅) | 문제 → 원인 → 해결 → 결과 + 근거 그림 | `points`, `visuals` |
 | 회고 (고정) | `retro`(나뉘면 `retro-2`) | ⑧ 회고 | 5. 결과 및 배운 점 | 달성 · 아쉬움 · 계획 | `retro` |
 | 맺음 (고정) | `end` | ⑧ 회고 | 문서 끝 | 마무리 + 상세 문서 링크 | `links` |

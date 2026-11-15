@@ -55,11 +55,12 @@
     return { frag, headings, md, index: null };
   }
 
-  // 제목마다 그 절 범위(다음 제목 전까지, 수준 무관)의 블록 목록. 표 안 이미지는 표째로만
+  // 제목마다 그 절 범위(다음 제목 전까지, 수준 무관)의 블록 목록. 표 안 이미지는 표째로 세고, 따로 tableImage에도 둠
+  //   (이 레포: 덱이 그림 파일 이름으로 표 칸 안의 그림도 꺼내 쓸 수 있게 — 원본 문서는 표 그대로 두기 위해)
   function index(P) {
     if (P.index) return P.index;
     const map = new Map();
-    const bucket = () => ({ mermaid: [], code: [], table: [], image: [] });
+    const bucket = () => ({ mermaid: [], code: [], table: [], image: [], tableImage: [] });
     let cur = bucket();
     map.set(null, cur);
     const byEl = new Map(P.headings.map((h) => [h.el, h]));
@@ -70,7 +71,7 @@
         const code = el.querySelector(':scope > code');
         if (code && /\blanguage-mermaid\b/.test(code.className)) cur.mermaid.push(el); else cur.code.push(el);
       } else if (el.tagName === 'TABLE') cur.table.push(el);
-      else if (el.tagName === 'IMG' && !el.closest('table')) cur.image.push(el);
+      else if (el.tagName === 'IMG') (el.closest('table') ? cur.tableImage : cur.image).push(el);
     }
     return (P.index = map);
   }
@@ -114,7 +115,9 @@
     if (!b || !b[kind]) return { status: 'missing', heading: h, detail: `${kind} 종류 없음` };
     let list = b[kind];
     if (kind === 'image') {
-      list = list.filter((i) => normSrc(i.dataset.mdSrc || i.getAttribute('src')) === normSrc(ref.src));
+      const same = (i) => normSrc(i.dataset.mdSrc || i.getAttribute('src')) === normSrc(ref.src);
+      list = list.filter(same);
+      if (!list.length) list = b.tableImage.filter(same);                // 표 밖에 없으면 표 칸 안의 같은 그림
       if (list.length > 1 && !ref.n) return { status: 'ambiguous', heading: h, detail: `이미지 ${ref.src} ${list.length}곳` };
     }
     const el = list[(ref.n || 1) - 1];

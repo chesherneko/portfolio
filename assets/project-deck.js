@@ -168,7 +168,9 @@
       const all = codeLines(v.el).length, [a, b] = chunk;
       const lang = LANG[langOf(v.el)] || '';
       const part = a > 1 || b < all ? PF.t('deck.code-lines', { a, b, all }) : '';
-      return `<figure class="vbox" data-kind="code"><div class="vmedia"><div class="fit-in"><pre>${codeHtml(v.el, a, b)}</pre></div></div>${cap([lang, part].filter(Boolean).map(esc).join(' · '))}${warn}</figure>`;
+      // 코드 아래 캡션은 데이터에 직접 적은 caption(원문 글 조각)만. 언어 이름·줄 범위·코드에서 뽑은 이름은 정보가 없어 넣지 않음(이 레포의 결정)
+      void lang; void part;
+      return `<figure class="vbox" data-kind="code"><div class="vmedia"><div class="fit-in"><pre>${codeHtml(v.el, a, b)}</pre></div></div>${cap(v.ref.caption?.text ? inline(v.ref.caption.text) : '')}${warn}</figure>`;
     }
     if (k === 'table') {
       const t = v.el.cloneNode(true);
@@ -186,7 +188,7 @@
 
   // ── 장면 틀(deck.slides[].layout) ──
   const txt = (t) => (t && typeof t === 'object' ? t.text : t) || '';
-  const ncards = (points, { row = false, num = true, two = false } = {}) => (points.length
+  const ncards = (points, { row = false, num = true, two = false } = {}) => (num = num && points.length > 1, points.length   // 카드가 하나면 번호(1) 없음
     ? `<div class="cards${row ? ' row' : ''}${two ? ' two' : ''}" style="--n:${Math.min(points.length, 4)}">${points.map((pt, i) =>
       `<div class="ncard${num ? '' : ' nonum'}">${num ? `<span class="num" aria-hidden="true">${i + 1}</span>` : ''}<div>${pt.label ? `<span class="lb">${esc(PF.label(pt.label))}</span>` : ''}<p>${inline(txt(pt))}</p></div></div>`).join('')}</div>` : '');
   const FLOW = { '문제': '', '원인': '', '해결': 'accent', '결과': 'ok', '배운 점': '' };   // data 값 → 칩 색(보이는 글자만 PF.label로 바뀜)
@@ -198,7 +200,22 @@
     const tight = variant.tight ? ' tight' : '';
     if (!vs.length) {
       if (sl.layout === 'problem') return `<div class="dk dk-text${tight}">${flowHtml(points, variant.stack || variant.tight ? 'row' : 'col')}</div>`;
-      return `<div class="dk dk-text${tight}">${ncards(points, { two: points.length >= 3 && !variant.stack, num: sl.layout !== 'overview' })}</div>`;
+      return `<div class="dk dk-text${tight}">${ncards(points, { two: points.length >= 2 && !variant.stack, num: sl.layout !== 'overview' })}</div>`;   // 카드 2개도 나란히(위아래로 길게 쌓이지 않게)
+    }
+    // 사진 넘기기(gallery): 그림을 한 자리에 겹쳐 두고 한 장만 보임. 아래 ‹ ● ● ● ›로 넘김(화면 전용, data-pf-ui).
+    //   인쇄(PDF)는 모두 나란히(deck-theme.css @media print), PPTX는 그림마다 슬라이드 하나(deck-pptx.js)
+    //   그림이 아닌 시각 자료(표 등)는 왼쪽 칸에 고정으로 두고, 오른쪽에서 그림만 넘김
+    if (sl.layout === 'gallery') {
+      const isImg = (h) => /data-kind="image"/.test(h);
+      const pics = vs.filter(isImg), side = vs.filter((h) => !isImg(h));
+      const n = pics.length;
+      const items = pics.map((v, i) => `<div class="vis gal-item${i ? '' : ' on'}" data-gi="${i}" data-pf-allow-hidden>${v}</div>`).join('');
+      const nav = n > 1 ? `<div class="gal-nav" data-pf-ui="gallery"><button type="button" class="gal-btn gal-arrow" data-go="-1" aria-label="이전 그림">‹</button>${
+        pics.map((_, i) => `<button type="button" class="gal-btn gal-dot${i ? '' : ' on'}" data-go-to="${i}" aria-label="${i + 1}번째 그림"${i ? '' : ' aria-current="true"'}></button>`).join('')
+      }<button type="button" class="gal-btn gal-arrow" data-go="1" aria-label="다음 그림">›</button></div>` : '';
+      const main = `<div class="gal-main"><div class="gal-stage">${items}</div>${nav}</div>`;
+      const body = side.length ? `<div class="gal-split" style="--vw:${variant.vw || 1}fr">${vis(side)}${main}</div>` : main;
+      return `<div class="dk gal${side.length ? ' has-side' : ''}${tight}">${body}${ncards(points, { row: true, num: false })}</div>`;
     }
     if (sl.layout === 'screens') {
       return `<div class="dk scr-row${tight}" style="--n:${vs.length}">${vs.map((v, i) => `<div class="fe-card">${vis([v])}${points[i] ? `<p class="fe-k">${esc(PF.t('en.feature'))} ${String(i + 1).padStart(2, '0')}</p>${points[i].label ? `<h3>${esc(PF.label(points[i].label))}</h3>` : ''}${txt(points[i]) ? `<p>${inline(txt(points[i]))}</p>` : ''}` : ''}</div>`).join('')}</div>`;
@@ -207,9 +224,27 @@
       if (variant.stack || !points.length) return `<div class="dk dk-stack${tight}">${vis(vs)}${points.length ? flowHtml(points, 'row') : ''}</div>`;
       return `<div class="dk dk-side flip${tight}" style="--vw:${variant.vw}fr">${vis(vs)}${flowHtml(points, 'col')}</div>`;
     }
+    // 카드 칸 아래 시각 자료(place: "cards"): 왼쪽 = 나머지 시각 자료, 오른쪽 = 카드 → 그 아래 시각 자료
+    if (variant.places) {
+      const main = vs.filter((_, i) => variant.places[i] !== 'cards'), side = vs.filter((_, i) => variant.places[i] === 'cards');
+      return `<div class="dk dk-side${tight}" style="--vw:${variant.vw}fr">${vis(main)}<div class="side-col">${ncards(points, { num: true })}<div class="vis vis-aside">${side.join('')}</div></div></div>`;
+    }
     // 요점이 없으면(나눈 장면 등) 옆 칸이 비지 않게 시각 자료를 가로 전체로
     if (sl.layout === 'full' || variant.stack || !points.length) return `<div class="dk dk-stack${tight}">${vis(vs)}${ncards(points, { row: true, num: sl.layout !== 'full' })}</div>`;
     return `<div class="dk dk-side${tight}" style="--vw:${variant.vw}fr">${vis(vs)}${ncards(points, { num: true })}</div>`;
+  }
+
+  // 사진 넘기기 + 왼쪽 표: 표가 하나이고 본문 행 수 = 그림 수이면 행 i ↔ 그림 i로 묶음(보이는 그림의 행을 강조, 행을 누르면 그 그림으로)
+  function galLink(s) {
+    const dk = s.querySelector('.dk.gal.has-side');
+    if (!dk) return;
+    const n = dk.querySelectorAll('.gal-stage > .gal-item').length;
+    const tbs = dk.querySelectorAll('.gal-split > .vis .vbox[data-kind="table"]');
+    if (tbs.length !== 1 || n < 2) return;
+    const rows = [...tbs[0].querySelectorAll('tbody tr')];
+    if (rows.length !== n) return;
+    rows.forEach((r, i) => { r.classList.add('gal-row'); r.dataset.gi = String(i); r.classList.toggle('on', i === 0); });
+    dk.dataset.galLink = '1';
   }
 
   // 장면 하나(나뉠 수 있음): 코드 줄 범위 20줄 단위, 표는 넘치면 행을 반으로
@@ -238,14 +273,25 @@
   }
   function fitSlide(sl, vis, sid, part, codeChunk, meta, tableChunk = null, depth = 0) {
     const vs = vis.map((v) => vboxHtml(v, v.ref.kind === 'code' ? codeChunk : v.ref.kind === 'table' ? tableChunk : null));
-    const V = sl.layout === 'full' || sl.layout === 'screens' ? [{}, { tight: true }]
+    const galSide = sl.layout === 'gallery' && vis.some((v) => v.ref.kind !== 'image');
+    // 왼쪽 표 칸 : 오른쪽 사진 칸(1.6) 비율. 세로로 긴 그림(인스펙터 캡처 등)은 사진 칸이 넓어도 커지지 않으니 표 칸을 넓게 먼저
+    const tall = vis.filter((v) => v.ref.kind === 'image' && v.d).every((v) => v.d.h > v.d.w);
+    // 장면 고치기에서 표 칸 폭을 정했으면(sl.sideRatio = 왼쪽 칸 fr, 사진 칸은 1.6) 그 값만 씀
+    const fixed = galSide && Number(sl.sideRatio) > 0 ? Number(sl.sideRatio) : 0;
+    const V = fixed ? [{ vw: fixed }, { vw: fixed, tight: true }] : galSide ? (tall ? [{ vw: 1.8 }, { vw: 1.5 }, { vw: 1.2 }, { vw: 1.5, tight: true }] : [{ vw: 1 }, { vw: 0.8 }, { vw: 1.25 }, { vw: 1, tight: true }])
+      : sl.layout === 'full' || sl.layout === 'screens' || sl.layout === 'gallery' ? [{}, { tight: true }]
       : [{ vw: 1.4 }, { vw: 1.7 }, { vw: 1.15 }, { vw: 1.4, tight: true }, { stack: true }, { stack: true, tight: true }];
+    // place: "cards" = 그 시각 자료를 카드 칸(오른쪽) 아래에 둠 — 옆 배치 변형만 씀(위아래로 쌓으면 의미가 없음)
+    const places = vis.map((v) => v.ref.place);
+    const aside = places.includes('cards') && !['full', 'screens', 'gallery'].includes(sl.layout);
+    if (aside) V.splice(0, V.length, { vw: 1.4 }, { vw: 1.15 }, { vw: 1 }, { vw: 1.4, tight: true }, { vw: 1.15, tight: true });
     const build = (v) => {
       const s = PF.scene({ id: sid, tpl: 'D', eyebrow: meta.chapter, rlabel: meta.rlabel, title: txt(sl.title) || meta.chapter, sub: part, lead: part && part !== `1/${part.split('/')[1]}` ? '' : txt(sl.lead), foot: meta.foot, sec: meta.chapter, group: meta.chapter, stitle: txt(sl.title) });
       s.classList.add(`l-${sl.layout || 'visual'}`);
       if (meta.err) s.dataset.pfErr = meta.err;
       if (sl.edited) s.dataset.pfEdited = '1';                       // 장면 고치기로 고친 장면(미리보기 개요에 ✎)
-      PF.body(s).innerHTML = `<div class="pf-fill">${bodyHtml(sl, vs, v)}</div>`;
+      PF.body(s).innerHTML = `<div class="pf-fill">${bodyHtml(sl, vs, aside ? { ...v, places } : v)}</div>`;
+      galLink(s);
       if (meta.auto) s.querySelector('.pf-foot > span').insertAdjacentHTML('beforeend', '<span class="pf-autoband" data-pf-ui="note">예전 데이터로 자동 구성 — /portfolio-build를 다시 실행하면 발표 덱이 됩니다</span>');
       return PF.fitVisuals(s);
     };
@@ -318,7 +364,6 @@
     const all = [cover, toc, ...chapterScenes, ...retro, end];
     PF.noteFill(all, { fill: !auto });                                  // 예전 데이터 자동 구성은 채움률 참고를 내지 않음(다시 빌드 안내 1건만)
     if (auto) PF.note('cover', 'auto-mode', 1, '예전 데이터로 자동 구성(다시 빌드하면 발표 덱)');
-    else if (all.length > 30) PF.note('cover', 'many-scenes', all.length, `장면 ${all.length}장(권장 15~30장)`);
     Object.assign(info.summary, { scenes: all.length, chapters: model.length, slides: model.reduce((a, c) => a + c.slides.length, 0), mode: info.mode });
     mark('summary');
     remapHash(p, all, model);
@@ -358,19 +403,49 @@
 
   // 장 표지: 장면이 적으면(4개 이하) 넉넉한 변형 — 목차 크기 목록 + 장면마다 도입(결정 I7). 안 들어가면 보통 → 촘촘
   const ROOMY_MAX = 4;
+  // 장 안의 절(장 제목 다음 칸, 예: "6.1 전투 이벤트 큐")로 장면을 묶음. 절 칸이 없는 장면은 장 자체(앞 칸 없음)로
+  //   하위 장면 이름 = 절 경로 마지막 칸(절 자체면 탭 이름). 같은 절 안에서 이름이 겹치면 하나로 합침
+  function groupSlides(c, slides) {
+    const h2 = (c.sectionPath || [])[0];
+    const groups = [];
+    for (const x of slides) {
+      const sp = (x.sl.sectionPath || []).filter((h) => h !== h2);
+      const key = sp[0] || c.title;
+      let g = groups.find((y) => y.key === key);
+      if (!g) groups.push(g = { key, items: [] });
+      const last = sp.length > 1 ? sp[sp.length - 1] : '';
+      g.items.push({ x, label: last || PF.tab(x.sl.tab) || txt(x.sl.title) });
+    }
+    // 이름은 짧게: "설계 선택 ①: Dynamic인가 Kinematic인가" → "설계 선택 ①"(콜론 앞), 같은 이름(예: 동작 방식 장면 두 개)은 하나로 합쳐 첫 장면으로 연결
+    for (const g of groups) g.items.forEach((it) => { const k = it.label.indexOf(':'); if (k > 0) it.label = it.label.slice(0, k).trim(); });
+    for (const g of groups) { const seen = new Set(); g.subs = g.items.filter((it) => !seen.has(it.label) && seen.add(it.label)); }
+    return groups;
+  }
+  const groupHtml = (groups) => `<ol class="toc-groups">${groups.map((g, gi) => {
+    const ref = g.items[0].x.scenes[0].id;
+    return `<li><a class="tg-h" href="#${esc(ref)}" data-pf-ref="${esc(ref)}"><span class="n">${gi + 1}</span><span class="tx"><span class="t">${inline(g.key)}</span></span><span class="pg"><span class="pf-n-screen">p.00</span><span class="pf-n-print"></span></span></a>` +
+      `<div class="tg-subs">${g.subs.map((it) => `<a class="tg-s" href="#${esc(it.x.scenes[0].id)}" data-pf-ref="${esc(it.x.scenes[0].id)}">${inline(it.label)}</a>`).join('<span class="tg-sep"> · </span>')}</div></li>`;
+  }).join('')}</ol>`;
+
   function chapterScene(c, ci, chId, slides, foot, auto, ptitle) {
+    const groups = groupSlides(c, slides);
     const make = (mode) => {
-      const s = PF.scene({ id: chId, tpl: 'CH', kind: 'bare', cls: mode === 'compact' ? 'compact' : '', foot, sec: c.title, group: c.title, stitle: c.title });
+      const dense = mode === 'compact' || mode.startsWith('cols') || mode.startsWith('grp');
+      const s = PF.scene({ id: chId, tpl: 'CH', kind: 'bare', cls: dense ? 'compact' : '', foot, sec: c.title, group: c.title, stitle: c.title });
       const roomy = mode === 'roomy';
-      const list = slides.map((x, i) => item(String(i + 1), txt(x.sl.title) || c.title, PF.tab(x.sl.tab), x.scenes[0].id, roomy ? txt(x.sl.lead) : '')).join('');
+      const grp = mode.startsWith('grp');
+      const list = grp ? groupHtml(groups) : `<ol class="toc-list${roomy ? '' : ' sub'}">${slides.map((x, i) => item(String(i + 1), txt(x.sl.title) || c.title, PF.tab(x.sl.tab), x.scenes[0].id, roomy ? txt(x.sl.lead) : '')).join('')}</ol>`;
+      const cls = mode === 'normal' ? '' : mode === 'grp1' ? ' compact grp grp1' : grp ? ` compact cols grp ${mode}` : mode.startsWith('cols') ? ' compact cols ' + mode : ' ' + mode;
       PF.body(s).innerHTML = `<div class="toprow"><span class="pf-eyebrow long">${esc(ptitle)}</span><span class="rl">${esc(PF.t('deck.ch-count', { n: slides.length }))}</span></div>
         <div class="ch-mid"><div><p class="ch-no">${esc(PF.t('en.chapter'))} ${String(ci + 1).padStart(2, '0')}</p><h2 class="ch-t">${esc(c.title)}</h2>${DOT}</div>
-        <div class="ch-list t-P2${mode === 'normal' ? '' : ' ' + mode}"><ol class="toc-list${roomy ? '' : ' sub'}">${list}</ol></div></div>`;
+        <div class="ch-list t-P2${cls}">${list}</div></div>`;
       return band(s, auto);
     };
-    const modes = slides.length <= ROOMY_MAX ? ['roomy', 'normal', 'compact'] : ['normal', 'compact'];
+    // 장면이 많은 장(이 레포는 장면 수 상한이 없음): 촘촘해도 안 들어가면 절(6.1·6.2…)별로 묶어 2단 → 3단으로. 묶을 절이 없으면 목록을 2단 → 3단으로
+    const many = groups.length >= 2 && groups.length < slides.length ? ['grp1', 'grp2', 'grp3'] : ['cols2', 'cols3'];   // grp1 = 다른 장 표지와 같은 배치(왼쪽 제목, 오른쪽 목록)
+    const modes = slides.length <= ROOMY_MAX ? ['roomy', 'normal', 'compact'] : ['normal', 'compact', ...many, 'cols3'];
     for (const m of modes) { const s = make(m); if (PF.fitsM(s)) return s; }
-    return PF.shrinkOrClip(make('compact'), PFScene.refUrl(chId), info.overflow);
+    return PF.shrinkOrClip(make(modes[modes.length - 1]), PFScene.refUrl(chId), info.overflow);
   }
 
   function tocScene(p, foot, items, retro, auto) {
@@ -421,6 +496,32 @@
     };
     return PF.guard(make(), PFScene.refUrl('end'), info.overflow);
   }
+})();
+
+// 사진 넘기기(gallery 장면) — ‹ › 단추와 점으로 겹쳐 둔 그림 중 하나만 보이게. capture 단계에서 받아 장면 넘기기(onDeckClick)로 가지 않게
+//   키보드 ←/→는 그대로 장면 넘기기(덱 공통). 장면을 다시 그려도(문구 표 등) 처음 그림으로 돌아감
+(() => {
+  //   왼쪽 표와 묶인 장면(data-gal-link)은 보이는 그림의 행을 강조하고, 행을 누르면 그 그림으로
+  //   숨겨 둔 그림은 처음 보일 때 그림을 푸는 동안 잠깐 비어 보임 → 다음 그림을 먼저 풀고(decode) 바꿈
+  const show = async (dk, i) => {
+    const items = [...dk.querySelectorAll('.gal-stage > .gal-item')];
+    const k = (i + items.length) % items.length;
+    const img = items[k].querySelector('img');
+    if (img?.decode) await Promise.race([img.decode().catch(() => {}), new Promise((r) => setTimeout(r, 400))]);
+    items.forEach((it, j) => it.classList.toggle('on', j === k));
+    dk.querySelectorAll('.gal-nav .gal-dot').forEach((d, j) => { d.classList.toggle('on', j === k); if (j === k) d.setAttribute('aria-current', 'true'); else d.removeAttribute('aria-current'); });
+    dk.querySelectorAll('tr.gal-row').forEach((r, j) => r.classList.toggle('on', j === k));
+  };
+  document.addEventListener('click', (e) => {
+    const b = e.target.closest?.('.gal-nav .gal-btn, .dk.gal[data-gal-link] tr.gal-row');
+    if (!b || b.closest('dialog')) return;
+    e.preventDefault(); e.stopPropagation();
+    const dk = b.closest('.dk.gal');
+    if (!dk) return;
+    if (b.matches('tr.gal-row')) { show(dk, +b.dataset.gi); return; }
+    const cur = [...dk.querySelectorAll('.gal-stage > .gal-item')].findIndex((it) => it.classList.contains('on'));
+    show(dk, b.dataset.goTo != null ? +b.dataset.goTo : Math.max(0, cur) + +b.dataset.go);
+  }, true);
 })();
 
 // 그림 크게 보기 — 장면 안의 다이어그램·이미지를 누르면 화면에 맞춰 크게(같은 페이지 dialog). 누르거나 Esc로 닫음

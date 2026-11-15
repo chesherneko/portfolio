@@ -605,8 +605,14 @@
   }
 
   // ── 장면 복제(화면 밖 배율 1, 인쇄와 같은 상태) ──
-  function prepClone(scene) {
+  function prepClone(scene, gi = -1) {
     const c = scene.cloneNode(true);
+    // 사진 넘기기(gallery): 넘기기 단추는 빼고, gi번째 그림만 보이게(그림마다 슬라이드 하나 — build())
+    c.querySelectorAll('.gal-nav').forEach((e) => e.remove());
+    if (gi >= 0) {
+      c.querySelectorAll('.gal-stage > .gal-item').forEach((it, j) => it.classList.toggle('on', j === gi));
+      c.querySelectorAll('tr.gal-row').forEach((r, j) => r.classList.toggle('on', j === gi));   // 왼쪽 표와 묶였으면 그 그림의 행을 강조
+    }
     c.classList.remove('pf-cur', 'pf-enter');
     c.style.transform = 'none'; c.style.visibility = 'visible'; c.style.margin = '0'; c.style.boxShadow = 'none';
     c.querySelectorAll('.pf-n-print').forEach((e) => { e.style.display = 'inline'; });
@@ -616,8 +622,8 @@
   }
   const settle = (imgs) => Promise.all(imgs.map((i) => (i.complete ? null : new Promise((r) => { i.addEventListener('load', r, { once: true }); i.addEventListener('error', r, { once: true }); setTimeout(r, 15000); }))));
 
-  async function sceneItems(scene, host, ids) {
-    const c = prepClone(scene);
+  async function sceneItems(scene, host, ids, gi = -1) {
+    const c = prepClone(scene, gi);
     host.replaceChildren(c);
     await settle([...c.querySelectorAll('img')]);
     const sr = c.getBoundingClientRect();
@@ -690,7 +696,10 @@
     const deck = document.getElementById('deck');
     const scenes = [...deck.querySelectorAll(':scope > .pf-scene')].filter((s) => !s.classList.contains('pf-skip'));
     if (!scenes.length) throw new Error('내보낼 슬라이드가 없습니다');
-    const ids = new Map(scenes.map((s, i) => [s.id, i + 1]));
+    // 사진 넘기기 장면은 그림 수만큼 슬라이드로 펼침. 장면 안 링크(목차 등)는 그 장면의 첫 슬라이드로
+    const plan = scenes.flatMap((s) => { const n = s.querySelectorAll('.gal-stage > .gal-item').length; return n > 1 ? [...Array(n)].map((_, g) => ({ s, g })) : [{ s, g: -1 }]; });
+    const ids = new Map();
+    plan.forEach((x, i) => { if (!ids.has(x.s.id)) ids.set(x.s.id, i + 1); });
     const meta = PFScene.info?.meta || {};
     const pptx = new PptxGenJS();
     pptx.layout = 'LAYOUT_WIDE';
@@ -707,19 +716,21 @@
     const t0 = performance.now();
     const fonts = new Set();
     try {
-      for (let i = 0; i < scenes.length; i++) {
-        onProgress?.(i + 1, scenes.length);
-        const { bg, items, warn: w } = await sceneItems(scenes[i], host, ids);
+      for (let i = 0; i < plan.length; i++) {
+        onProgress?.(i + 1, plan.length);
+        const { s: sc, g } = plan[i];
+        const { bg, items, warn: w } = await sceneItems(sc, host, ids, g);
         const slide = pptx.addSlide();
         slide.background = bg;
-        const stat = { id: scenes[i].id, text: 0, code: 0, shapes: 0, images: 0, svg: 0, gradient: 0, tables: 0, warnings: w };
+        const sid = g >= 0 ? `${sc.id}#${g + 1}` : sc.id;
+        const stat = { id: sid, text: 0, code: 0, shapes: 0, images: 0, svg: 0, gradient: 0, tables: 0, warnings: w };
         for (const it of items) {
           (it.runs || it.text?.runs || []).forEach((r) => r.o?.fontFace && fonts.add(r.o.fontFace));
           if (it.t === 'table') it.data.forEach((row) => row.forEach((c) => fonts.add(c.o.fontFace)));
           try { emit(pptx, slide, it, stat); } catch (e) { w.push(`개체 하나를 넣지 못했습니다(${it.t}): ${e.message}`); }
         }
         report.slides.push(stat);
-        w.forEach((x) => report.warnings.push(`${i + 1}장(${scenes[i].id}): ${x}`));
+        w.forEach((x) => report.warnings.push(`${i + 1}장(${sid}): ${x}`));
       }
     } finally { host.remove(); }
     report.fonts = [...fonts];
