@@ -293,18 +293,17 @@
         "lead": null,
         "sectionPath": ["2.1 역할 분담"],
         "points": [],
-        "visuals": [{"kind": "table", "n": 1, "fp": "담당|맡은 일"}]
-      },
-      {
-        "key": "scope",
-        "chapter": "team",
-        "layout": "full",
-        "tab": "개요",
-        "title": {"text": "2.2 내가 작성한 범위", "verbatim": true},
-        "lead": null,
-        "sectionPath": ["2.2 내가 작성한 범위"],
-        "points": [],
-        "visuals": [{"kind": "table", "n": 1, "fp": "영역|내용"}]
+        "visuals": [
+          {"kind": "table", "n": 1, "fp": "담당|맡은 일", "caption": {"text": "역할 분담", "verbatim": true}},
+          {
+            "kind": "table",
+            "n": 1,
+            "fp": "영역|내용",
+            "sectionPath": ["2.2 내가 작성한 범위"],
+            "caption": {"text": "내가 작성한 범위", "verbatim": true}
+          }
+        ],
+        "edited": true
       },
       {
         "key": "overall",
@@ -342,18 +341,17 @@
         "lead": null,
         "sectionPath": ["4.1 설계 목표"],
         "points": [],
-        "visuals": [{"kind": "table", "n": 1, "fp": "순위|목표"}]
-      },
-      {
-        "key": "problems",
-        "chapter": "goals",
-        "layout": "full",
-        "tab": "개요",
-        "title": {"text": "4.2 풀어야 했던 문제", "verbatim": true},
-        "lead": null,
-        "sectionPath": ["4.2 풀어야 했던 문제"],
-        "points": [],
-        "visuals": [{"kind": "table", "n": 1, "fp": "문제|상황|다루는 절"}]
+        "visuals": [
+          {"kind": "table", "n": 1, "fp": "순위|목표"},
+          {
+            "kind": "table",
+            "n": 1,
+            "fp": "문제|상황|다루는 절",
+            "sectionPath": ["4.2 풀어야 했던 문제"],
+            "caption": {"text": "풀어야 했던 문제", "verbatim": true}
+          }
+        ],
+        "edited": true
       },
       {
         "key": "class",
@@ -413,32 +411,25 @@
       {
         "key": "queue-overview",
         "chapter": "core",
-        "layout": "overview",
+        "layout": "visual",
         "tab": "개요",
         "title": {"text": "6.1 전투 이벤트 큐", "verbatim": true},
         "lead": null,
         "sectionPath": ["6.1 전투 이벤트 큐"],
-        "points": [],
-        "visuals": [{"kind": "table", "n": 1, "fp": "항목|내용"}]
-      },
-      {
-        "key": "combat-queue",
-        "chapter": "core",
-        "layout": "visual",
-        "tab": "흐름",
-        "title": {"text": "6.1 전투 이벤트 큐", "verbatim": true},
-        "lead": {"text": "이 요청은 모두 `AddCombatEvent`로 들어와 큐에 쌓이고, 매 프레임 한 지점에서 들어온 순서대로 처리됩니다.", "verbatim": true},
-        "sectionPath": ["6.1 전투 이벤트 큐", "동작 방식"],
         "points": [
-          {"label": "", "text": "피해를 주는 기능(염동력, 스킬, 보스 패턴)은 여러 사람의 코드에 흩어져 있고, 각자 필요한 때에 피해를 요청합니다.", "verbatim": true},
-          {"label": "", "text": "`CombatManager`는 누가 피해를 보냈는지, 누가 결과를 쓰는지 알지 못합니다.", "verbatim": true},
+          {"label": "", "text": "피해를 주는 기능(염동력, 스킬, 보스 패턴)은 여러 사람의 코드에 흩어져 있고, 각자 필요한 때에 피해를 요청합니다.", "verbatim": false},
+          {"label": "", "text": "`CombatManager`는 누가 피해를 보냈는지, 누가 결과를 쓰는지 알지 못합니다.", "verbatim": false},
           {
             "label": "",
             "text": "그래서 피해를 주는 기능을 새로 만들어도 `CombatManager`는 고칠 필요가 없고, HUD처럼 결과가 필요한 쪽은 `OnDamageEventExecuted`를 구독하기만 하면 됩니다.",
-            "verbatim": true
+            "verbatim": false
           }
         ],
-        "visuals": [{"kind": "mermaid", "n": 1, "fp": "sequenceDiagram"}]
+        "visuals": [
+          {"kind": "table", "n": 1, "fp": "항목|내용"},
+          {"kind": "mermaid", "n": 1, "fp": "sequenceDiagram", "sectionPath": ["6.1 전투 이벤트 큐", "동작 방식"]}
+        ],
+        "edited": true
       },
       {
         "key": "queue-usage",
@@ -453,9 +444,10 @@
           {"label": "", "text": "피해량, 맞은 지점, 맞은 콜라이더는 반드시 넣고, 반응·그로기·밀어내기 같은 항목은 필요할 때만 넣습니다.", "verbatim": true}
         ],
         "visuals": [
-          {"kind": "code", "n": 1, "fp": "CombatManager.Instance.AddCombatEvent(new DamageEvent(sender"},
-          {"kind": "table", "n": 1, "fp": "넣는 것|나오는 것"}
-        ]
+          {"kind": "table", "n": 1, "fp": "넣는 것|나오는 것"},
+          {"kind": "code", "n": 1, "fp": "CombatManager.Instance.AddCombatEvent(new DamageEvent(sender"}
+        ],
+        "edited": true
       },
       {
         "key": "queue-code",
@@ -660,31 +652,24 @@
       {
         "key": "kinematic",
         "chapter": "core",
-        "layout": "overview",
+        "layout": "visual",
         "tab": "개요",
         "title": {"text": "6.4 Kinematic 이동과 경로 계산", "verbatim": true},
         "lead": null,
         "sectionPath": ["6.4 Kinematic 이동과 경로 계산"],
-        "points": [],
-        "visuals": [{"kind": "table", "n": 1, "fp": "항목|내용"}]
-      },
-      {
-        "key": "kinematic-flow",
-        "chapter": "core",
-        "layout": "visual",
-        "tab": "흐름",
-        "title": {"text": "6.4 Kinematic 이동과 경로 계산", "verbatim": true},
-        "lead": {"text": "보스를 움직이는 길은 둘입니다. 상태가 요청하는 이동(추격·회전)과 애니메이션의 루트 모션입니다.", "verbatim": true},
-        "sectionPath": ["6.4 Kinematic 이동과 경로 계산", "동작 방식"],
         "points": [
           {
             "label": "",
             "text": "둘 다 위치를 직접 바꾸지 않고 `BossMovement`에 이동량을 요청만 하며, `BossMovement`가 이를 모아 물리 스텝(`FixedUpdate`)에서 한 번에 적용합니다.",
-            "verbatim": true
+            "verbatim": false
           },
-          {"label": "", "text": "길 찾기(`BossPathfinder`)도 위치를 바꾸지 않고 \"지금 향할 점\"만 알려 줍니다.", "verbatim": true}
+          {"label": "", "text": "길 찾기(`BossPathfinder`)도 위치를 바꾸지 않고 \"지금 향할 점\"만 알려 줍니다.", "verbatim": false}
         ],
-        "visuals": [{"kind": "mermaid", "n": 1, "fp": "flowchart LR"}]
+        "visuals": [
+          {"kind": "table", "n": 1, "fp": "항목|내용"},
+          {"kind": "mermaid", "n": 1, "fp": "flowchart LR", "sectionPath": ["6.4 Kinematic 이동과 경로 계산", "동작 방식"]}
+        ],
+        "edited": true
       },
       {
         "key": "move-request",
@@ -714,7 +699,7 @@
             "text": "처음에는 이 기준이 하나뿐이라, 걷는 도중 플레이어가 조금만 옆으로 움직여도 기준을 벗어났습니다. 그러면 멈추고, 돌고, 다시 걷는 동작이 반복되어 추격이 끊겨 보였습니다.",
             "verbatim": true
           },
-          {"label": "해결", "text": "그래서 기준을 둘로 나눴습니다.", "verbatim": true}
+          {"label": "해결", "text": "기준을 둘로 나눴습니다.", "verbatim": false}
         ],
         "visuals": [
           {
@@ -826,7 +811,7 @@
         "layout": "code",
         "tab": "구현",
         "title": {"text": "기반 재사용: 부모 타입으로 불러도 자식 상태로", "verbatim": true},
-        "lead": {"text": "타입으로 상태를 바꾸는 구조(6.3)를 유지하기 위해, 보스 본체가 시작할 때 부모 타입을 실제 자식 상태에 연결해 두었습니다.", "verbatim": true},
+        "lead": {"text": "타입으로 상태를 바꾸는 구조를 유지하기 위해, 보스 본체가 시작할 때 부모 타입을 실제 자식 상태에 연결해 두었습니다.", "verbatim": false},
         "sectionPath": ["6.5 휴머노이드 보스", "기반 재사용: 부모 타입으로 불러도 자식 상태로"],
         "points": [
           {
@@ -840,7 +825,8 @@
             "verbatim": true
           }
         ],
-        "visuals": [{"kind": "code", "n": 1, "lines": [2, 21], "fp": "// 실제 타입을 먼저 다 넣고, 그 타입의 상태가 따로 없을 때만 부모 타입을 상속한 상태에 연결"}]
+        "visuals": [{"kind": "code", "n": 1, "lines": [2, 21], "fp": "// 실제 타입을 먼저 다 넣고, 그 타입의 상태가 따로 없을 때만 부모 타입을 상속한 상태에 연결"}],
+        "edited": true
       },
       {
         "key": "phase2",
@@ -950,11 +936,13 @@
         "layout": "visual",
         "tab": "결과",
         "title": {"text": "차원 베기", "verbatim": true},
-        "lead": {"text": "체력이 일정 비율 아래가 되면 반드시 쓰는 긴급 패턴입니다(6.2).", "verbatim": true},
+        "lead": {"text": "체력이 일정 비율 아래가 되면 반드시 쓰는 긴급 패턴입니다.", "verbatim": false},
         "sectionPath": ["6.5 휴머노이드 보스", "차원 베기"],
         "points": [
           {"label": "", "text": "세상을 멈추고, 플레이어 정면에 나타나 천천히 걸어와 검을 내려베며, 화면을 가르고 피해를 줍니다.", "verbatim": true},
-          {"label": "", "text": "피할 수 없는 대신 일정 체력 아래로는 깎지 않습니다.", "verbatim": true}
+          {"label": "", "text": "피할 수 없는 대신 일정 체력 아래로는 깎지 않습니다.", "verbatim": true},
+          {"label": "", "text": "보스는 시간 정지의 영향을 받지 않아야 하므로, 보스 예외를 먼저 건 뒤 세상을 멈추고 풀 때는 반대 순서로 풉니다.", "verbatim": false},
+          {"label": "", "text": "패턴이 중간에 끊겨도 종료 처리에서 세상·플레이어·화면을 모두 원래대로 되돌립니다.", "verbatim": true}
         ],
         "visuals": [
           {
@@ -963,22 +951,10 @@
             "w": 720,
             "h": 404,
             "caption": {"text": "차원 베기: 세상 정지부터 화면을 가르기까지", "verbatim": true}
-          }
-        ]
-      },
-      {
-        "key": "dimension-calls",
-        "chapter": "core",
-        "layout": "full",
-        "tab": "구현",
-        "title": {"text": "차원 베기", "verbatim": true},
-        "lead": {"text": "필요한 기능은 시간 정지·플레이어 쪽 코드를 고치지 않고 이미 있는 함수를 불러 조합했습니다.", "verbatim": true},
-        "sectionPath": ["6.5 휴머노이드 보스", "차원 베기"],
-        "points": [
-          {"label": "", "text": "보스가 한순간도 느려지지 않도록 보스 예외를 먼저 걸고 세상을 멈추며, 풀 때는 반대 순서로 풉니다.", "verbatim": true},
-          {"label": "", "text": "패턴이 중간에 끊겨도 종료 처리에서 세상·플레이어·화면을 모두 원래대로 되돌립니다.", "verbatim": true}
+          },
+          {"kind": "table", "n": 1, "fp": "연출|쓴 기존 기능", "sectionPath": ["6.5 휴머노이드 보스", "차원 베기"]}
         ],
-        "visuals": [{"kind": "table", "n": 1, "fp": "연출|쓴 기존 기능"}]
+        "edited": true
       },
       {
         "key": "extras",
@@ -1025,7 +1001,17 @@
         "lead": null,
         "sectionPath": ["6.6 (보조) 애니메이션 기반 효과음"],
         "points": [],
-        "visuals": [{"kind": "table", "n": 1, "fp": "항목|내용"}]
+        "visuals": [
+          {"kind": "table", "n": 1, "fp": "항목|내용", "caption": {"text": "애니메이션 기반 효과음 개요", "verbatim": false}},
+          {
+            "kind": "table",
+            "n": 1,
+            "fp": "방식|쓰는 곳|사용법",
+            "sectionPath": ["6.6 (보조) 애니메이션 기반 효과음", "재생 방식 세 가지"],
+            "caption": {"text": "재생 방식 세 가지", "verbatim": true}
+          }
+        ],
+        "edited": true
       },
       {
         "key": "sound-compare",
@@ -1035,15 +1021,9 @@
         "title": {"text": "강사님 제공 구조에서 바꾼 것", "verbatim": true},
         "lead": {"text": "효과음을 빠르게 붙이기에 좋아 보여 이 구조를 참고해, 효과음 전용 `AnimStateSoundSender`를 만들었습니다.", "verbatim": true},
         "sectionPath": ["6.6 (보조) 애니메이션 기반 효과음", "강사님 제공 구조에서 바꾼 것"],
-        "points": [
-          {"label": "", "text": "마지막 행은 두 구조가 반대로 동작합니다.", "verbatim": true},
-          {
-            "label": "",
-            "text": "공격이 끝났다는 신호는 상태가 끊겨도 반드시 전달되어야 하지만(8.3), 효과음은 끊긴 동작의 소리가 뒤늦게 나오면 오히려 어색하기 때문입니다.",
-            "verbatim": true
-          }
-        ],
-        "visuals": [{"kind": "table", "n": 1, "fp": "|강사님 제공 구조 (AnimStateEventSender)|효과음용 구조 (AnimStateSoundSender)"}]
+        "points": [],
+        "visuals": [{"kind": "table", "n": 1, "fp": "|강사님 제공 구조 (AnimStateEventSender)|효과음용 구조 (AnimStateSoundSender)"}],
+        "edited": true
       },
       {
         "key": "sound-sender",
@@ -1054,67 +1034,33 @@
         "lead": null,
         "sectionPath": ["6.6 (보조) 애니메이션 기반 효과음", "강사님 제공 구조에서 바꾼 것"],
         "points": [
-          {"label": "반복 상태 (걷기 등)", "text": "한 바퀴 돌 때마다 기록을 지워, 매 바퀴 다시 재생", "verbatim": true},
-          {"label": "상태가 중간에 끊기면", "text": "남은 소리는 재생하지 않음. 끊긴 공격 뒤에 타격음이 나오지 않게 함", "verbatim": true}
-        ],
-        "visuals": [{"kind": "code", "n": 2, "lines": [14, 33], "fp": "// 효과음용 구조 (발췌, 되감기·전환 중·재생 간격 처리는 생략)"}]
-      },
-      {
-        "key": "sound-sender-shot",
-        "chapter": "core",
-        "layout": "visual",
-        "tab": "결과",
-        "title": {"text": "강사님 제공 구조에서 바꾼 것", "verbatim": true},
-        "lead": null,
-        "sectionPath": ["6.6 (보조) 애니메이션 기반 효과음", "강사님 제공 구조에서 바꾼 것"],
-        "points": [
           {"label": "상태에 적는 것", "text": "진행률, 소리(클립을 드롭다운으로 고르고 볼륨 지정)", "verbatim": true},
           {"label": "신호를 받는 쪽", "text": "Listener 없이 `SoundManager`로 바로 재생", "verbatim": true}
         ],
         "visuals": [
+          {"kind": "code", "n": 2, "lines": [14, 33], "fp": "// 효과음용 구조 (발췌, 되감기·전환 중·재생 간격 처리는 생략)"},
           {
             "kind": "image",
             "src": "images/6.6-1_sound-sender.png",
             "w": 467,
             "h": 620,
-            "caption": {"text": "Animator 상태에 붙은 AnimStateSoundSender 인스펙터: 진행률(Time)마다 재생할 소리와 볼륨", "verbatim": true}
+            "caption": {"text": "Animator 상태에 붙은 AnimStateSoundSender 인스펙터: 진행률(Time)마다 재생할 소리와 볼륨", "verbatim": true},
+            "sectionPath": ["6.6 (보조) 애니메이션 기반 효과음", "강사님 제공 구조에서 바꾼 것"]
           }
-        ]
-      },
-      {
-        "key": "sound-modes",
-        "chapter": "core",
-        "layout": "full",
-        "tab": "구조",
-        "title": {"text": "재생 방식 세 가지", "verbatim": true},
-        "lead": {"text": "세 방식은 모두 `SoundData`를 거쳐 `SoundManager`가 재생합니다.", "verbatim": true},
-        "sectionPath": ["6.6 (보조) 애니메이션 기반 효과음", "재생 방식 세 가지"],
-        "points": [],
-        "visuals": [{"kind": "table", "n": 1, "fp": "방식|쓰는 곳|사용법"}]
+        ],
+        "edited": true
       },
       {
         "key": "sound-data",
         "chapter": "core",
         "layout": "code",
         "tab": "구현",
-        "title": {"text": "재생 방식 세 가지", "verbatim": true},
+        "title": {"text": "코드 필드 (SoundData)", "verbatim": false},
         "lead": null,
         "sectionPath": ["6.6 (보조) 애니메이션 기반 효과음", "재생 방식 세 가지"],
         "points": [
           {"label": "", "text": "`SoundData`는 인스펙터에서 클립을 목록으로 고를 수 있게 만들었습니다.", "verbatim": true},
-          {"label": "", "text": "사용하는 쪽은 `SoundData` 필드를 하나 선언하고 `Play()`만 부르면 됩니다.", "verbatim": true}
-        ],
-        "visuals": [{"kind": "code", "n": 1, "lines": [1, 13], "fp": "// 컴포넌트 없이 쓰는 쪽 클래스에 필드로 선언해 두고, 인스펙터에서 클립과 볼륨을 골라 재생함"}]
-      },
-      {
-        "key": "sound-dropdown",
-        "chapter": "core",
-        "layout": "visual",
-        "tab": "결과",
-        "title": {"text": "재생 방식 세 가지", "verbatim": true},
-        "lead": null,
-        "sectionPath": ["6.6 (보조) 애니메이션 기반 효과음", "재생 방식 세 가지"],
-        "points": [
+          {"label": "", "text": "사용하는 쪽은 `SoundData` 필드를 하나 선언하고 `Play()`만 부르면 됩니다.", "verbatim": true},
           {
             "label": "",
             "text": "Odin Inspector의 `ValueDropdown`이 에디터에서 `GetClipNames`를 불러 목록을 띄우므로, 클립 이름을 직접 입력하지 않습니다.",
@@ -1127,33 +1073,37 @@
           }
         ],
         "visuals": [
+          {"kind": "code", "n": 1, "lines": [1, 13], "fp": "// 컴포넌트 없이 쓰는 쪽 클래스에 필드로 선언해 두고, 인스펙터에서 클립과 볼륨을 골라 재생함"},
           {
             "kind": "image",
             "src": "images/6.6-2_sound-dropdown.png",
             "w": 467,
             "h": 607,
-            "caption": {"text": "SoundData 클립 드롭다운을 펼친 인스펙터: 폴더별로 묶인 클립 목록", "verbatim": true}
+            "caption": {"text": "SoundData 클립 드롭다운을 펼친 인스펙터: 폴더별로 묶인 클립 목록", "verbatim": true},
+            "sectionPath": ["6.6 (보조) 애니메이션 기반 효과음", "재생 방식 세 가지"]
           }
-        ]
+        ],
+        "edited": true
       },
       {
         "key": "hands-off",
         "chapter": "collab",
-        "layout": "full",
+        "layout": "visual",
         "tab": "선택",
         "title": {"text": "7.1 남의 코드는 크게 고치지 않는다", "verbatim": true},
         "lead": {"text": "다른 파트 코드는 약간의 수정이나 API 한두 개를 여는 정도까지만 고치고, 나머지는 보스 쪽에서 해결", "verbatim": true},
         "sectionPath": ["7.1 남의 코드는 크게 고치지 않는다"],
         "points": [
-          {"label": "이유", "text": "남의 코드에 함부로 손대는 것 자체가 감정적인 문제로 번질 수 있습니다.", "verbatim": true},
-          {"label": "이유", "text": "코드를 만든 사람의 설계 의도를 해칠 수 있습니다.", "verbatim": true},
+          {"label": "", "text": "남의 코드에 함부로 손대는 것 자체가 감정적인 문제로 번질 수 있습니다.", "verbatim": true},
+          {"label": "", "text": "코드를 만든 사람의 설계 의도를 해칠 수 있습니다.", "verbatim": true},
           {
-            "label": "이유",
+            "label": "",
             "text": "포트폴리오를 위한 팀 프로젝트였기 때문에, 남의 코드를 제 의도대로 고쳐 버리면 그 코드를 만든 사람이 자기 몫을 온전히 챙겨 갈 수 없습니다.",
             "verbatim": true
           }
         ],
-        "visuals": [{"kind": "table", "n": 2, "fp": "|필요하면 상대 코드를 직접 고침|상대 코드는 크게 고치지 않음 (선택)"}]
+        "visuals": [{"kind": "table", "n": 2, "fp": "|필요하면 상대 코드를 직접 고침|상대 코드는 크게 고치지 않음 (선택)"}],
+        "edited": true
       },
       {
         "key": "team-rule",
@@ -1161,19 +1111,22 @@
         "layout": "overview",
         "tab": "결과",
         "title": {"text": "7.1 남의 코드는 크게 고치지 않는다", "verbatim": true},
-        "lead": null,
+        "lead": {"text": "처음에는 제 원칙이었습니다.", "verbatim": true},
         "sectionPath": ["7.1 남의 코드는 크게 고치지 않는다"],
         "points": [
           {
             "label": "개인 원칙에서 팀 원칙으로",
-            "text": "10월 말, 제가 만든 차원 베기 패턴이 저와 상의 없이 수정된 뒤 나중에 공유되는 일이 있었습니다.",
+            "text": "10월 말, 제가 만든 차원 베기 패턴이 저와 상의 없이 수정된 뒤 나중에 공유되는 일이 있었습니다. 저는 팀장으로서 위의 세 가지 이유를 설명하며 이것을 팀 원칙으로 세웠습니다.",
             "verbatim": true
           },
-          {"label": "", "text": "저는 팀장으로서 위의 세 가지 이유를 설명하며 이것을 팀 원칙으로 세웠습니다.", "verbatim": true},
-          {"label": "결과", "text": "원칙은 일부만 지켜졌습니다.", "verbatim": true},
-          {"label": "", "text": "몇몇 작업은 팀원이 미리 말해 조율했지만, 마감에 가까워질수록 그렇지 않은 경우가 많아졌습니다.", "verbatim": true}
+          {
+            "label": "결과",
+            "text": "원칙은 일부만 지켜졌습니다. 몇몇 작업은 팀원이 미리 말해 조율했지만, 마감에 가까워질수록 그렇지 않은 경우가 많아졌습니다.",
+            "verbatim": true
+          }
         ],
-        "visuals": []
+        "visuals": [],
+        "edited": true
       },
       {
         "key": "handoff",
@@ -1181,17 +1134,18 @@
         "layout": "full",
         "tab": "선택",
         "title": {"text": "7.2 설계 의도를 어떻게 전달할 것인가", "verbatim": true},
-        "lead": {"text": "기반을 만들고 그 위에 다른 사람이 기능을 얹는 구조였기 때문에, 사용법을 전달하는 방식이 결과에 직접 영향을 줬습니다.", "verbatim": true},
+        "lead": {"text": "기반 위에 다른 사람이 기능을 얹는 구조라, 사용법을 전달하는 방식이 결과에 직접 영향을 줬습니다.", "verbatim": false},
         "sectionPath": ["7.2 설계 의도를 어떻게 전달할 것인가"],
         "points": [
           {
-            "label": "",
-            "text": "이후 다른 팀원이 이를 발견해 피격 판단을 맞는 쪽으로 옮기는 리팩터링 방안을 냈고, 저는 팀장으로서 방안을 확인하고 승인해 진행하게 했습니다.",
-            "verbatim": true
+            "label": "해결",
+            "text": "다른 팀원이 이를 발견해 피격 판단을 맞는 쪽으로 옮기는 리팩터링 방안을 냈고, 팀장으로서 확인·승인해 진행했습니다.",
+            "verbatim": false
           },
-          {"label": "배운 점", "text": "돌아보면 의도만 말할 것이 아니라 사용법을 더 자세히 알려 줬어야 했습니다.", "verbatim": true}
+          {"label": "배운 점", "text": "의도만 말할 것이 아니라 사용법을 더 자세히 알려 줬어야 했습니다.", "verbatim": false}
         ],
-        "visuals": [{"kind": "table", "n": 1, "fp": "기반|전달 방식|결과"}]
+        "visuals": [{"kind": "table", "n": 1, "fp": "기반|전달 방식|결과"}],
+        "edited": true
       },
       {
         "key": "ts-rotate",
@@ -1202,7 +1156,7 @@
         "lead": null,
         "sectionPath": ["8.1 Kinematic으로 바꾼 뒤 보스가 아주 조금씩만 회전함"],
         "points": [
-          {"label": "문제", "text": "이동을 Kinematic으로 바꾼 뒤(6.4), 보스가 몸을 돌리긴 하지만 확연히 적은 양만 회전", "verbatim": true},
+          {"label": "문제", "text": "이동을 Kinematic으로 바꾼 뒤, 보스가 몸을 돌리긴 하지만 확연히 적은 양만 회전", "verbatim": false},
           {
             "label": "원인",
             "text": "Interpolate가 켜진 Rigidbody는 보간된 값으로 transform을 덮어씀. 그래서 transform에 직접 준 회전이 보간값으로 되돌려짐",
@@ -1223,7 +1177,8 @@
             "fp": "// 루트 모션도 이동 요청으로 넘김 (Animator가 transform에 바로 적용하면 벽을 통과함)",
             "sectionPath": ["6.4 Kinematic 이동과 경로 계산", "동작 방식"]
           }
-        ]
+        ],
+        "edited": true
       },
       {
         "key": "ts-pitch",
@@ -2336,6 +2291,6 @@
         "visuals": []
       }
     ],
-    "applied": "608c95fdbc008b2d"
+    "applied": "e3198bfd7d6538b8"
   }
 }
