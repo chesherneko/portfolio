@@ -12,26 +12,26 @@
       "sectionPath": ["1.2 게임 소개"],
       "points": [],
       "visuals": [
-        {"kind": "table", "n": 1, "fp": "보스|난이도|유형"},
+        {"kind": "table", "n": 2, "fp": "보스|난이도|유형"},
         {
           "kind": "image",
           "src": "images/1.2-2_boss-easy.webp",
-          "w": 1046,
-          "h": 588,
+          "w": 720,
+          "h": 404,
           "caption": {"text": "차르차로사우루스(이지, 괴수형)", "verbatim": false}
         },
         {
           "kind": "image",
           "src": "images/1.2-2_boss-normal.webp",
-          "w": 1048,
-          "h": 586,
+          "w": 720,
+          "h": 404,
           "caption": {"text": "페르데로스(노멀, 괴수형)", "verbatim": false}
         },
         {
           "kind": "image",
           "src": "images/1.2-2_boss-hard.webp",
-          "w": 1042,
-          "h": 582,
+          "w": 720,
+          "h": 404,
           "caption": {"text": "휴머노이드(하드, 인간형)", "verbatim": false}
         }
       ]
@@ -233,44 +233,6 @@
       }
     },
     {
-      "key": "projectile-react",
-      "chapter": "core",
-      "layout": "gallery",
-      "tab": "결과",
-      "title": {"text": "투사체 반응", "verbatim": true},
-      "lead": {"text": "플레이어가 염동력으로 던진 물체가 날아오면, 휴머노이드는 맞기 전에 피하거나, 베어 내거나, 가드로 받아 되던지는 반응 중 하나를 가중치로 고릅니다.", "verbatim": true},
-      "sectionPath": ["6.5 휴머노이드 보스", "투사체 반응"],
-      "points": [],
-      "visuals": [
-        {
-          "kind": "image",
-          "src": "images/6.5-3_dodge.webp",
-          "w": 480,
-          "h": 270,
-          "caption": {"text": "회피", "verbatim": true}
-        },
-        {
-          "kind": "image",
-          "src": "images/6.5-3_slash.webp",
-          "w": 480,
-          "h": 270,
-          "caption": {"text": "베어 내기", "verbatim": true}
-        },
-        {
-          "kind": "image",
-          "src": "images/6.5-3_throwback.webp",
-          "w": 480,
-          "h": 270,
-          "caption": {"text": "가드 후 되던지기", "verbatim": true}
-        }
-      ],
-      "from": {
-        "key": "projectile-react",
-        "sectionPath": ["6.5 휴머노이드 보스", "투사체 반응"],
-        "sig": ["투사체 반응|table|1|회피|베어 내기|가드 후 되던지기"]
-      }
-    },
-    {
       "key": "extras",
       "chapter": "core",
       "layout": "gallery",
@@ -312,15 +274,15 @@
       "chapter": "core",
       "layout": "full",
       "tab": "선택",
-      "title": {"text": "교육 과정 제공 구조에서 바꾼 것", "verbatim": true},
-      "lead": {"text": "교육 과정에서 제공된 `AnimStateEventSender`를 참고해, 효과음 전용 `AnimStateSoundSender`를 만들었습니다.", "verbatim": false},
-      "sectionPath": ["6.6 애니메이션 기반 효과음", "교육 과정 제공 구조에서 바꾼 것"],
+      "title": {"text": "신호 구조를 효과음용으로 바꾼 것", "verbatim": true},
+      "lead": {"text": "수업에서 배운 `AnimStateEventSender`를 응용해, 효과음 전용 `AnimStateSoundSender`를 만들었습니다.", "verbatim": false},
+      "sectionPath": ["6.6 애니메이션 기반 효과음", "신호 구조를 효과음용으로 바꾼 것"],
       "points": [],
-      "visuals": [{"kind": "table", "n": 1, "fp": "|교육 과정 제공 구조 (AnimStateEventSender)|효과음용 구조 (AnimStateSoundSender)"}],
+      "visuals": [{"kind": "table", "n": 1, "fp": "|신호 구조 (AnimStateEventSender)|효과음용 구조 (AnimStateSoundSender)"}],
       "from": {
         "key": "sound-compare",
-        "sectionPath": ["6.6 애니메이션 기반 효과음", "교육 과정 제공 구조에서 바꾼 것"],
-        "sig": ["교육 과정 제공 구조에서 바꾼 것|table|1||교육 과정 제공 구조 (AnimStateEventSender)|효과음용 구조 (AnimStateSoundSen"]
+        "sectionPath": ["6.6 애니메이션 기반 효과음", "신호 구조를 효과음용으로 바꾼 것"],
+        "sig": ["신호 구조를 효과음용으로 바꾼 것|table|1||신호 구조 (AnimStateEventSender)|효과음용 구조 (AnimStateSoundSender)"]
       }
     },
     {
@@ -589,9 +551,9 @@
       "chapter": "core",
       "layout": "code",
       "tab": "구현",
-      "title": {"text": "교육 과정 제공 구조에서 바꾼 것", "verbatim": true},
+      "title": {"text": "신호 구조를 효과음용으로 바꾼 것", "verbatim": true},
       "lead": null,
-      "sectionPath": ["6.6 애니메이션 기반 효과음", "교육 과정 제공 구조에서 바꾼 것"],
+      "sectionPath": ["6.6 애니메이션 기반 효과음", "신호 구조를 효과음용으로 바꾼 것"],
       "points": [],
       "visuals": [
         {
@@ -607,13 +569,13 @@
           "w": 467,
           "h": 620,
           "caption": {"text": "Animator 상태에 붙은 AnimStateSoundSender 인스펙터: 진행률(Time)마다 재생할 소리와 볼륨", "verbatim": true},
-          "sectionPath": ["6.6 애니메이션 기반 효과음", "교육 과정 제공 구조에서 바꾼 것"]
+          "sectionPath": ["6.6 애니메이션 기반 효과음", "신호 구조를 효과음용으로 바꾼 것"]
         }
       ],
       "from": {
         "key": "sound-sender",
-        "sectionPath": ["6.6 애니메이션 기반 효과음", "교육 과정 제공 구조에서 바꾼 것"],
-        "sig": ["교육 과정 제공 구조에서 바꾼 것|code|2|// 효과음용 구조 (발췌, 되감기·전환 중·재생 간격 처리는 생략)"]
+        "sectionPath": ["6.6 애니메이션 기반 효과음", "신호 구조를 효과음용으로 바꾼 것"],
+        "sig": ["신호 구조를 효과음용으로 바꾼 것|code|2|// 효과음용 구조 (발췌, 되감기·전환 중·재생 간격 처리는 생략)"]
       },
       "group": "merge-sound-sender"
     },
@@ -683,6 +645,8 @@
       "key": "loop",
       "chapter": "intro",
       "layout": "visual",
+      "carousel": true,
+      "sideRatio": 0.85,
       "tab": "개요",
       "title": {"text": "1.2 게임 소개", "verbatim": true},
       "lead": {"text": "ODDITY는 근미래를 배경으로 한 3인칭 보스 액션입니다.", "verbatim": true},
@@ -693,19 +657,30 @@
         {"label": "", "text": "전투에서는 염동력으로 주변 물체를 들어 던지고, 칩으로 얻은 스킬을 씁니다.", "verbatim": true}
       ],
       "visuals": [
-        {"kind": "mermaid", "n": 1, "fp": "flowchart LR"},
+        {"kind": "mermaid", "n": 1, "fp": "flowchart LR", "place": "cards-top"},
         {
           "kind": "image",
-          "src": "images/1.2-1_chip-grid.png",
-          "w": 860,
-          "h": 529,
-          "caption": {"text": "증강칩을 격자에 배치하는 화면", "verbatim": true}
+          "src": "images/1.2-1_chip-equip.webp",
+          "w": 720,
+          "h": 404,
+          "caption": {"text": "증강칩을 격자에 배치해 장착하는 장면", "verbatim": true}
+        },
+        {
+          "kind": "image",
+          "src": "images/1.2-1_play-normal.webp",
+          "w": 720,
+          "h": 404,
+          "caption": {"text": "페르데로스(노멀) 보스전 플레이 장면", "verbatim": true}
         }
       ],
       "from": {
         "key": "loop",
         "sectionPath": ["1.2 게임 소개"],
-        "sig": ["1.2 게임 소개|image|images/1.2-1_chip-grid.png|1", "1.2 게임 소개|mermaid|1|flowchart LR"]
+        "sig": [
+          "1.2 게임 소개|image|images/1.2-1_chip-equip.webp|1",
+          "1.2 게임 소개|image|images/1.2-1_play-normal.webp|1",
+          "1.2 게임 소개|mermaid|1|flowchart LR"
+        ]
       }
     },
     {
@@ -745,9 +720,9 @@
       "chapter": "trouble",
       "layout": "problem",
       "tab": "문제 해결",
-      "title": {"text": "8.3 애니메이션이 끝났는데 보스가 멈춰 있음", "verbatim": true},
+      "title": {"text": "8.2 애니메이션이 끝났는데 보스가 멈춰 있음", "verbatim": true},
       "lead": null,
-      "sectionPath": ["8.3 애니메이션이 끝났는데 보스가 멈춰 있음"],
+      "sectionPath": ["8.2 애니메이션이 끝났는데 보스가 멈춰 있음"],
       "points": [
         {
           "label": "문제",
@@ -765,8 +740,8 @@
       "visuals": [{"kind": "code", "n": 1, "fp": "public override void OnStateExit(Animator animator, Animator"}],
       "from": {
         "key": "ts-anim-end",
-        "sectionPath": ["8.3 애니메이션이 끝났는데 보스가 멈춰 있음"],
-        "sig": ["8.3 애니메이션이 끝났는데 보스가 멈춰 있음|code|1|public override void OnStateExit(Animator animator, Animator"]
+        "sectionPath": ["8.2 애니메이션이 끝났는데 보스가 멈춰 있음"],
+        "sig": ["8.2 애니메이션이 끝났는데 보스가 멈춰 있음|code|1|public override void OnStateExit(Animator animator, Animator"]
       }
     },
     {
@@ -834,6 +809,159 @@
         "sectionPath": ["6.2 의도(Intent) 기반 보스 판단", "동작 방식"],
         "sig": ["동작 방식|code|1|// 추격을 멈추고 판단 상태로 돌아갈 조건"]
       }
+    },
+    {
+      "key": "queue-code",
+      "chapter": "core",
+      "layout": "code",
+      "tab": "구현",
+      "title": {"text": "처리 코드", "verbatim": false},
+      "lead": null,
+      "sectionPath": ["6.1 전투 이벤트 큐", "처리 코드 (CombatManager.cs)"],
+      "points": [
+        {"label": "", "text": "처리를 시작할 때 큐 개수를 한 번 읽고 그만큼만 꺼냅니다.", "verbatim": true},
+        {"label": "", "text": "처리 도중 새로 들어온 요청(피해 결과에 반응한 흡혈 회복 등)은 다음 프레임으로 넘어갑니다.", "verbatim": true},
+        {
+          "label": "",
+          "text": "큐가 빌 때까지 처리하면 반응이 다시 반응을 부르는 연쇄가 생겼을 때 `Update`가 끝나지 않아 게임이 멈출 수 있어서, 이번 프레임에 처리할 양을 시작할 때 정해 둡니다.",
+          "verbatim": true
+        },
+        {
+          "label": "",
+          "text": "`CombatManager`에는 피해량 계산이나 체력 변경 코드가 없습니다. 계산은 받는 쪽 `TakeDamage`가 합니다.",
+          "verbatim": true
+        }
+      ],
+      "visuals": [
+        {
+          "kind": "code",
+          "n": 1,
+          "lines": [1, 16],
+          "fp": "private readonly Queue<CombatEvent> eventQueue = new();",
+          "caption": {"text": "CombatManager.cs", "verbatim": false}
+        }
+      ],
+      "from": {
+        "key": "queue-code",
+        "sectionPath": ["6.1 전투 이벤트 큐", "처리 코드 (CombatManager.cs)"],
+        "sig": ["처리 코드 (CombatManager.cs)|code|1|private readonly Queue<CombatEvent> eventQueue = new();"]
+      }
+    },
+    {
+      "key": "projectile-react",
+      "chapter": "core",
+      "layout": "gallery",
+      "tab": "결과",
+      "title": {"text": "투사체 반응", "verbatim": true},
+      "lead": {"text": "날아오는 물체에 맞기 전에, 회피·베어 내기·가드 후 되던지기 중 하나를 가중치로 고릅니다.", "verbatim": false},
+      "sectionPath": ["6.5 휴머노이드 보스", "투사체 반응"],
+      "points": [],
+      "visuals": [
+        {"kind": "table", "n": 2, "fp": "회피|베어 내기|가드 후 되던지기", "transpose": true, "skipImages": true, "head": [{"text": "반응", "verbatim": false}, {"text": "물체에 하는 일", "verbatim": false}]},
+        {"kind": "image", "src": "images/6.5-3_dodge.webp", "w": 480, "h": 270, "caption": {"text": "회피", "verbatim": true}},
+        {"kind": "image", "src": "images/6.5-3_slash.webp", "w": 480, "h": 270, "caption": {"text": "베어 내기", "verbatim": true}},
+        {"kind": "image", "src": "images/6.5-3_throwback.webp", "w": 480, "h": 270, "caption": {"text": "가드 후 되던지기", "verbatim": true}}
+      ],
+      "from": {
+        "key": "projectile-react",
+        "sectionPath": ["6.5 휴머노이드 보스", "투사체 반응"],
+        "sig": ["투사체 반응|table|2|회피|베어 내기|가드 후 되던지기"]
+      }
+    },
+    {
+      "key": "projectile-flow",
+      "chapter": "core",
+      "layout": "visual",
+      "tab": "구조",
+      "title": {"text": "투사체 반응", "verbatim": true},
+      "lead": {"text": "보스는 염동력 쪽이 공개한 물체 목록과 상태를 읽어 날아오는 물체를 직접 감시합니다.", "verbatim": true},
+      "sectionPath": ["6.5 휴머노이드 보스", "투사체 반응"],
+      "points": [{"label": "이유", "text": "염동력 코드에 이벤트를 추가하지 않고, 팀원 코드를 건드리지 않으려고 직접 감시합니다.", "verbatim": false}],
+      "visuals": [{"kind": "mermaid", "n": 1, "fp": "flowchart LR"}],
+      "from": {"key": "projectile-flow", "sectionPath": ["6.5 휴머노이드 보스", "투사체 반응"], "sig": ["투사체 반응|mermaid|1|flowchart LR"]}
+    },
+    {
+      "key": "projectile-api",
+      "chapter": "core",
+      "layout": "visual",
+      "tab": "구조",
+      "title": {"text": "투사체 반응", "verbatim": true},
+      "lead": {"text": "보스는 팀원의 `PsychokinesisObject`를 고치지 않고, 공개된 멤버 다섯 개만 씁니다.", "verbatim": false},
+      "sectionPath": ["6.5 휴머노이드 보스", "투사체 반응"],
+      "points": [],
+      "visuals": [
+        {"kind": "table", "n": 1, "fp": "멤버|염동력 쪽에서 하는 일|보스에서 쓰는 곳"},
+        {"kind": "code", "n": 1, "fp": "// PsychokinesisObject.cs — 염동력 파트(팀원) 코드. 보스가 쓰는 공개 멤버만 발췌"}
+      ],
+      "from": {
+        "key": "projectile-api",
+        "sectionPath": ["6.5 휴머노이드 보스", "투사체 반응"],
+        "sig": [
+          "투사체 반응|code|1|// PsychokinesisObject.cs — 염동력 파트(팀원) 코드. 보스가 쓰는 공개 멤버만 발췌",
+          "투사체 반응|table|1|멤버|염동력 쪽에서 하는 일|보스에서 쓰는 곳"
+        ]
+      }
+    },
+    {
+      "key": "projectile-thrown",
+      "chapter": "core",
+      "layout": "code",
+      "tab": "구현",
+      "title": {"text": "투사체 반응", "verbatim": true},
+      "lead": {"text": "물체를 던졌는지 나타내는 값은 염동력 쪽에서 비공개입니다.", "verbatim": true},
+      "sectionPath": ["6.5 휴머노이드 보스", "투사체 반응"],
+      "points": [{"label": "해결", "text": "플레이어가 든 적이 있고, 놓은 뒤에도 아직 빠르게 움직이는 물체를 던진 물체로 봅니다.", "verbatim": false}],
+      "visuals": [{"kind": "code", "n": 2, "fp": "// 플레이어가 들었던 물체를 기록 (풀로 돌아가거나 부서진 물체는 지움)"}],
+      "from": {
+        "key": "projectile-thrown",
+        "sectionPath": ["6.5 휴머노이드 보스", "투사체 반응"],
+        "sig": ["투사체 반응|code|2|// 플레이어가 들었던 물체를 기록 (풀로 돌아가거나 부서진 물체는 지움)"]
+      }
+    },
+    {
+      "key": "projectile",
+      "chapter": "core",
+      "layout": "code",
+      "tab": "구현",
+      "title": {"text": "투사체 반응", "verbatim": true},
+      "lead": {"text": "기록된 물체 중 날아오는 것을 보고, 가장 먼저 도착할 물체 하나를 고릅니다.", "verbatim": true},
+      "sectionPath": ["6.5 휴머노이드 보스", "투사체 반응"],
+      "points": [
+        {"label": "", "text": "반응 시간 안에 도착하고, 진행선이 몸통 반경 안을 지나는 물체만 맞을 물체로 봅니다.", "verbatim": false},
+        {"label": "이유", "text": "등 뒤에서 오는 물체는 무시해, 뒤를 노리는 공략 여지를 남겼습니다.", "verbatim": true}
+      ],
+      "visuals": [
+        {
+          "kind": "code",
+          "n": 3,
+          "lines": [15, 34],
+          "fp": "// 날아오는 물체 중 가장 먼저 도착할 \"맞을 물체\"를 찾음 (발췌, 반응하지 않은 이유를 남기는 로그 처"
+        }
+      ],
+      "from": {
+        "key": "projectile",
+        "sectionPath": ["6.5 휴머노이드 보스", "투사체 반응"],
+        "sig": ["투사체 반응|code|3|// 날아오는 물체 중 가장 먼저 도착할 \"맞을 물체\"를 찾음 (발췌, 반응하지 않은 이유를 남기는 로그 처"]
+      }
+    },
+    {
+      "key": "projectile-deflect",
+      "chapter": "core",
+      "layout": "code",
+      "tab": "구현",
+      "title": {"text": "투사체 반응", "verbatim": true},
+      "lead": {"text": "되던질 때는 원래 물체 대신, 같은 모양의 보스 전용 투사체(`HumanoidDeflectedProjectile`)를 날립니다.", "verbatim": false},
+      "sectionPath": ["6.5 휴머노이드 보스", "투사체 반응"],
+      "points": [
+        {"label": "", "text": "`PsychokinesisObject`가 없어 플레이어가 다시 잡을 수 없습니다.", "verbatim": false},
+        {"label": "", "text": "원래 물체의 공개된 값만 읽어 겉모습과 무게를 맞춥니다.", "verbatim": true}
+      ],
+      "visuals": [{"kind": "code", "n": 4, "fp": "// 가드에 막힌 물체와 같은 모양·질량으로 바꿈 (발췌)"}],
+      "from": {
+        "key": "projectile-deflect",
+        "sectionPath": ["6.5 휴머노이드 보스", "투사체 반응"],
+        "sig": ["투사체 반응|code|4|// 가드에 막힌 물체와 같은 모양·질량으로 바꿈 (발췌)"]
+      }
     }
   ],
   "hide": [
@@ -888,8 +1016,8 @@
       "key": "sound-sender-shot",
       "from": {
         "key": "sound-sender-shot",
-        "sectionPath": ["6.6 애니메이션 기반 효과음", "교육 과정 제공 구조에서 바꾼 것"],
-        "sig": ["교육 과정 제공 구조에서 바꾼 것|image|images/6.6-1_sound-sender.png|1"]
+        "sectionPath": ["6.6 애니메이션 기반 효과음", "신호 구조를 효과음용으로 바꾼 것"],
+        "sig": ["신호 구조를 효과음용으로 바꾼 것|image|images/6.6-1_sound-sender.png|1"]
       },
       "group": "merge-sound-sender"
     },

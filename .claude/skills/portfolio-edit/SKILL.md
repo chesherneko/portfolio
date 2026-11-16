@@ -83,7 +83,8 @@ argument-hint: "[프로젝트 폴더] [장면 — #s= 주소·제목 일부·번
 | 틀·탭 바꾸기 | `pin` → `layout`·`tab` |
 | 그림·코드·표 바꾸기/빼기/더하기 | `pin` → `visuals`(0~3개, 원문 블록 참조만: `kind`·`n`·`fp`·(코드)`lines`·(이미지)`src`·`w`·`h`·`caption`, 다른 절이면 `sectionPath`). `visual`·`code`·`full`은 1개 이상, `screens`는 이미지 2~3개, `gallery`는 이미지 2~8개 + 그림이 아닌 표·다이어그램은 왼쪽 칸에 고정(2개까지) |
 | 사진 넘기기의 표 칸 폭 | `pin` → 장면에 `"sideRatio": 1.5`처럼(왼쪽 표 칸 fr, 사진 칸은 1.6) |
-| 시각 자료를 카드 아래로 | `pin` → 그 참조에 `"place": "cards"`(왼쪽은 나머지 시각 자료, 오른쪽은 카드 → 그 아래 이 자료) |
+| 가로 표를 세로로(행 ↔ 그림 연동용) | `pin` → 그 표 참조에 `"transpose": true`(원문 열 → 덱 행), 그림 줄을 빼려면 `"skipImages": true`, 머리 줄은 `"head": [글 조각, …]`(원문에 없는 글이면 `verbatim: false`). 표 칸 안 그림은 `kind: image` + `src`로 따로 넣어 `gallery`로. 기술 문서는 그대로 |
+| 시각 자료를 카드 아래로 | `pin` → 그 참조에 `"place": "cards"`(왼쪽은 나머지 시각 자료, 오른쪽은 카드 → 그 아래 이 자료). 카드 **위**로는 `"place": "cards-top"`(이 레포) |
 | 코드 줄 범위 | `pin` → 그 코드 참조의 `lines: [시작, 끝]`(펜스 제외 1부터). 20줄을 넘으면 렌더러가 "계속" 장면으로 나눔 |
 | 글 줄이기·원문 다른 문장으로 | `pin` → `title`·`lead`·`points[]`. 원문 글자 그대로면 `verbatim: true`, 줄이거나 합쳤으면 `false`. `lead`는 80자, 요점 90자 안팎 |
 | 나누기 | `pin <장면> --as <새 key>` → 두 pin의 `visuals`·`points`를 나눔(새 key는 `^[a-z][a-z0-9-]{1,31}$`, 예: `spawn-weight-code`). 새 장면의 `title`은 원래 그대로 두거나 원문 하위 제목으로. 요점이 없는 장면은 시각 자료가 가로 전체로 그려짐 |

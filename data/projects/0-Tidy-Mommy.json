@@ -531,7 +531,7 @@
           },
           {"label": "", "text": "피버에 들어가면 게이지가 0부터 다시 차므로, 15초 안에 게이지를 다시 5까지 채워야 슈퍼 피버로 올라갑니다.", "verbatim": true}
         ],
-        "visuals": [{"kind": "mermaid", "n": 1, "fp": "stateDiagram-v2"}, {"kind": "table", "n": 2, "fp": "모드|블록 보충|나오는 색|화면·소리"}]
+        "visuals": [{"kind": "mermaid", "n": 1, "fp": "flowchart LR"}, {"kind": "table", "n": 2, "fp": "모드|블록 보충|나오는 색|화면·소리"}]
       },
       {
         "key": "superfever",
@@ -924,7 +924,7 @@
           },
           {"label": "", "text": "피버에 들어가면 게이지가 0부터 다시 차므로, 15초 안에 게이지를 다시 5까지 채워야 슈퍼 피버로 올라갑니다.", "verbatim": true}
         ],
-        "visuals": [{"kind": "mermaid", "n": 1, "fp": "stateDiagram-v2"}, {"kind": "table", "n": 2, "fp": "모드|블록 보충|나오는 색|화면·소리"}]
+        "visuals": [{"kind": "mermaid", "n": 1, "fp": "flowchart LR"}, {"kind": "table", "n": 2, "fp": "모드|블록 보충|나오는 색|화면·소리"}]
       },
       {
         "key": "superfever",
@@ -980,6 +980,6 @@
         "visuals": [{"kind": "code", "n": 1, "fp": "public void PlayBlockMoveSFX()"}]
       }
     ],
-    "applied": "db6d6a68ec6fd4a6"
+    "applied": "e6b1e612ffb3c78c"
   }
 }

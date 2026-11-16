@@ -103,11 +103,11 @@
     {
       "title": "애니메이션이 끝났는데 보스가 멈춰 있음",
       "problem": "공격 애니메이션이 끝나면 `OnAttackEnded` 신호로 판단 상태에 돌아가야 하는데, 신호가 오지 않아 패턴이 멈추는 경우가 있었습니다.",
-      "cause": "신호는 애니메이션 진행률이 정해진 값을 지날 때 보내는 방식(교육 과정 제공 구조)이라, 진행률이 정확히 1을 거치지 않고 다음 상태로 넘어가면 1에 걸어 둔 종료 신호가 나가지 않았습니다.",
+      "cause": "신호는 애니메이션 진행률이 정해진 값을 지날 때 보내는 방식(`AnimStateEventSender`)이라, 진행률이 정확히 1을 거치지 않고 다음 상태로 넘어가면 1에 걸어 둔 종료 신호가 나가지 않았습니다.",
       "solution": "상태가 끝날 때 아직 못 보낸 신호를 마저 보내고, 이미 보낸 신호는 건너뜁니다. 끊긴 상태가 몰아 보낸 종료 신호로 투사체 반응이 바로 끝나지 않도록, 반응 패턴은 진입 후 0.2초 동안 신호를 무시합니다.",
       "result": "",
       "lesson": "",
-      "section": "8.3 애니메이션이 끝났는데 보스가 멈춰 있음"
+      "section": "8.2 애니메이션이 끝났는데 보스가 멈춰 있음"
     },
     {
       "title": "(미해결) 보스가 가끔 맵 밖으로 나감",
@@ -116,7 +116,7 @@
       "solution": "남은 일정으로는 원인을 확정하고 고칠 시간이 부족해, NavMesh 밖에 일정 시간 넘게 머물면 가장 가까운 NavMesh 위로 되돌리는 방어 컴포넌트(`BossNavMeshGuard`)를 넣었습니다.",
       "result": "",
       "lesson": "",
-      "section": "8.5 (미해결) 보스가 가끔 맵 밖으로 나감"
+      "section": "8.3 (미해결) 보스가 가끔 맵 밖으로 나감"
     }
   ],
   "screenshots": [
@@ -168,7 +168,7 @@
       "차원 베기가 \"결과의 평등\"을 만듦 — 실력과 상관없이 같은 비율로 체력이 깎인다는 피드백",
       "보스들이 거리를 좁히는 기술이 너무 많음",
       "분신과 본체 기술이 겹쳐 같이 맞음",
-      "보스가 가끔 맵 밖으로 나감 (8.5)"
+      "보스가 가끔 맵 밖으로 나감 (8.3)"
     ],
     "plans": [
       "원래 목적대로 기믹 수행형 패턴으로 변경",
@@ -216,15 +216,24 @@
           {"label": "", "text": "전투에서는 염동력으로 주변 물체를 들어 던지고, 칩으로 얻은 스킬을 씁니다.", "verbatim": true}
         ],
         "visuals": [
-          {"kind": "mermaid", "n": 1, "fp": "flowchart LR"},
+          {"kind": "mermaid", "n": 1, "fp": "flowchart LR", "place": "cards-top"},
           {
             "kind": "image",
-            "src": "images/1.2-1_chip-grid.png",
-            "w": 860,
-            "h": 529,
-            "caption": {"text": "증강칩을 격자에 배치하는 화면", "verbatim": true}
+            "src": "images/1.2-1_chip-equip.webp",
+            "w": 720,
+            "h": 404,
+            "caption": {"text": "증강칩을 격자에 배치해 장착하는 장면", "verbatim": true}
+          },
+          {
+            "kind": "image",
+            "src": "images/1.2-1_play-normal.webp",
+            "w": 720,
+            "h": 404,
+            "caption": {"text": "페르데로스(노멀) 보스전 플레이 장면", "verbatim": true}
           }
         ],
+        "sideRatio": 0.85,
+        "carousel": true,
         "edited": true
       },
       {
@@ -237,26 +246,26 @@
         "sectionPath": ["1.2 게임 소개"],
         "points": [],
         "visuals": [
-          {"kind": "table", "n": 1, "fp": "보스|난이도|유형"},
+          {"kind": "table", "n": 2, "fp": "보스|난이도|유형"},
           {
             "kind": "image",
             "src": "images/1.2-2_boss-easy.webp",
-            "w": 1046,
-            "h": 588,
+            "w": 720,
+            "h": 404,
             "caption": {"text": "차르차로사우루스(이지, 괴수형)", "verbatim": false}
           },
           {
             "kind": "image",
             "src": "images/1.2-2_boss-normal.webp",
-            "w": 1048,
-            "h": 586,
+            "w": 720,
+            "h": 404,
             "caption": {"text": "페르데로스(노멀, 괴수형)", "verbatim": false}
           },
           {
             "kind": "image",
             "src": "images/1.2-2_boss-hard.webp",
-            "w": 1042,
-            "h": 582,
+            "w": 720,
+            "h": 404,
             "caption": {"text": "휴머노이드(하드, 인간형)", "verbatim": false}
           }
         ],
@@ -331,7 +340,7 @@
         "lead": null,
         "sectionPath": ["3.2 파트 간 연결 지점"],
         "points": [],
-        "visuals": [{"kind": "table", "n": 1, "fp": "내 쪽|상대 파트|연결 방식"}]
+        "visuals": [{"kind": "table", "n": 1, "fp": "영역|내 쪽|상대 파트|연결 방식"}]
       },
       {
         "key": "design-goals",
@@ -455,19 +464,33 @@
         "chapter": "core",
         "layout": "code",
         "tab": "구현",
-        "title": {"text": "처리 코드", "verbatim": true},
+        "title": {"text": "처리 코드", "verbatim": false},
         "lead": null,
-        "sectionPath": ["6.1 전투 이벤트 큐", "처리 코드"],
+        "sectionPath": ["6.1 전투 이벤트 큐", "처리 코드 (CombatManager.cs)"],
         "points": [
           {"label": "", "text": "처리를 시작할 때 큐 개수를 한 번 읽고 그만큼만 꺼냅니다.", "verbatim": true},
           {"label": "", "text": "처리 도중 새로 들어온 요청(피해 결과에 반응한 흡혈 회복 등)은 다음 프레임으로 넘어갑니다.", "verbatim": true},
+          {
+            "label": "",
+            "text": "큐가 빌 때까지 처리하면 반응이 다시 반응을 부르는 연쇄가 생겼을 때 `Update`가 끝나지 않아 게임이 멈출 수 있어서, 이번 프레임에 처리할 양을 시작할 때 정해 둡니다.",
+            "verbatim": true
+          },
           {
             "label": "",
             "text": "`CombatManager`에는 피해량 계산이나 체력 변경 코드가 없습니다. 계산은 받는 쪽 `TakeDamage`가 합니다.",
             "verbatim": true
           }
         ],
-        "visuals": [{"kind": "code", "n": 1, "lines": [1, 16], "fp": "private readonly Queue<CombatEvent> eventQueue = new();"}]
+        "visuals": [
+          {
+            "kind": "code",
+            "n": 1,
+            "lines": [1, 16],
+            "fp": "private readonly Queue<CombatEvent> eventQueue = new();",
+            "caption": {"text": "CombatManager.cs", "verbatim": false}
+          }
+        ],
+        "edited": true
       },
       {
         "key": "queue-choice",
@@ -877,18 +900,84 @@
         ]
       },
       {
+        "key": "projectile-api",
+        "chapter": "core",
+        "layout": "visual",
+        "tab": "구조",
+        "title": {"text": "투사체 반응", "verbatim": true},
+        "lead": {"text": "보스는 팀원의 `PsychokinesisObject`를 고치지 않고, 공개된 멤버 다섯 개만 씁니다.", "verbatim": false},
+        "sectionPath": ["6.5 휴머노이드 보스", "투사체 반응"],
+        "points": [],
+        "visuals": [
+          {"kind": "table", "n": 1, "fp": "멤버|염동력 쪽에서 하는 일|보스에서 쓰는 곳"},
+          {"kind": "code", "n": 1, "fp": "// PsychokinesisObject.cs — 염동력 파트(팀원) 코드. 보스가 쓰는 공개 멤버만 발췌"}
+        ],
+        "edited": true
+      },
+      {
+        "key": "projectile-flow",
+        "chapter": "core",
+        "layout": "visual",
+        "tab": "구조",
+        "title": {"text": "투사체 반응", "verbatim": true},
+        "lead": {"text": "보스는 염동력 쪽이 공개한 물체 목록과 상태를 읽어 날아오는 물체를 직접 감시합니다.", "verbatim": true},
+        "sectionPath": ["6.5 휴머노이드 보스", "투사체 반응"],
+        "points": [{"label": "이유", "text": "염동력 코드에 이벤트를 추가하지 않고, 팀원 코드를 건드리지 않으려고 직접 감시합니다.", "verbatim": false}],
+        "visuals": [{"kind": "mermaid", "n": 1, "fp": "flowchart LR"}],
+        "edited": true
+      },
+      {
+        "key": "projectile-thrown",
+        "chapter": "core",
+        "layout": "code",
+        "tab": "구현",
+        "title": {"text": "투사체 반응", "verbatim": true},
+        "lead": {"text": "물체를 던졌는지 나타내는 값은 염동력 쪽에서 비공개입니다.", "verbatim": true},
+        "sectionPath": ["6.5 휴머노이드 보스", "투사체 반응"],
+        "points": [{"label": "해결", "text": "플레이어가 든 적이 있고, 놓은 뒤에도 아직 빠르게 움직이는 물체를 던진 물체로 봅니다.", "verbatim": false}],
+        "visuals": [{"kind": "code", "n": 2, "fp": "// 플레이어가 들었던 물체를 기록 (풀로 돌아가거나 부서진 물체는 지움)"}],
+        "edited": true
+      },
+      {
+        "key": "projectile",
+        "chapter": "core",
+        "layout": "code",
+        "tab": "구현",
+        "title": {"text": "투사체 반응", "verbatim": true},
+        "lead": {"text": "기록된 물체 중 날아오는 것을 보고, 가장 먼저 도착할 물체 하나를 고릅니다.", "verbatim": true},
+        "sectionPath": ["6.5 휴머노이드 보스", "투사체 반응"],
+        "points": [
+          {"label": "", "text": "반응 시간 안에 도착하고, 진행선이 몸통 반경 안을 지나는 물체만 맞을 물체로 봅니다.", "verbatim": false},
+          {"label": "이유", "text": "등 뒤에서 오는 물체는 무시해, 뒤를 노리는 공략 여지를 남겼습니다.", "verbatim": true}
+        ],
+        "visuals": [
+          {
+            "kind": "code",
+            "n": 3,
+            "lines": [15, 34],
+            "fp": "// 날아오는 물체 중 가장 먼저 도착할 \"맞을 물체\"를 찾음 (발췌, 반응하지 않은 이유를 남기는 로그 처"
+          }
+        ],
+        "edited": true
+      },
+      {
         "key": "projectile-react",
         "chapter": "core",
         "layout": "gallery",
         "tab": "결과",
         "title": {"text": "투사체 반응", "verbatim": true},
-        "lead": {
-          "text": "플레이어가 염동력으로 던진 물체가 날아오면, 휴머노이드는 맞기 전에 피하거나, 베어 내거나, 가드로 받아 되던지는 반응 중 하나를 가중치로 고릅니다.",
-          "verbatim": true
-        },
+        "lead": {"text": "날아오는 물체에 맞기 전에, 회피·베어 내기·가드 후 되던지기 중 하나를 가중치로 고릅니다.", "verbatim": false},
         "sectionPath": ["6.5 휴머노이드 보스", "투사체 반응"],
         "points": [],
         "visuals": [
+          {
+            "kind": "table",
+            "n": 2,
+            "fp": "회피|베어 내기|가드 후 되던지기",
+            "transpose": true,
+            "skipImages": true,
+            "head": [{"text": "반응", "verbatim": false}, {"text": "물체에 하는 일", "verbatim": false}]
+          },
           {
             "kind": "image",
             "src": "images/6.5-3_dodge.webp",
@@ -914,26 +1003,19 @@
         "edited": true
       },
       {
-        "key": "projectile",
+        "key": "projectile-deflect",
         "chapter": "core",
         "layout": "code",
         "tab": "구현",
         "title": {"text": "투사체 반응", "verbatim": true},
-        "lead": {"text": "보스는 염동력 쪽이 공개한 물체 목록과 상태를 읽어 날아오는 물체를 직접 감시합니다.", "verbatim": true},
+        "lead": {"text": "되던질 때는 원래 물체 대신, 같은 모양의 보스 전용 투사체(`HumanoidDeflectedProjectile`)를 날립니다.", "verbatim": false},
         "sectionPath": ["6.5 휴머노이드 보스", "투사체 반응"],
         "points": [
-          {"label": "", "text": "도착까지 남은 시간이 반응 시간 안이고, 진행선이 몸통 반경 안을 지나는 물체만 맞을 물체로 봅니다.", "verbatim": true},
-          {"label": "", "text": "플레이어가 들었던 물체만 봅니다.", "verbatim": true},
-          {"label": "", "text": "등 뒤에서 오는 물체는 무시해, 뒤를 노리는 공략 여지를 남겼습니다.", "verbatim": true}
+          {"label": "", "text": "`PsychokinesisObject`가 없어 플레이어가 다시 잡을 수 없습니다.", "verbatim": false},
+          {"label": "", "text": "원래 물체의 공개된 값만 읽어 겉모습과 무게를 맞춥니다.", "verbatim": true}
         ],
-        "visuals": [
-          {
-            "kind": "code",
-            "n": 1,
-            "lines": [15, 34],
-            "fp": "// 날아오는 물체 중 가장 먼저 도착할 \"맞을 물체\"를 찾음 (발췌, 반응하지 않은 이유를 남기는 로그 처"
-          }
-        ]
+        "visuals": [{"kind": "code", "n": 4, "fp": "// 가드에 막힌 물체와 같은 모양·질량으로 바꿈 (발췌)"}],
+        "edited": true
       },
       {
         "key": "dimension-slash",
@@ -1022,11 +1104,11 @@
         "chapter": "core",
         "layout": "full",
         "tab": "선택",
-        "title": {"text": "교육 과정 제공 구조에서 바꾼 것", "verbatim": true},
-        "lead": {"text": "교육 과정에서 제공된 `AnimStateEventSender`를 참고해, 효과음 전용 `AnimStateSoundSender`를 만들었습니다.", "verbatim": false},
-        "sectionPath": ["6.6 애니메이션 기반 효과음", "교육 과정 제공 구조에서 바꾼 것"],
+        "title": {"text": "신호 구조를 효과음용으로 바꾼 것", "verbatim": true},
+        "lead": {"text": "수업에서 배운 `AnimStateEventSender`를 응용해, 효과음 전용 `AnimStateSoundSender`를 만들었습니다.", "verbatim": false},
+        "sectionPath": ["6.6 애니메이션 기반 효과음", "신호 구조를 효과음용으로 바꾼 것"],
         "points": [],
-        "visuals": [{"kind": "table", "n": 1, "fp": "|교육 과정 제공 구조 (AnimStateEventSender)|효과음용 구조 (AnimStateSoundSender)"}],
+        "visuals": [{"kind": "table", "n": 1, "fp": "|신호 구조 (AnimStateEventSender)|효과음용 구조 (AnimStateSoundSender)"}],
         "edited": true
       },
       {
@@ -1034,9 +1116,9 @@
         "chapter": "core",
         "layout": "code",
         "tab": "구현",
-        "title": {"text": "교육 과정 제공 구조에서 바꾼 것", "verbatim": true},
+        "title": {"text": "신호 구조를 효과음용으로 바꾼 것", "verbatim": true},
         "lead": null,
-        "sectionPath": ["6.6 애니메이션 기반 효과음", "교육 과정 제공 구조에서 바꾼 것"],
+        "sectionPath": ["6.6 애니메이션 기반 효과음", "신호 구조를 효과음용으로 바꾼 것"],
         "points": [],
         "visuals": [
           {
@@ -1052,7 +1134,7 @@
             "w": 467,
             "h": 620,
             "caption": {"text": "Animator 상태에 붙은 AnimStateSoundSender 인스펙터: 진행률(Time)마다 재생할 소리와 볼륨", "verbatim": true},
-            "sectionPath": ["6.6 애니메이션 기반 효과음", "교육 과정 제공 구조에서 바꾼 것"]
+            "sectionPath": ["6.6 애니메이션 기반 효과음", "신호 구조를 효과음용으로 바꾼 것"]
           }
         ],
         "edited": true
@@ -1180,28 +1262,13 @@
         "edited": true
       },
       {
-        "key": "ts-pitch",
-        "chapter": "trouble",
-        "layout": "problem",
-        "tab": "문제 해결",
-        "title": {"text": "8.2 추격할 때 보스의 상체가 들림", "verbatim": true},
-        "lead": null,
-        "sectionPath": ["8.2 추격할 때 보스의 상체가 들림"],
-        "points": [
-          {"label": "문제", "text": "보스가 플레이어를 추격할 때 몸이 위를 보며 상체가 들림", "verbatim": true},
-          {"label": "원인", "text": "`transform.LookAt`이 대상 위치를 향해 위아래(피치)까지 돌림", "verbatim": true},
-          {"label": "해결", "text": "수평면 기준 회전으로 바꾸고, 이후 `BossMovement.Rotate`가 수직축 각도 하나만 받도록 정리", "verbatim": true}
-        ],
-        "visuals": []
-      },
-      {
         "key": "ts-anim-end",
         "chapter": "trouble",
         "layout": "problem",
         "tab": "문제 해결",
-        "title": {"text": "8.3 애니메이션이 끝났는데 보스가 멈춰 있음", "verbatim": true},
+        "title": {"text": "8.2 애니메이션이 끝났는데 보스가 멈춰 있음", "verbatim": true},
         "lead": null,
-        "sectionPath": ["8.3 애니메이션이 끝났는데 보스가 멈춰 있음"],
+        "sectionPath": ["8.2 애니메이션이 끝났는데 보스가 멈춰 있음"],
         "points": [
           {
             "label": "문제",
@@ -1220,28 +1287,13 @@
         "edited": true
       },
       {
-        "key": "ts-clone",
-        "chapter": "trouble",
-        "layout": "problem",
-        "tab": "문제 해결",
-        "title": {"text": "8.4 분신의 체력을 깎아 놨는데 다시 소환됨", "verbatim": true},
-        "lead": null,
-        "sectionPath": ["8.4 분신의 체력을 깎아 놨는데 다시 소환됨"],
-        "points": [
-          {"label": "문제", "text": "분신의 체력을 반쯤 깎아 놨는데, 차원 베기가 시작되면 분신이 사라지고 보스가 분신을 다시 소환", "verbatim": true},
-          {"label": "원인", "text": "시간 정지 연출 쪽 문제 때문에, 차원 베기에 들어가면 분신을 아예 제거하고 있었음", "verbatim": true},
-          {"label": "해결", "text": "분신을 제거하지 않고 꺼 두기만 하고, 차원 베기가 끝나면 체력을 유지한 채 다시 등장시킴", "verbatim": true}
-        ],
-        "visuals": []
-      },
-      {
         "key": "ts-offmap",
         "chapter": "trouble",
         "layout": "problem",
         "tab": "문제 해결",
-        "title": {"text": "8.5 (미해결) 보스가 가끔 맵 밖으로 나감", "verbatim": true},
+        "title": {"text": "8.3 (미해결) 보스가 가끔 맵 밖으로 나감", "verbatim": true},
         "lead": null,
-        "sectionPath": ["8.5 (미해결) 보스가 가끔 맵 밖으로 나감"],
+        "sectionPath": ["8.3 (미해결) 보스가 가끔 맵 밖으로 나감"],
         "points": [
           {"label": "문제", "text": "보스가 아주 가끔 NavMesh 밖으로 나가 맵 밖을 걷는 문제를 발견. 주로 돌진 패턴에서 발생", "verbatim": true},
           {"label": "추정 원인", "text": "터널링, 또는 순간이동이나 루트 모션으로 한 번 크게 벗어나면 NavMesh 경계 제한이 걸리지 않는 점", "verbatim": false},
@@ -1283,10 +1335,17 @@
           {"kind": "mermaid", "n": 1, "fp": "flowchart LR"},
           {
             "kind": "image",
-            "src": "images/1.2-1_chip-grid.png",
-            "w": 860,
-            "h": 529,
-            "caption": {"text": "증강칩을 격자에 배치하는 화면", "verbatim": true}
+            "src": "images/1.2-1_chip-equip.webp",
+            "w": 720,
+            "h": 404,
+            "caption": {"text": "증강칩을 격자에 배치해 장착하는 장면", "verbatim": true}
+          },
+          {
+            "kind": "image",
+            "src": "images/1.2-1_play-normal.webp",
+            "w": 720,
+            "h": 404,
+            "caption": {"text": "페르데로스(노멀) 보스전 플레이 장면", "verbatim": true}
           }
         ]
       },
@@ -1300,26 +1359,26 @@
         "sectionPath": ["1.2 게임 소개"],
         "points": [],
         "visuals": [
-          {"kind": "table", "n": 1, "fp": "보스|난이도|유형"},
+          {"kind": "table", "n": 2, "fp": "보스|난이도|유형"},
           {
             "kind": "image",
             "src": "images/1.2-2_boss-easy.webp",
-            "w": 1046,
-            "h": 588,
+            "w": 720,
+            "h": 404,
             "caption": {"text": "차르차로사우루스(이지, 괴수형)", "verbatim": false}
           },
           {
             "kind": "image",
             "src": "images/1.2-2_boss-normal.webp",
-            "w": 1048,
-            "h": 586,
+            "w": 720,
+            "h": 404,
             "caption": {"text": "페르데로스(노멀, 괴수형)", "verbatim": false}
           },
           {
             "kind": "image",
             "src": "images/1.2-2_boss-hard.webp",
-            "w": 1042,
-            "h": 582,
+            "w": 720,
+            "h": 404,
             "caption": {"text": "휴머노이드(하드, 인간형)", "verbatim": false}
           }
         ]
@@ -1393,7 +1452,7 @@
         "lead": null,
         "sectionPath": ["3.2 파트 간 연결 지점"],
         "points": [],
-        "visuals": [{"kind": "table", "n": 1, "fp": "내 쪽|상대 파트|연결 방식"}]
+        "visuals": [{"kind": "table", "n": 1, "fp": "영역|내 쪽|상대 파트|연결 방식"}]
       },
       {
         "key": "design-goals",
@@ -1524,9 +1583,9 @@
         "chapter": "core",
         "layout": "code",
         "tab": "구현",
-        "title": {"text": "처리 코드", "verbatim": true},
+        "title": {"text": "처리 코드 (CombatManager.cs)", "verbatim": true},
         "lead": null,
-        "sectionPath": ["6.1 전투 이벤트 큐", "처리 코드"],
+        "sectionPath": ["6.1 전투 이벤트 큐", "처리 코드 (CombatManager.cs)"],
         "points": [
           {"label": "", "text": "처리를 시작할 때 큐 개수를 한 번 읽고 그만큼만 꺼냅니다.", "verbatim": true},
           {"label": "", "text": "처리 도중 새로 들어온 요청(피해 결과에 반응한 흡혈 회복 등)은 다음 프레임으로 넘어갑니다.", "verbatim": true},
@@ -1923,6 +1982,67 @@
         ]
       },
       {
+        "key": "projectile-api",
+        "chapter": "core",
+        "layout": "visual",
+        "tab": "구조",
+        "title": {"text": "투사체 반응", "verbatim": true},
+        "lead": {
+          "text": "염동력으로 잡고 던지는 물체는 팀원이 만든 PsychokinesisObject입니다. 보스는 이 클래스를 고치지 않고, 원래 공개되어 있던 멤버 다섯 개만 씁니다.",
+          "verbatim": true
+        },
+        "sectionPath": ["6.5 휴머노이드 보스", "투사체 반응"],
+        "points": [],
+        "visuals": [
+          {"kind": "table", "n": 1, "fp": "멤버|염동력 쪽에서 하는 일|보스에서 쓰는 곳"},
+          {"kind": "code", "n": 1, "fp": "// PsychokinesisObject.cs — 염동력 파트(팀원) 코드. 보스가 쓰는 공개 멤버만 발췌"}
+        ]
+      },
+      {
+        "key": "projectile-flow",
+        "chapter": "core",
+        "layout": "visual",
+        "tab": "구조",
+        "title": {"text": "투사체 반응", "verbatim": true},
+        "lead": {"text": "보스는 염동력 쪽이 공개한 물체 목록과 상태를 읽어 날아오는 물체를 직접 감시합니다.", "verbatim": true},
+        "sectionPath": ["6.5 휴머노이드 보스", "투사체 반응"],
+        "points": [],
+        "visuals": [{"kind": "mermaid", "n": 1, "fp": "flowchart LR"}]
+      },
+      {
+        "key": "projectile-thrown",
+        "chapter": "core",
+        "layout": "code",
+        "tab": "구현",
+        "title": {"text": "투사체 반응", "verbatim": true},
+        "lead": {"text": "물체를 던졌는지 나타내는 값은 염동력 쪽에서 비공개입니다.", "verbatim": true},
+        "sectionPath": ["6.5 휴머노이드 보스", "투사체 반응"],
+        "points": [{"label": "", "text": "그래서 보스는 \"플레이어가 든 적이 있고, 놓은 뒤에도 아직 빠르게 움직이는 물체\"를 던진 물체로 봅니다.", "verbatim": true}],
+        "visuals": [{"kind": "code", "n": 2, "fp": "// 플레이어가 들었던 물체를 기록 (풀로 돌아가거나 부서진 물체는 지움)"}]
+      },
+      {
+        "key": "projectile",
+        "chapter": "core",
+        "layout": "code",
+        "tab": "구현",
+        "title": {"text": "투사체 반응", "verbatim": true},
+        "lead": {"text": "기록된 물체 중 날아오는 것을 보고, 가장 먼저 도착할 물체 하나를 고릅니다.", "verbatim": true},
+        "sectionPath": ["6.5 휴머노이드 보스", "투사체 반응"],
+        "points": [
+          {"label": "", "text": "도착까지 남은 시간이 반응 시간 안이고, 진행선이 몸통 반경 안을 지나는 물체만 맞을 물체로 봅니다.", "verbatim": true},
+          {"label": "", "text": "플레이어가 들었던 물체만 봅니다.", "verbatim": true},
+          {"label": "", "text": "등 뒤에서 오는 물체는 무시해, 뒤를 노리는 공략 여지를 남겼습니다.", "verbatim": true}
+        ],
+        "visuals": [
+          {
+            "kind": "code",
+            "n": 3,
+            "lines": [15, 34],
+            "fp": "// 날아오는 물체 중 가장 먼저 도착할 \"맞을 물체\"를 찾음 (발췌, 반응하지 않은 이유를 남기는 로그 처"
+          }
+        ]
+      },
+      {
         "key": "projectile-react",
         "chapter": "core",
         "layout": "full",
@@ -1934,29 +2054,21 @@
         },
         "sectionPath": ["6.5 휴머노이드 보스", "투사체 반응"],
         "points": [],
-        "visuals": [{"kind": "table", "n": 1, "fp": "회피|베어 내기|가드 후 되던지기"}]
+        "visuals": [{"kind": "table", "n": 2, "fp": "회피|베어 내기|가드 후 되던지기"}]
       },
       {
-        "key": "projectile",
+        "key": "projectile-deflect",
         "chapter": "core",
         "layout": "code",
         "tab": "구현",
         "title": {"text": "투사체 반응", "verbatim": true},
-        "lead": {"text": "보스는 염동력 쪽이 공개한 물체 목록과 상태를 읽어 날아오는 물체를 직접 감시합니다.", "verbatim": true},
+        "lead": {"text": "되던질 때는 원래 물체를 그대로 날려 보내지 않고, 같은 모양의 보스 전용 투사체(HumanoidDeflectedProjectile)로 바꿉니다.", "verbatim": true},
         "sectionPath": ["6.5 휴머노이드 보스", "투사체 반응"],
         "points": [
-          {"label": "", "text": "도착까지 남은 시간이 반응 시간 안이고, 진행선이 몸통 반경 안을 지나는 물체만 맞을 물체로 봅니다.", "verbatim": true},
-          {"label": "", "text": "플레이어가 들었던 물체만 봅니다.", "verbatim": true},
-          {"label": "", "text": "등 뒤에서 오는 물체는 무시해, 뒤를 노리는 공략 여지를 남겼습니다.", "verbatim": true}
+          {"label": "", "text": "이 투사체에는 PsychokinesisObject가 없어서 플레이어가 다시 잡을 수 없습니다.", "verbatim": true},
+          {"label": "", "text": "원래 물체의 공개된 값만 읽어 겉모습과 무게를 맞춥니다.", "verbatim": true}
         ],
-        "visuals": [
-          {
-            "kind": "code",
-            "n": 1,
-            "lines": [15, 34],
-            "fp": "// 날아오는 물체 중 가장 먼저 도착할 \"맞을 물체\"를 찾음 (발췌, 반응하지 않은 이유를 남기는 로그 처"
-          }
-        ]
+        "visuals": [{"kind": "code", "n": 4, "fp": "// 가드에 막힌 물체와 같은 모양·질량으로 바꿈 (발췌)"}]
       },
       {
         "key": "dimension-slash",
@@ -2032,9 +2144,9 @@
         "chapter": "core",
         "layout": "full",
         "tab": "선택",
-        "title": {"text": "교육 과정 제공 구조에서 바꾼 것", "verbatim": true},
+        "title": {"text": "신호 구조를 효과음용으로 바꾼 것", "verbatim": true},
         "lead": {"text": "효과음을 빠르게 붙이기에 좋아 보여 이 구조를 참고해, 효과음 전용 `AnimStateSoundSender`를 만들었습니다.", "verbatim": true},
-        "sectionPath": ["6.6 애니메이션 기반 효과음", "교육 과정 제공 구조에서 바꾼 것"],
+        "sectionPath": ["6.6 애니메이션 기반 효과음", "신호 구조를 효과음용으로 바꾼 것"],
         "points": [
           {"label": "", "text": "마지막 행은 두 구조가 반대로 동작합니다.", "verbatim": true},
           {
@@ -2043,16 +2155,16 @@
             "verbatim": true
           }
         ],
-        "visuals": [{"kind": "table", "n": 1, "fp": "|교육 과정 제공 구조 (AnimStateEventSender)|효과음용 구조 (AnimStateSoundSender)"}]
+        "visuals": [{"kind": "table", "n": 1, "fp": "|신호 구조 (AnimStateEventSender)|효과음용 구조 (AnimStateSoundSender)"}]
       },
       {
         "key": "sound-sender",
         "chapter": "core",
         "layout": "code",
         "tab": "구현",
-        "title": {"text": "교육 과정 제공 구조에서 바꾼 것", "verbatim": true},
+        "title": {"text": "신호 구조를 효과음용으로 바꾼 것", "verbatim": true},
         "lead": null,
-        "sectionPath": ["6.6 애니메이션 기반 효과음", "교육 과정 제공 구조에서 바꾼 것"],
+        "sectionPath": ["6.6 애니메이션 기반 효과음", "신호 구조를 효과음용으로 바꾼 것"],
         "points": [
           {"label": "반복 상태 (걷기 등)", "text": "한 바퀴 돌 때마다 기록을 지워, 매 바퀴 다시 재생", "verbatim": true},
           {"label": "상태가 중간에 끊기면", "text": "남은 소리는 재생하지 않음. 끊긴 공격 뒤에 타격음이 나오지 않게 함", "verbatim": true}
@@ -2064,9 +2176,9 @@
         "chapter": "core",
         "layout": "visual",
         "tab": "결과",
-        "title": {"text": "교육 과정 제공 구조에서 바꾼 것", "verbatim": true},
+        "title": {"text": "신호 구조를 효과음용으로 바꾼 것", "verbatim": true},
         "lead": null,
-        "sectionPath": ["6.6 애니메이션 기반 효과음", "교육 과정 제공 구조에서 바꾼 것"],
+        "sectionPath": ["6.6 애니메이션 기반 효과음", "신호 구조를 효과음용으로 바꾼 것"],
         "points": [
           {"label": "상태에 적는 것", "text": "진행률, 소리(클립을 드롭다운으로 고르고 볼륨 지정)", "verbatim": true},
           {"label": "신호를 받는 쪽", "text": "Listener 없이 `SoundManager`로 바로 재생", "verbatim": true}
@@ -2226,28 +2338,13 @@
         ]
       },
       {
-        "key": "ts-pitch",
-        "chapter": "trouble",
-        "layout": "problem",
-        "tab": "문제 해결",
-        "title": {"text": "8.2 추격할 때 보스의 상체가 들림", "verbatim": true},
-        "lead": null,
-        "sectionPath": ["8.2 추격할 때 보스의 상체가 들림"],
-        "points": [
-          {"label": "문제", "text": "보스가 플레이어를 추격할 때 몸이 위를 보며 상체가 들림", "verbatim": true},
-          {"label": "원인", "text": "`transform.LookAt`이 대상 위치를 향해 위아래(피치)까지 돌림", "verbatim": true},
-          {"label": "해결", "text": "수평면 기준 회전으로 바꾸고, 이후 `BossMovement.Rotate`가 수직축 각도 하나만 받도록 정리", "verbatim": true}
-        ],
-        "visuals": []
-      },
-      {
         "key": "ts-anim-end",
         "chapter": "trouble",
         "layout": "problem",
         "tab": "문제 해결",
-        "title": {"text": "8.3 애니메이션이 끝났는데 보스가 멈춰 있음", "verbatim": true},
+        "title": {"text": "8.2 애니메이션이 끝났는데 보스가 멈춰 있음", "verbatim": true},
         "lead": null,
-        "sectionPath": ["8.3 애니메이션이 끝났는데 보스가 멈춰 있음"],
+        "sectionPath": ["8.2 애니메이션이 끝났는데 보스가 멈춰 있음"],
         "points": [
           {
             "label": "문제",
@@ -2261,28 +2358,13 @@
         "visuals": [{"kind": "code", "n": 1, "fp": "public override void OnStateExit(Animator animator, Animator"}]
       },
       {
-        "key": "ts-clone",
-        "chapter": "trouble",
-        "layout": "problem",
-        "tab": "문제 해결",
-        "title": {"text": "8.4 분신의 체력을 깎아 놨는데 다시 소환됨", "verbatim": true},
-        "lead": null,
-        "sectionPath": ["8.4 분신의 체력을 깎아 놨는데 다시 소환됨"],
-        "points": [
-          {"label": "문제", "text": "분신의 체력을 반쯤 깎아 놨는데, 차원 베기가 시작되면 분신이 사라지고 보스가 분신을 다시 소환", "verbatim": true},
-          {"label": "원인", "text": "시간 정지 연출 쪽 문제 때문에, 차원 베기에 들어가면 분신을 아예 제거하고 있었음", "verbatim": true},
-          {"label": "해결", "text": "분신을 제거하지 않고 꺼 두기만 하고, 차원 베기가 끝나면 체력을 유지한 채 다시 등장시킴", "verbatim": true}
-        ],
-        "visuals": []
-      },
-      {
         "key": "ts-offmap",
         "chapter": "trouble",
         "layout": "problem",
         "tab": "문제 해결",
-        "title": {"text": "8.5 (미해결) 보스가 가끔 맵 밖으로 나감", "verbatim": true},
+        "title": {"text": "8.3 (미해결) 보스가 가끔 맵 밖으로 나감", "verbatim": true},
         "lead": null,
-        "sectionPath": ["8.5 (미해결) 보스가 가끔 맵 밖으로 나감"],
+        "sectionPath": ["8.3 (미해결) 보스가 가끔 맵 밖으로 나감"],
         "points": [
           {"label": "문제", "text": "보스가 아주 가끔 NavMesh 밖으로 나가 맵 밖을 걷는 문제를 발견. 주로 돌진 패턴에서 발생", "verbatim": true},
           {"label": "추정 원인", "text": "터널링, 또는 순간이동이나 루트 모션으로 한 번 크게 벗어나면 NavMesh 경계 제한이 걸리지 않는 점", "verbatim": false},
@@ -2295,6 +2377,7 @@
         "visuals": []
       }
     ],
-    "applied": "41e1dca365618024"
-  }
+    "applied": "edfa41aafcc248b4"
+  },
+  "generatedAt": "2026-11-16"
 }

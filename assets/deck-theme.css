@@ -284,6 +284,14 @@ table.md-table img { max-height: 120px; max-width: 100%; height: auto; }   /* wi
 .pf-sizing .gal-split { align-items: stretch; grid-template-rows: minmax(0, 1fr); }
 .gal-split > .vis table :is(th, td):first-child { white-space: nowrap; }   /* 왼쪽 칸이 좁아도 표 머리 칸(목적·방식…)이 한 글자씩 꺾이지 않게 */
 .gal-stage { display: grid; min-height: 0; min-width: 0; }
+.gal-main.gal-inline { align-items: center; }                          /* 그림 넘기기(carousel): 다른 틀 안의 그림 자리 */
+/* 왼쪽이 그림 넘기기인 옆 배치: 오른쪽 칸의 가운데를 왼쪽 칸 전체가 아니라 그림 가운데에 맞춤(캡션·단추 높이만큼 아래 여백) */
+.pf-scene:not(.pf-sizing) .dk-side.car-left > .side-col { margin-bottom: var(--car-off, 76px); }
+@media print { .pf-scene .dk-side.car-left > .side-col { margin-bottom: 0; } }
+/* 사진 넘기기 + 왼쪽 칸: 왼쪽 표의 가운데에 사진 가운데가 오도록 사진 칸을 (캡션 + 넘기기 단추) 높이의 절반만큼 내림.
+   자리(레이아웃)는 그대로 두고 그려지는 위치만 옮겨 크기 재기(pf-sizing)에 영향 없음 */
+.pf-scene:not(.pf-sizing) .dk.gal.has-side .gal-split > .gal-main { transform: translateY(var(--gal-off, 38px)); }
+@media print { .pf-scene .dk.gal.has-side .gal-split > .gal-main { transform: none; } }
 .gal-stage > .gal-item { grid-area: 1 / 1; visibility: hidden; }
 .gal-stage > .gal-item.on { visibility: inherit; }                    /* visible이면 숨겨 둔 다른 장면(덱 보기) 위로 새어 나옴 → 장면의 보임을 따름 */
 .gal-nav { display: flex; justify-content: center; align-items: center; gap: 12px; }

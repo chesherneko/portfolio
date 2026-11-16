@@ -307,7 +307,8 @@
       // 원문을 찾지 못한 자리(.vbox.err, 띠만 있음)는 크기를 정하지 않으므로 그 높이를 칸에서 빼고 세로로 쌓음
       const errs = [...vis.children].filter((e) => e.classList.contains('vbox') && !e.dataset.kind);
       const errH = errs.reduce((a, e) => a + e.offsetHeight + GAP, 0);
-      return { vis, boxes, W: vis.clientWidth, H: vis.clientHeight - errH, col: errs.length > 0 };
+      // 그림 넘기기(carousel, 이 레포): 넘기기 단추가 들어갈 높이(data-gal-nav)를 칸에서 뺌
+      return { vis, boxes, W: vis.clientWidth, H: vis.clientHeight - errH - (+vis.dataset.galNav || 0), col: errs.length > 0 };
     });
     for (const { vis, boxes, W, H, col } of plans) {
       if (!boxes.length || !W || H <= 0) continue;

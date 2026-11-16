@@ -42,7 +42,7 @@ KEY_RE = re.compile(r'^[a-z][a-z0-9-]{1,31}$')
 LAYOUTS = ('overview', 'visual', 'code', 'full', 'screens', 'gallery', 'problem')
 TABS = ('개요', '구조', '흐름', '구현', '선택', '문제 해결', '결과', '')
 KINDS = ('mermaid', 'code', 'table', 'image')
-SLIDE_FIELDS = ('key', 'chapter', 'layout', 'tab', 'title', 'lead', 'sectionPath', 'points', 'visuals', 'sideRatio')   # sideRatio(이 레포): gallery 왼쪽 표 칸 폭(fr, 사진 칸 1.6 기준)
+SLIDE_FIELDS = ('key', 'chapter', 'layout', 'tab', 'title', 'lead', 'sectionPath', 'points', 'visuals', 'sideRatio', 'carousel')   # sideRatio(이 레포): gallery 왼쪽 표 칸 폭(fr, 사진 칸 1.6 기준) · carousel(이 레포): 틀은 그대로, 그림 2장 이상을 한 자리에서 넘김
 KIND_KO = {'mermaid': '다이어그램', 'code': '코드', 'table': '표', 'image': '그림'}
 
 for _s in (sys.stdout, sys.stderr):                                # Claude가 읽는 파이프는 UTF-8로(한글 깨짐 방지)
@@ -451,6 +451,11 @@ def validate(p, chapters, doc):
             ln = v['lines']
             if not (isinstance(ln, list) and len(ln) == 2 and all(isinstance(x, int) for x in ln) and 1 <= ln[0] <= ln[1]):
                 errs.append('visuals[%d]의 lines는 [시작, 끝](1부터)' % i)
+        for f in ('transpose', 'skipImages'):                              # 이 레포: 표를 덱에서만 세로로 돌림
+            if f in v and (v['kind'] != 'table' or not isinstance(v[f], bool)):
+                errs.append('visuals[%d]의 %s는 표(table)에만 쓰는 true/false' % (i, f))
+        if 'head' in v and not (v.get('transpose') is True and isinstance(v['head'], list) and v['head'] and all(is_piece(x) for x in v['head'])):
+            errs.append('visuals[%d]의 head는 transpose한 표에만 쓰는 글 조각 배열(머리 줄 칸마다 {"text", "verbatim"})' % i)
         if v.get('caption') is not None and not is_piece(v.get('caption')):
             errs.append('visuals[%d]의 caption은 글 조각' % i)
         if v.get('sectionPath') is not None and not is_path(v['sectionPath']):
@@ -500,6 +505,10 @@ def validate(p, chapters, doc):
         if own and h and vh is not h:
             cross.append('다른 절의 %s: §%s' % (KIND_KO[v['kind']], own[-1]))
         piece(v.get('caption'), '그림 설명', scope(vh))
+        if isinstance(v.get('head'), list):                            # transpose한 표의 머리 줄(덱 전용 글)
+            for x in v['head']:
+                if is_piece(x):
+                    piece(x, '표 머리 칸', scope(vh))
         kind, nth = v['kind'], v.get('n') or 1
         if kind == 'image':                                        # 그림은 그 절에 그 경로가 있는지만
             if norm_src(v['src']) not in unquote(doc.range_text(vh)).replace('](./', ']('):

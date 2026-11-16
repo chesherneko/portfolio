@@ -190,6 +190,7 @@
     markPrintWide();
     document.fonts?.addEventListener('loadingdone', markPrintWide);
     if (window.mermaid && figs.length) {
+      await window.PFElk;                                                  // 이 레포: ELK 배치기 등록을 기다림(doc.html)
       mermaid.initialize({ startOnLoad: false, theme: 'default', securityLevel: 'loose', fontFamily: 'Pretendard, sans-serif' });
       try { await mermaid.run({ nodes: doc.querySelectorAll('.mermaid') }); }
       catch (err) { console.warn('[doc] Mermaid 렌더 오류:', err); }

@@ -161,6 +161,7 @@ code { font-family: var(--mono); font-size: .88em; background: var(--accent-soft
 .md .mmd { margin: 22px 0; }
 .mmd .mermaid { display: flex; justify-content: center; padding: 16px; border: 1px solid var(--line); border-radius: 12px; overflow-x: auto; background: #fff; }
 .mmd .mermaid svg { display: block; max-width: 100%; height: auto; }
+.md .mermaid svg p { color: inherit; }   /* .md p의 본문 글자색이 다이어그램 글자에 새지 않게(어두운 모드 반전 뒤 흐려짐) — 크게 보기 창과 같은 색 */
 .mmd-bar { contain: inline-size; display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: space-between; gap: 6px 12px; margin-top: 6px; font-size: 13px; }
 .mmd-src summary { color: var(--muted); cursor: pointer; font-weight: 600; }
 .mmd-src pre { margin: 8px 0 0; max-height: 320px; overflow: auto; background: #F6F7F9; border: 1px solid var(--line); border-radius: 8px; }

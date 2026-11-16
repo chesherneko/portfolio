@@ -111,6 +111,7 @@
   async function renderMermaid(els) {
     if (!els.length) return;
     if (!window.mermaid) { els.forEach((el) => svgCache.set(el, { error: 'Mermaid를 불러오지 못했습니다' })); return; }
+    await window.PFElk;                                                    // 이 레포: ELK 배치기 등록을 기다림(project.html)
     mermaid.initialize({ startOnLoad: false, theme: 'default', securityLevel: 'loose', fontFamily: 'Pretendard, sans-serif', suppressErrorRendering: true });
     if (!mmdHost) { mmdHost = document.createElement('div'); mmdHost.setAttribute('aria-hidden', 'true'); Object.assign(mmdHost.style, { position: 'absolute', left: '-20000px', top: '0', width: '1280px', visibility: 'hidden' }); document.body.appendChild(mmdHost); }
     let n = 0;
@@ -150,6 +151,34 @@
     if (lang && window.hljs && hljs.getLanguage(lang)) { code.className = `language-${lang}`; try { hljs.highlightElement(code); } catch { /* 강조 없이 */ } }
     return code.outerHTML;
   }
+  // 가로 표를 세로로(visuals[].transpose, 이 레포): 원문 표의 열 j → 덱 표의 행 j. 머리 칸은 각 행의 첫 칸이 되고 머리 줄은 없음.
+  //   skipImages면 칸이 모두 그림뿐인 원문 행(= 덱의 열)은 뺌 — 그림은 사진 넘기기 쪽에서 보이므로. 글자는 원문 칸 그대로(새 글 없음)
+  //   예: | 회피 | 베어 내기 | 가드 |  /  그림 줄  /  설명 줄  →  회피 | 설명 · 베어 내기 | 설명 · 가드 | 설명
+  //   head(글 조각 배열)가 있으면 그 글자로 머리 줄을 만듦 — 원문에 없는 덱 전용 글이라 verbatim: false로 「확인해 주세요」에 남음
+  function transposeTable(t, skipImages, head) {
+    const isImgOnly = (c) => !c.textContent.trim() && c.querySelector('img');
+    let src = [...t.rows].map((r) => [...r.cells]);
+    if (skipImages) src = src.filter((cells) => !cells.every(isImgOnly));
+    const cols = Math.max(0, ...src.map((cells) => cells.length));
+    const body = document.createElement('tbody');
+    for (let j = 0; j < cols; j++) {
+      const tr = document.createElement('tr');
+      src.forEach((cells) => {
+        const td = document.createElement('td');
+        if (cells[j]) td.innerHTML = cells[j].innerHTML;
+        tr.appendChild(td);
+      });
+      body.appendChild(tr);
+    }
+    const hs = Array.isArray(head) ? head.map(txt) : [];
+    if (hs.length) {
+      const thead = document.createElement('thead'), tr = document.createElement('tr');
+      hs.forEach((s) => { const th = document.createElement('th'); th.innerHTML = inline(s); tr.appendChild(th); });
+      thead.appendChild(tr);
+      t.replaceChildren(thead, body);
+    } else t.replaceChildren(body);
+    t.classList.add('tp');
+  }
   function vboxHtml(v, chunk) {
     if (v.status === 'missing' || v.status === 'ambiguous') return `<figure class="vbox err">${PF.vband(`visual-${v.status}`, v.detail, v.edited)}</figure>`;
     const warn = v.status === 'changed' ? PF.vband('visual-changed', v.detail, v.edited) : '';
@@ -180,8 +209,9 @@
         if (d) { const h = Math.min(d.h, 120); i.width = Math.round((h * d.w) / d.h); i.height = h; }   // CSS max-height 120px와 같은 크기
         i.loading = 'lazy'; i.decoding = 'async';
       });
+      if (v.ref.transpose) transposeTable(t, v.ref.skipImages, v.ref.head);
       if (chunk) { const rows = [...t.querySelectorAll('tbody tr')]; rows.forEach((r, i) => { if (i < chunk[0] || i >= chunk[1]) r.remove(); }); }
-      return `<figure class="vbox" data-kind="table"><div class="vmedia"><div class="fit-in">${t.outerHTML}</div></div>${cap(v.ref.caption?.text ? inline(v.ref.caption.text) : '')}${warn}</figure>`;
+      return `<figure class="vbox" data-kind="table"${v.ref.transpose ? ' data-transposed="1"' : ''}><div class="vmedia"><div class="fit-in">${t.outerHTML}</div></div>${cap(v.ref.caption?.text ? inline(v.ref.caption.text) : '')}${warn}</figure>`;
     }
     return '';
   }
@@ -196,7 +226,8 @@
     `<div class="fstep${pt.label === '결과' ? ' res' : ''}">${pt.label ? `<span class="labelchip${FLOW[pt.label] ? ' ' + FLOW[pt.label] : ''}">${esc(PF.label(pt.label))}</span>` : ''}<p>${inline(txt(pt))}</p></div>`).join('')}</div>`;
   function bodyHtml(sl, vs, variant) {
     const points = sl.points || [];
-    const vis = (list) => `<div class="vis">${list.join('')}</div>`;
+    // 그림 넘기기(sl.carousel, 이 레포): 첫 그림 자리 아래에 넘기기 단추 높이를 남겨 둠(PF.fitVisuals가 data-gal-nav만큼 칸 높이에서 뺌)
+    const vis = (list) => `<div class="vis"${sl._car && list.some((h) => /data-kind="image"/.test(h)) ? ' data-gal-nav="48"' : ''}>${list.join('')}</div>`;
     const tight = variant.tight ? ' tight' : '';
     if (!vs.length) {
       if (sl.layout === 'problem') return `<div class="dk dk-text${tight}">${flowHtml(points, variant.stack || variant.tight ? 'row' : 'col')}</div>`;
@@ -210,9 +241,7 @@
       const pics = vs.filter(isImg), side = vs.filter((h) => !isImg(h));
       const n = pics.length;
       const items = pics.map((v, i) => `<div class="vis gal-item${i ? '' : ' on'}" data-gi="${i}" data-pf-allow-hidden>${v}</div>`).join('');
-      const nav = n > 1 ? `<div class="gal-nav" data-pf-ui="gallery"><button type="button" class="gal-btn gal-arrow" data-go="-1" aria-label="이전 그림">‹</button>${
-        pics.map((_, i) => `<button type="button" class="gal-btn gal-dot${i ? '' : ' on'}" data-go-to="${i}" aria-label="${i + 1}번째 그림"${i ? '' : ' aria-current="true"'}></button>`).join('')
-      }<button type="button" class="gal-btn gal-arrow" data-go="1" aria-label="다음 그림">›</button></div>` : '';
+      const nav = galNav(n);
       const main = `<div class="gal-main"><div class="gal-stage">${items}</div>${nav}</div>`;
       const body = side.length ? `<div class="gal-split" style="--vw:${variant.vw || 1}fr">${vis(side)}${main}</div>` : main;
       return `<div class="dk gal${side.length ? ' has-side' : ''}${tight}">${body}${ncards(points, { row: true, num: false })}</div>`;
@@ -226,12 +255,57 @@
     }
     // 카드 칸 아래 시각 자료(place: "cards"): 왼쪽 = 나머지 시각 자료, 오른쪽 = 카드 → 그 아래 시각 자료
     if (variant.places) {
-      const main = vs.filter((_, i) => variant.places[i] !== 'cards'), side = vs.filter((_, i) => variant.places[i] === 'cards');
-      return `<div class="dk dk-side${tight}" style="--vw:${variant.vw}fr">${vis(main)}<div class="side-col">${ncards(points, { num: true })}<div class="vis vis-aside">${side.join('')}</div></div></div>`;
+      const isSide = (p) => p === 'cards' || p === 'cards-top';
+      const main = vs.filter((_, i) => !isSide(variant.places[i])), side = vs.filter((_, i) => isSide(variant.places[i]));
+      const cards = ncards(points, { num: true }), aside = `<div class="vis vis-aside">${side.join('')}</div>`;
+      const col = variant.places.includes('cards-top') ? `${aside}${cards}` : `${cards}${aside}`;
+      return `<div class="dk dk-side${tight}" style="--vw:${variant.vw}fr">${vis(main)}<div class="side-col">${col}</div></div>`;
     }
     // 요점이 없으면(나눈 장면 등) 옆 칸이 비지 않게 시각 자료를 가로 전체로
     if (sl.layout === 'full' || variant.stack || !points.length) return `<div class="dk dk-stack${tight}">${vis(vs)}${ncards(points, { row: true, num: sl.layout !== 'full' })}</div>`;
     return `<div class="dk dk-side${tight}" style="--vw:${variant.vw}fr">${vis(vs)}${ncards(points, { num: true })}</div>`;
+  }
+
+  const galNav = (n) => (n > 1 ? `<div class="gal-nav" data-pf-ui="gallery"><button type="button" class="gal-btn gal-arrow" data-go="-1" aria-label="이전 그림">‹</button>${
+    Array.from({ length: n }, (_, i) => `<button type="button" class="gal-btn gal-dot${i ? '' : ' on'}" data-go-to="${i}" aria-label="${i + 1}번째 그림"${i ? '' : ' aria-current="true"'}></button>`).join('')
+  }<button type="button" class="gal-btn gal-arrow" data-go="1" aria-label="다음 그림">›</button></div>` : '');
+
+  // 그림 넘기기(sl.carousel, 이 레포): 장면 틀은 그대로 두고 그림 자리만 넘기기로.
+  //   크기는 첫 그림 하나만 있는 것처럼 정한 뒤(PF.fitVisuals), 그 자리를 .gal-stage로 감싸 나머지 그림을 같은 칸 크기에 맞춰 겹쳐 둠
+  function galWrap(s, extras) {
+    if (!extras.length) return;
+    const first = s.querySelector('.vis[data-gal-nav] > .vbox[data-kind="image"]');
+    if (!first) return;
+    const fm = first.querySelector(':scope > .vmedia');
+    const mw = parseFloat(fm.style.width) || 0, mh = parseFloat(fm.style.height) || 0;
+    const tmp = document.createElement('div');
+    tmp.innerHTML = extras.join('');
+    const boxes = [first, ...tmp.children];
+    const main = document.createElement('div');
+    main.className = 'gal-main gal-inline';
+    first.before(main);
+    const stage = document.createElement('div');
+    stage.className = 'gal-stage';
+    boxes.forEach((b, i) => {
+      if (i && mw && mh) {                                                   // 첫 그림 칸 안에 비율대로(같은 비율이면 같은 크기)
+        const w = +b.dataset.w || 16, h = +b.dataset.h || 9, ar = w / h;
+        const bw = Math.floor(Math.min(mw, mh * ar)), bh = Math.floor(bw / ar);
+        b.style.width = `${bw}px`;
+        Object.assign(b.querySelector(':scope > .vmedia').style, { width: `${bw}px`, height: `${bh}px` });
+        b.dataset.sc = first.dataset.sc || '1';
+      }
+      const it = document.createElement('div');
+      it.className = `gal-item${i ? '' : ' on'}`;
+      it.dataset.gi = String(i);
+      it.setAttribute('data-pf-allow-hidden', '');
+      it.appendChild(b);
+      stage.appendChild(it);
+    });
+    main.appendChild(stage);
+    main.insertAdjacentHTML('beforeend', galNav(boxes.length));
+    // 옆 칸(카드)을 그림 가운데에 맞춤: 그림 아래 캡션·넘기기 단추만큼 옆 칸을 위로(deck-theme.css .car-left)
+    const dk = main.closest('.dk-side');
+    if (dk && dk.firstElementChild?.contains(main)) dk.classList.add('car-left');
   }
 
   // 사진 넘기기 + 왼쪽 표: 표가 하나이고 본문 행 수 = 그림 수이면 행 i ↔ 그림 i로 묶음(보이는 그림의 행을 강조, 행을 누르면 그 그림으로)
@@ -272,7 +346,18 @@
     return out;
   }
   function fitSlide(sl, vis, sid, part, codeChunk, meta, tableChunk = null, depth = 0) {
-    const vs = vis.map((v) => vboxHtml(v, v.ref.kind === 'code' ? codeChunk : v.ref.kind === 'table' ? tableChunk : null));
+    let vs = vis.map((v) => vboxHtml(v, v.ref.kind === 'code' ? codeChunk : v.ref.kind === 'table' ? tableChunk : null));
+    // 그림 넘기기(sl.carousel): 틀은 그대로, 그림이 2장 이상이면 첫 그림 자리에서 넘김 → 크기는 첫 그림만으로 정함
+    let extras = [], drop = [];
+    if (sl.carousel === true && sl.layout !== 'gallery') {
+      const imgIdx = vs.map((h, i) => (/data-kind="image"/.test(h) ? i : -1)).filter((i) => i >= 0);
+      if (imgIdx.length > 1) {
+        drop = imgIdx.slice(1);
+        extras = drop.map((i) => vs[i]);
+        vs = vs.filter((_, i) => !drop.includes(i));
+        sl = { ...sl, _car: true };
+      }
+    }
     const galSide = sl.layout === 'gallery' && vis.some((v) => v.ref.kind !== 'image');
     // 왼쪽 표 칸 : 오른쪽 사진 칸(1.6) 비율. 세로로 긴 그림(인스펙터 캡처 등)은 사진 칸이 넓어도 커지지 않으니 표 칸을 넓게 먼저
     const tall = vis.filter((v) => v.ref.kind === 'image' && v.d).every((v) => v.d.h > v.d.w);
@@ -282,9 +367,13 @@
       : sl.layout === 'full' || sl.layout === 'screens' || sl.layout === 'gallery' ? [{}, { tight: true }]
       : [{ vw: 1.4 }, { vw: 1.7 }, { vw: 1.15 }, { vw: 1.4, tight: true }, { stack: true }, { stack: true, tight: true }];
     // place: "cards" = 그 시각 자료를 카드 칸(오른쪽) 아래에 둠 — 옆 배치 변형만 씀(위아래로 쌓으면 의미가 없음)
-    const places = vis.map((v) => v.ref.place);
-    const aside = places.includes('cards') && !['full', 'screens', 'gallery'].includes(sl.layout);
+    //   "cards-top"(이 레포) = 카드 칸 위에 둠. 넘기기로 겹친 그림(drop)은 vs에서 빠졌으므로 같은 자리를 뺌
+    const places = vis.map((v) => v.ref.place).filter((_, i) => !drop.includes(i));
+    const aside = places.some((p) => p === 'cards' || p === 'cards-top') && !['full', 'screens', 'gallery'].includes(sl.layout);
     if (aside) V.splice(0, V.length, { vw: 1.4 }, { vw: 1.15 }, { vw: 1 }, { vw: 1.4, tight: true }, { vw: 1.15, tight: true });
+    // 옆 배치 틀에서 장면 고치기로 왼쪽 시각 자료 칸 폭을 정했으면(sl.sideRatio = 왼쪽 fr, 오른쪽 카드 칸은 1) 그 값만 씀(이 레포)
+    const sideFixed = !['full', 'screens', 'gallery'].includes(sl.layout) && Number(sl.sideRatio) > 0 ? Number(sl.sideRatio) : 0;
+    if (sideFixed) V.splice(0, V.length, { vw: sideFixed }, { vw: sideFixed, tight: true });
     const build = (v) => {
       const s = PF.scene({ id: sid, tpl: 'D', eyebrow: meta.chapter, rlabel: meta.rlabel, title: txt(sl.title) || meta.chapter, sub: part, lead: part && part !== `1/${part.split('/')[1]}` ? '' : txt(sl.lead), foot: meta.foot, sec: meta.chapter, group: meta.chapter, stitle: txt(sl.title) });
       s.classList.add(`l-${sl.layout || 'visual'}`);
@@ -293,7 +382,9 @@
       PF.body(s).innerHTML = `<div class="pf-fill">${bodyHtml(sl, vs, aside ? { ...v, places } : v)}</div>`;
       galLink(s);
       if (meta.auto) s.querySelector('.pf-foot > span').insertAdjacentHTML('beforeend', '<span class="pf-autoband" data-pf-ui="note">예전 데이터로 자동 구성 — /portfolio-build를 다시 실행하면 발표 덱이 됩니다</span>');
-      return PF.fitVisuals(s);
+      PF.fitVisuals(s);
+      galWrap(s, extras);
+      return s;
     };
     // 들어가는 변형 중 시각 자료가 가장 크게 보이는 것(같으면 앞의 것). 가로로 긴 다이어그램은 위아래 배치가, 세로로 긴 것은 옆 배치가 이김
     let best = null;
@@ -403,6 +494,7 @@
 
   // 장 표지: 장면이 적으면(4개 이하) 넉넉한 변형 — 목차 크기 목록 + 장면마다 도입(결정 I7). 안 들어가면 보통 → 촘촘
   const ROOMY_MAX = 4;
+  const GROUP_MIN = 8;   // 이 레포: 장 표지 목록을 절별로 묶어 축약하는 장면 수 기준
   // 장 안의 절(장 제목 다음 칸, 예: "6.1 전투 이벤트 큐")로 장면을 묶음. 절 칸이 없는 장면은 장 자체(앞 칸 없음)로
   //   하위 장면 이름 = 절 경로 마지막 칸(절 자체면 탭 이름). 같은 절 안에서 이름이 겹치면 하나로 합침
   function groupSlides(c, slides) {
@@ -443,7 +535,9 @@
     };
     // 장면이 많은 장(이 레포는 장면 수 상한이 없음): 촘촘해도 안 들어가면 절(6.1·6.2…)별로 묶어 2단 → 3단으로. 묶을 절이 없으면 목록을 2단 → 3단으로
     const many = groups.length >= 2 && groups.length < slides.length ? ['grp1', 'grp2', 'grp3'] : ['cols2', 'cols3'];   // grp1 = 다른 장 표지와 같은 배치(왼쪽 제목, 오른쪽 목록)
-    const modes = slides.length <= ROOMY_MAX ? ['roomy', 'normal', 'compact'] : ['normal', 'compact', ...many, 'cols3'];
+    // 장면이 GROUP_MIN개 이상이고 절로 묶을 수 있으면 들어가더라도 묶음 목록부터(이 레포: 긴 목록 대신 "4.1 … — 동작 방식 · 코드" 식으로 축약)
+    const grpFirst = many[0] === 'grp1' && slides.length >= GROUP_MIN;
+    const modes = slides.length <= ROOMY_MAX ? ['roomy', 'normal', 'compact'] : grpFirst ? [...many, 'normal', 'compact', 'cols3'] : ['normal', 'compact', ...many, 'cols3'];
     for (const m of modes) { const s = make(m); if (PF.fitsM(s)) return s; }
     return PF.shrinkOrClip(make(modes[modes.length - 1]), PFScene.refUrl(chId), info.overflow);
   }
@@ -516,7 +610,7 @@
     const b = e.target.closest?.('.gal-nav .gal-btn, .dk.gal[data-gal-link] tr.gal-row');
     if (!b || b.closest('dialog')) return;
     e.preventDefault(); e.stopPropagation();
-    const dk = b.closest('.dk.gal');
+    const dk = b.closest('.dk');                                           // gallery 장면(.dk.gal) · 그림 넘기기(carousel)를 둔 다른 틀
     if (!dk) return;
     if (b.matches('tr.gal-row')) { show(dk, +b.dataset.gi); return; }
     const cur = [...dk.querySelectorAll('.gal-stage > .gal-item')].findIndex((it) => it.classList.contains('on'));
