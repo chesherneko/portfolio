@@ -94,7 +94,7 @@
       "layout": "code",
       "tab": "구현",
       "title": {"text": "6.3 패턴 구조", "verbatim": true},
-      "lead": {"text": "패턴 하나를 추가하는 순서는 다음과 같습니다.", "verbatim": true},
+      "lead": {"text": "패턴 추가는 상속 → 인스펙터 값 설정 → 목록 등록, 세 단계입니다.", "verbatim": false},
       "sectionPath": ["6.3 패턴 구조", "동작 방식"],
       "points": [],
       "visuals": [
@@ -148,11 +148,7 @@
       "lead": {"text": "보스는 향할 점이 정면 일정 각도 안에 있을 때만 걷고, 벗어나면 멈춰 서서 몸을 돌립니다.", "verbatim": true},
       "sectionPath": ["6.4 Kinematic 이동과 경로 계산", "동작 방식"],
       "points": [
-        {
-          "label": "문제",
-          "text": "처음에는 이 기준이 하나뿐이라, 걷는 도중 플레이어가 조금만 옆으로 움직여도 기준을 벗어났습니다. 그러면 멈추고, 돌고, 다시 걷는 동작이 반복되어 추격이 끊겨 보였습니다.",
-          "verbatim": true
-        },
+        {"label": "문제", "text": "기준이 하나뿐이라, 플레이어가 조금만 옆으로 움직여도 멈춤·회전·걷기가 반복돼 추격이 끊겨 보였습니다.", "verbatim": false},
         {"label": "해결", "text": "기준을 둘로 나눴습니다.", "verbatim": false}
       ],
       "visuals": [
@@ -180,12 +176,8 @@
       "lead": {"text": "처음에 보스는 물리(Dynamic Rigidbody) 기반으로 움직였습니다.", "verbatim": true},
       "sectionPath": ["6.4 Kinematic 이동과 경로 계산", "설계 선택 ①: Dynamic인가 Kinematic인가"],
       "points": [
-        {
-          "label": "바꾼 이유",
-          "text": "플레이어가 염동력으로 던지는 투사체가 생기면서, 투사체 무게에 따라 보스가 투사체를 밀어내지 못하거나 밀어내도 어색한 문제가 생겼습니다.",
-          "verbatim": true
-        },
-        {"label": "바꾼 뒤 생긴 문제", "text": "전환 직후에는 회전이 덜 되는 문제가 있었습니다.", "verbatim": false}
+        {"label": "바꾼 이유", "text": "염동력 투사체가 생기자, 무게에 따라 보스가 투사체를 밀어내지 못하거나 어색하게 밀어냈습니다.", "verbatim": false},
+        {"label": "바꾼 뒤 생긴 문제", "text": "전환 직후에는 회전이 덜 되는 문제가 있었습니다. (→ 트러블슈팅 8.1)", "verbatim": false}
       ],
       "visuals": [{"kind": "table", "n": 1, "fp": "|Dynamic (이전)|Kinematic (선택)"}],
       "from": {
@@ -205,8 +197,8 @@
       "points": [
         {
           "label": "이유",
-          "text": "루트 모션을 택한 이유는 움직임의 느낌입니다. 괴수형 보스가 90도 도는 동작을 코드로 회전시키면 제자리에서 미끄러지듯 돌아 보이지만, 루트 모션은 애니메이션에 담긴 움직임 그대로 돕니다.",
-          "verbatim": true
+          "text": "루트 모션을 택한 이유는 움직임의 느낌 때문입니다. 코드로 90도를 돌리면 제자리에서 미끄러지듯 돌지만, 루트 모션은 애니메이션 그대로 돕니다.",
+          "verbatim": false
         },
         {"label": "선택", "text": "Agent 없이 NavMesh로 경로만 계산하고, 그 경로를 따라가는 부분은 직접 만들었습니다.", "verbatim": false}
       ],
@@ -228,14 +220,10 @@
       "points": [
         {
           "label": "이유",
-          "text": "이벤트 구독 대신 이렇게 한 것은, 전환 순간에 `GetComponentsInChildren`으로 쉽게 찾아 쓸 수 있기 때문입니다.",
-          "verbatim": true
+          "text": "전환 순간 `GetComponentsInChildren`으로 바로 찾을 수 있고, 구독·해제를 짝지어 관리할 필요가 없습니다.",
+          "verbatim": false
         },
-        {
-          "label": "감수한 비용",
-          "text": "페이즈 전환은 한 판에 한 번뿐이라 이 정도 탐색 비용은 문제가 되지 않는다고 판단했고, 구독과 해제를 짝지어 관리할 필요도 없습니다.",
-          "verbatim": true
-        }
+        {"label": "감수한 비용", "text": "탐색 비용이 들지만, 전환은 한 판에 한 번뿐이라 문제없다고 판단했습니다.", "verbatim": false}
       ],
       "visuals": [{"kind": "code", "n": 1, "fp": "// 전환 연출보다 먼저 알려야, 연출이 끝난 뒤 판단 상태가 2페이즈 패턴으로 고름"}],
       "from": {
@@ -324,15 +312,15 @@
       "chapter": "core",
       "layout": "full",
       "tab": "선택",
-      "title": {"text": "강사님 제공 구조에서 바꾼 것", "verbatim": true},
-      "lead": {"text": "효과음을 빠르게 붙이기에 좋아 보여 이 구조를 참고해, 효과음 전용 `AnimStateSoundSender`를 만들었습니다.", "verbatim": true},
-      "sectionPath": ["6.6 (보조) 애니메이션 기반 효과음", "강사님 제공 구조에서 바꾼 것"],
+      "title": {"text": "교육 과정 제공 구조에서 바꾼 것", "verbatim": true},
+      "lead": {"text": "교육 과정에서 제공된 `AnimStateEventSender`를 참고해, 효과음 전용 `AnimStateSoundSender`를 만들었습니다.", "verbatim": false},
+      "sectionPath": ["6.6 애니메이션 기반 효과음", "교육 과정 제공 구조에서 바꾼 것"],
       "points": [],
-      "visuals": [{"kind": "table", "n": 1, "fp": "|강사님 제공 구조 (AnimStateEventSender)|효과음용 구조 (AnimStateSoundSender)"}],
+      "visuals": [{"kind": "table", "n": 1, "fp": "|교육 과정 제공 구조 (AnimStateEventSender)|효과음용 구조 (AnimStateSoundSender)"}],
       "from": {
         "key": "sound-compare",
-        "sectionPath": ["6.6 (보조) 애니메이션 기반 효과음", "강사님 제공 구조에서 바꾼 것"],
-        "sig": ["강사님 제공 구조에서 바꾼 것|table|1||강사님 제공 구조 (AnimStateEventSender)|효과음용 구조 (AnimStateSoundSen"]
+        "sectionPath": ["6.6 애니메이션 기반 효과음", "교육 과정 제공 구조에서 바꾼 것"],
+        "sig": ["교육 과정 제공 구조에서 바꾼 것|table|1||교육 과정 제공 구조 (AnimStateEventSender)|효과음용 구조 (AnimStateSoundSen"]
       }
     },
     {
@@ -341,16 +329,12 @@
       "layout": "visual",
       "tab": "선택",
       "title": {"text": "7.1 남의 코드는 크게 고치지 않는다", "verbatim": true},
-      "lead": {"text": "다른 파트 코드는 약간의 수정이나 API 한두 개를 여는 정도까지만 고치고, 나머지는 보스 쪽에서 해결", "verbatim": true},
+      "lead": {"text": "다른 파트 코드는 약간의 수정이나 API 한두 개를 여는 정도까지만 고치고, 나머지는 보스 쪽에서 해결했습니다.", "verbatim": false},
       "sectionPath": ["7.1 남의 코드는 크게 고치지 않는다"],
       "points": [
         {"label": "", "text": "남의 코드에 함부로 손대는 것 자체가 감정적인 문제로 번질 수 있습니다.", "verbatim": true},
         {"label": "", "text": "코드를 만든 사람의 설계 의도를 해칠 수 있습니다.", "verbatim": true},
-        {
-          "label": "",
-          "text": "포트폴리오를 위한 팀 프로젝트였기 때문에, 남의 코드를 제 의도대로 고쳐 버리면 그 코드를 만든 사람이 자기 몫을 온전히 챙겨 갈 수 없습니다.",
-          "verbatim": true
-        }
+        {"label": "", "text": "포트폴리오용 팀 프로젝트라, 남의 코드를 제 뜻대로 고치면 만든 사람이 자기 몫을 온전히 챙길 수 없습니다.", "verbatim": false}
       ],
       "visuals": [{"kind": "table", "n": 2, "fp": "|필요하면 상대 코드를 직접 고침|상대 코드는 크게 고치지 않음 (선택)"}],
       "from": {
@@ -373,11 +357,7 @@
           "text": "10월 말, 제가 만든 차원 베기 패턴이 저와 상의 없이 수정된 뒤 나중에 공유되는 일이 있었습니다. 저는 팀장으로서 위의 세 가지 이유를 설명하며 이것을 팀 원칙으로 세웠습니다.",
           "verbatim": true
         },
-        {
-          "label": "결과",
-          "text": "원칙은 일부만 지켜졌습니다. 몇몇 작업은 팀원이 미리 말해 조율했지만, 마감에 가까워질수록 그렇지 않은 경우가 많아졌습니다.",
-          "verbatim": true
-        }
+        {"label": "결과", "text": "일부만 지켜졌습니다. 미리 말해 조율한 작업도 있었지만, 마감이 다가올수록 그렇지 않은 경우가 늘었습니다.", "verbatim": false}
       ],
       "visuals": [],
       "from": {"key": "team-rule", "sectionPath": ["7.1 남의 코드는 크게 고치지 않는다"], "sig": []}
@@ -437,7 +417,6 @@
       "lead": {"text": "체력이 일정 비율 아래가 되면 반드시 쓰는 긴급 패턴입니다.", "verbatim": false},
       "sectionPath": ["6.5 휴머노이드 보스", "차원 베기"],
       "points": [
-        {"label": "", "text": "세상을 멈추고, 플레이어 정면에 나타나 천천히 걸어와 검을 내려베며, 화면을 가르고 피해를 줍니다.", "verbatim": true},
         {"label": "", "text": "피할 수 없는 대신 일정 체력 아래로는 깎지 않습니다.", "verbatim": true},
         {"label": "", "text": "보스는 시간 정지의 영향을 받지 않아야 하므로, 보스 예외를 먼저 건 뒤 세상을 멈추고 풀 때는 반대 순서로 풉니다.", "verbatim": false},
         {"label": "", "text": "패턴이 중간에 끊겨도 종료 처리에서 세상·플레이어·화면을 모두 원래대로 되돌립니다.", "verbatim": true}
@@ -450,7 +429,7 @@
           "h": 404,
           "caption": {"text": "차원 베기: 세상 정지부터 화면을 가르기까지", "verbatim": true}
         },
-        {"kind": "table", "n": 1, "fp": "연출|쓴 기존 기능", "sectionPath": ["6.5 휴머노이드 보스", "차원 베기"]}
+        {"kind": "table", "n": 1, "fp": "연출|사용한 기존 기능", "sectionPath": ["6.5 휴머노이드 보스", "차원 베기"]}
       ],
       "from": {
         "key": "dimension-slash",
@@ -549,7 +528,7 @@
         {"label": "", "text": "`CombatManager`는 누가 피해를 보냈는지, 누가 결과를 쓰는지 알지 못합니다.", "verbatim": false},
         {
           "label": "",
-          "text": "그래서 피해를 주는 기능을 새로 만들어도 `CombatManager`는 고칠 필요가 없고, HUD처럼 결과가 필요한 쪽은 `OnDamageEventExecuted`를 구독하기만 하면 됩니다.",
+          "text": "피해 기능이 새로 생겨도 `CombatManager`는 그대로이고, 결과가 필요한 쪽(HUD 등)은 `OnDamageEventExecuted`만 구독합니다.",
           "verbatim": false
         }
       ],
@@ -588,9 +567,9 @@
       "chapter": "core",
       "layout": "overview",
       "tab": "개요",
-      "title": {"text": "6.6 (보조) 애니메이션 기반 효과음", "verbatim": true},
+      "title": {"text": "6.6 애니메이션 기반 효과음", "verbatim": true},
       "lead": null,
-      "sectionPath": ["6.6 (보조) 애니메이션 기반 효과음"],
+      "sectionPath": ["6.6 애니메이션 기반 효과음"],
       "points": [],
       "visuals": [
         {"kind": "table", "n": 1, "fp": "항목|내용", "caption": {"text": "애니메이션 기반 효과음 개요", "verbatim": false}},
@@ -598,11 +577,11 @@
           "kind": "table",
           "n": 1,
           "fp": "방식|쓰는 곳|사용법",
-          "sectionPath": ["6.6 (보조) 애니메이션 기반 효과음", "재생 방식 세 가지"],
+          "sectionPath": ["6.6 애니메이션 기반 효과음", "재생 방식 세 가지"],
           "caption": {"text": "재생 방식 세 가지", "verbatim": true}
         }
       ],
-      "from": {"key": "sound", "sectionPath": ["6.6 (보조) 애니메이션 기반 효과음"], "sig": ["6.6 (보조) 애니메이션 기반 효과음|table|1|항목|내용"]},
+      "from": {"key": "sound", "sectionPath": ["6.6 애니메이션 기반 효과음"], "sig": ["6.6 애니메이션 기반 효과음|table|1|항목|내용"]},
       "group": "merge-sound"
     },
     {
@@ -610,28 +589,31 @@
       "chapter": "core",
       "layout": "code",
       "tab": "구현",
-      "title": {"text": "강사님 제공 구조에서 바꾼 것", "verbatim": true},
+      "title": {"text": "교육 과정 제공 구조에서 바꾼 것", "verbatim": true},
       "lead": null,
-      "sectionPath": ["6.6 (보조) 애니메이션 기반 효과음", "강사님 제공 구조에서 바꾼 것"],
-      "points": [
-        {"label": "상태에 적는 것", "text": "진행률, 소리(클립을 드롭다운으로 고르고 볼륨 지정)", "verbatim": true},
-        {"label": "신호를 받는 쪽", "text": "Listener 없이 `SoundManager`로 바로 재생", "verbatim": true}
-      ],
+      "sectionPath": ["6.6 애니메이션 기반 효과음", "교육 과정 제공 구조에서 바꾼 것"],
+      "points": [],
       "visuals": [
-        {"kind": "code", "n": 2, "lines": [14, 33], "fp": "// 효과음용 구조 (발췌, 되감기·전환 중·재생 간격 처리는 생략)"},
+        {
+          "kind": "code",
+          "n": 2,
+          "lines": [14, 33],
+          "fp": "// 효과음용 구조 (발췌, 되감기·전환 중·재생 간격 처리는 생략)",
+          "caption": {"text": "상태에 진행률과 소리를 적으면, Listener 없이 SoundManager로 바로 재생", "verbatim": false}
+        },
         {
           "kind": "image",
           "src": "images/6.6-1_sound-sender.png",
           "w": 467,
           "h": 620,
           "caption": {"text": "Animator 상태에 붙은 AnimStateSoundSender 인스펙터: 진행률(Time)마다 재생할 소리와 볼륨", "verbatim": true},
-          "sectionPath": ["6.6 (보조) 애니메이션 기반 효과음", "강사님 제공 구조에서 바꾼 것"]
+          "sectionPath": ["6.6 애니메이션 기반 효과음", "교육 과정 제공 구조에서 바꾼 것"]
         }
       ],
       "from": {
         "key": "sound-sender",
-        "sectionPath": ["6.6 (보조) 애니메이션 기반 효과음", "강사님 제공 구조에서 바꾼 것"],
-        "sig": ["강사님 제공 구조에서 바꾼 것|code|2|// 효과음용 구조 (발췌, 되감기·전환 중·재생 간격 처리는 생략)"]
+        "sectionPath": ["6.6 애니메이션 기반 효과음", "교육 과정 제공 구조에서 바꾼 것"],
+        "sig": ["교육 과정 제공 구조에서 바꾼 것|code|2|// 효과음용 구조 (발췌, 되감기·전환 중·재생 간격 처리는 생략)"]
       },
       "group": "merge-sound-sender"
     },
@@ -642,7 +624,7 @@
       "tab": "구현",
       "title": {"text": "코드 필드 (SoundData)", "verbatim": false},
       "lead": null,
-      "sectionPath": ["6.6 (보조) 애니메이션 기반 효과음", "재생 방식 세 가지"],
+      "sectionPath": ["6.6 애니메이션 기반 효과음", "재생 방식 세 가지"],
       "points": [
         {"label": "", "text": "`SoundData`는 인스펙터에서 클립을 목록으로 고를 수 있게 만들었습니다.", "verbatim": true},
         {"label": "", "text": "사용하는 쪽은 `SoundData` 필드를 하나 선언하고 `Play()`만 부르면 됩니다.", "verbatim": true},
@@ -665,12 +647,12 @@
           "w": 467,
           "h": 607,
           "caption": {"text": "SoundData 클립 드롭다운을 펼친 인스펙터: 폴더별로 묶인 클립 목록", "verbatim": true},
-          "sectionPath": ["6.6 (보조) 애니메이션 기반 효과음", "재생 방식 세 가지"]
+          "sectionPath": ["6.6 애니메이션 기반 효과음", "재생 방식 세 가지"]
         }
       ],
       "from": {
         "key": "sound-data",
-        "sectionPath": ["6.6 (보조) 애니메이션 기반 효과음", "재생 방식 세 가지"],
+        "sectionPath": ["6.6 애니메이션 기반 효과음", "재생 방식 세 가지"],
         "sig": ["재생 방식 세 가지|code|1|// 컴포넌트 없이 쓰는 쪽 클래스에 필드로 선언해 두고, 인스펙터에서 클립과 볼륨을 골라 재생함"]
       },
       "group": "merge-sound-data"
@@ -681,7 +663,7 @@
       "layout": "code",
       "tab": "구현",
       "title": {"text": "6.1 전투 이벤트 큐", "verbatim": true},
-      "lead": {"text": "보내는 쪽은 이렇게 부릅니다.", "verbatim": true},
+      "lead": {"text": "피해·회복을 주는 쪽은 이벤트 하나를 `AddCombatEvent`에 넣기만 합니다.", "verbatim": false},
       "sectionPath": ["6.1 전투 이벤트 큐", "동작 방식"],
       "points": [
         {"label": "", "text": "`DamageInfo`는 피해 한 건의 내용을 담는 구조체입니다.", "verbatim": true},
@@ -695,6 +677,162 @@
         "key": "queue-usage",
         "sectionPath": ["6.1 전투 이벤트 큐", "동작 방식"],
         "sig": ["동작 방식|code|1|CombatManager.Instance.AddCombatEvent(new DamageEvent(sender", "동작 방식|table|1|넣는 것|나오는 것"]
+      }
+    },
+    {
+      "key": "loop",
+      "chapter": "intro",
+      "layout": "visual",
+      "tab": "개요",
+      "title": {"text": "1.2 무엇을 만들었나", "verbatim": true},
+      "lead": {"text": "ODDITY는 근미래를 배경으로 한 3인칭 보스 액션입니다.", "verbatim": true},
+      "sectionPath": ["1.2 무엇을 만들었나"],
+      "points": [
+        {"label": "핵심 플레이 루프", "text": "플레이어는 로비에서 미션을 받아 난이도별 보스에게 도전하고, 보스를 잡으면 보상으로 증강칩을 얻습니다.", "verbatim": true},
+        {"label": "", "text": "칩을 격자에 배치해 스킬과 능력치를 조합한 뒤 다음 보스에 도전합니다.", "verbatim": true},
+        {"label": "", "text": "전투에서는 염동력으로 주변 물체를 들어 던지고, 칩으로 얻은 스킬을 씁니다.", "verbatim": true}
+      ],
+      "visuals": [
+        {"kind": "mermaid", "n": 1, "fp": "flowchart LR"},
+        {
+          "kind": "image",
+          "src": "images/1.2-1_chip-grid.png",
+          "w": 860,
+          "h": 529,
+          "caption": {"text": "증강칩을 격자에 배치하는 화면", "verbatim": true}
+        }
+      ],
+      "from": {
+        "key": "loop",
+        "sectionPath": ["1.2 무엇을 만들었나"],
+        "sig": ["1.2 무엇을 만들었나|image|images/1.2-1_chip-grid.png|1", "1.2 무엇을 만들었나|mermaid|1|flowchart LR"]
+      }
+    },
+    {
+      "key": "queue-choice",
+      "chapter": "core",
+      "layout": "full",
+      "tab": "선택",
+      "title": {"text": "설계 선택: 직접 호출이 아니라 큐인 이유", "verbatim": true},
+      "lead": {"text": "처리 시점을 한 곳으로 모아 연쇄 처리가 끼어들지 않게 한 대신, 결과를 바로 받지 못합니다.", "verbatim": false},
+      "sectionPath": ["6.1 전투 이벤트 큐", "설계 선택: 직접 호출이 아니라 큐인 이유"],
+      "points": [],
+      "visuals": [{"kind": "table", "n": 1, "fp": "|진입 함수를 직접 호출|큐에 모아 매 프레임 처리 (선택)"}],
+      "from": {
+        "key": "queue-choice",
+        "sectionPath": ["6.1 전투 이벤트 큐", "설계 선택: 직접 호출이 아니라 큐인 이유"],
+        "sig": ["설계 선택: 직접 호출이 아니라 큐인 이유|table|1||진입 함수를 직접 호출|큐에 모아 매 프레임 처리 (선택)"]
+      }
+    },
+    {
+      "key": "reserve-to-intent",
+      "chapter": "core",
+      "layout": "full",
+      "tab": "선택",
+      "title": {"text": "설계 변경: 예약에서 의도로", "verbatim": true},
+      "lead": {"text": "예약 구조에서는 보스가 예약한 공격 하나만 노리고 플레이어를 계속 쫓기만 했습니다.", "verbatim": false},
+      "sectionPath": ["6.2 의도(Intent) 기반 보스 판단", "설계 변경: 예약에서 의도로"],
+      "points": [{"label": "", "text": "공격을 미리 걸어 두지 않고, 판단할 때마다 다시 고르도록 바꿨습니다.", "verbatim": false}],
+      "visuals": [{"kind": "table", "n": 1, "fp": "|예약 (이전)|의도 (현재)"}],
+      "from": {
+        "key": "reserve-to-intent",
+        "sectionPath": ["6.2 의도(Intent) 기반 보스 판단", "설계 변경: 예약에서 의도로"],
+        "sig": ["설계 변경: 예약에서 의도로|table|1||예약 (이전)|의도 (현재)"]
+      }
+    },
+    {
+      "key": "ts-anim-end",
+      "chapter": "trouble",
+      "layout": "problem",
+      "tab": "문제 해결",
+      "title": {"text": "8.3 애니메이션이 끝났는데 보스가 멈춰 있음", "verbatim": true},
+      "lead": null,
+      "sectionPath": ["8.3 애니메이션이 끝났는데 보스가 멈춰 있음"],
+      "points": [
+        {
+          "label": "문제",
+          "text": "공격 애니메이션이 끝나면 `OnAttackEnded` 신호로 판단 상태에 돌아가야 하는데, 신호가 오지 않아 패턴이 멈추는 경우가 있음",
+          "verbatim": true
+        },
+        {"label": "원인", "text": "진행률이 정확히 1을 거치지 않고 다음 상태로 넘어가면, 1에 걸어 둔 종료 신호가 나가지 않음", "verbatim": true},
+        {"label": "해결", "text": "상태가 끝날 때 아직 못 보낸 신호를 마저 보냄. 이미 보낸 신호는 건너뜀", "verbatim": true},
+        {
+          "label": "부작용 처리",
+          "text": "투사체 반응은 공격 도중을 끊고 들어가, 몰아 보낸 종료 신호를 받으면 바로 끝나 버릴 수 있음. 그래서 진입 후 0.2초 동안은 신호를 무시",
+          "verbatim": false
+        }
+      ],
+      "visuals": [{"kind": "code", "n": 1, "fp": "public override void OnStateExit(Animator animator, Animator"}],
+      "from": {
+        "key": "ts-anim-end",
+        "sectionPath": ["8.3 애니메이션이 끝났는데 보스가 멈춰 있음"],
+        "sig": ["8.3 애니메이션이 끝났는데 보스가 멈춰 있음|code|1|public override void OnStateExit(Animator animator, Animator"]
+      }
+    },
+    {
+      "key": "sweep",
+      "chapter": "core",
+      "layout": "code",
+      "tab": "구현",
+      "title": {"text": "예시: 플레이어가 벽 뒤로 숨은 경우", "verbatim": true},
+      "lead": null,
+      "sectionPath": ["6.4 Kinematic 이동과 경로 계산", "예시: 플레이어가 벽 뒤로 숨은 경우"],
+      "points": [],
+      "visuals": [
+        {
+          "kind": "code",
+          "n": 1,
+          "lines": [16, 31],
+          "fp": "// 막히면 벽 앞에서 멈추고, 남은 이동량은 벽면을 따라 미끄러지게 함",
+          "caption": {"text": "벽에 막히면 남은 이동량만큼 벽면을 따라 미끄러지며 다가가고(Sweep), 막힌 순간을 알려 돌진 패턴이 충돌을 판단", "verbatim": false}
+        }
+      ],
+      "from": {
+        "key": "sweep",
+        "sectionPath": ["6.4 Kinematic 이동과 경로 계산", "예시: 플레이어가 벽 뒤로 숨은 경우"],
+        "sig": ["예시: 플레이어가 벽 뒤로 숨은 경우|code|1|// 막히면 벽 앞에서 멈추고, 남은 이동량은 벽면을 따라 미끄러지게 함"]
+      }
+    },
+    {
+      "key": "intent-flow",
+      "chapter": "core",
+      "layout": "visual",
+      "tab": "흐름",
+      "title": {"text": "6.2 의도(Intent) 기반 보스 판단", "verbatim": true},
+      "lead": {"text": "보스는 판단 상태에서 의도를 고르고, 거리와 방향이 맞으면 공격합니다.", "verbatim": true},
+      "sectionPath": ["6.2 의도(Intent) 기반 보스 판단", "동작 방식"],
+      "points": [
+        {"label": "의도(Intent)", "text": "보스가 지금 쓰려고 고른 공격입니다.", "verbatim": true},
+        {"label": "", "text": "거리·방향이 맞지 않으면 회전·추격으로 맞추고, 끝나도 바로 공격하지 않고 판단 상태로 돌아옵니다.", "verbatim": false}
+      ],
+      "visuals": [{"kind": "mermaid", "n": 1, "fp": "flowchart LR"}],
+      "from": {
+        "key": "intent-flow",
+        "sectionPath": ["6.2 의도(Intent) 기반 보스 판단", "동작 방식"],
+        "sig": ["동작 방식|mermaid|1|flowchart LR"]
+      }
+    },
+    {
+      "key": "chase-stop",
+      "chapter": "core",
+      "layout": "code",
+      "tab": "구현",
+      "title": {"text": "6.2 의도(Intent) 기반 보스 판단", "verbatim": true},
+      "lead": null,
+      "sectionPath": ["6.2 의도(Intent) 기반 보스 판단", "동작 방식"],
+      "points": [],
+      "visuals": [
+        {
+          "kind": "code",
+          "n": 1,
+          "fp": "// 추격을 멈추고 판단 상태로 돌아갈 조건",
+          "caption": {"text": "추격 중에도 1초마다 판단으로 돌아와, 그 사이 거리가 바뀌면 고르는 공격도 바뀜", "verbatim": false}
+        }
+      ],
+      "from": {
+        "key": "chase-stop",
+        "sectionPath": ["6.2 의도(Intent) 기반 보스 판단", "동작 방식"],
+        "sig": ["동작 방식|code|1|// 추격을 멈추고 판단 상태로 돌아갈 조건"]
       }
     }
   ],
@@ -741,7 +879,7 @@
       "key": "sound-modes",
       "from": {
         "key": "sound-modes",
-        "sectionPath": ["6.6 (보조) 애니메이션 기반 효과음", "재생 방식 세 가지"],
+        "sectionPath": ["6.6 애니메이션 기반 효과음", "재생 방식 세 가지"],
         "sig": ["재생 방식 세 가지|table|1|방식|쓰는 곳|사용법"]
       },
       "group": "merge-sound"
@@ -750,8 +888,8 @@
       "key": "sound-sender-shot",
       "from": {
         "key": "sound-sender-shot",
-        "sectionPath": ["6.6 (보조) 애니메이션 기반 효과음", "강사님 제공 구조에서 바꾼 것"],
-        "sig": ["강사님 제공 구조에서 바꾼 것|image|images/6.6-1_sound-sender.png|1"]
+        "sectionPath": ["6.6 애니메이션 기반 효과음", "교육 과정 제공 구조에서 바꾼 것"],
+        "sig": ["교육 과정 제공 구조에서 바꾼 것|image|images/6.6-1_sound-sender.png|1"]
       },
       "group": "merge-sound-sender"
     },
@@ -759,7 +897,7 @@
       "key": "sound-dropdown",
       "from": {
         "key": "sound-dropdown",
-        "sectionPath": ["6.6 (보조) 애니메이션 기반 효과음", "재생 방식 세 가지"],
+        "sectionPath": ["6.6 애니메이션 기반 효과음", "재생 방식 세 가지"],
         "sig": ["재생 방식 세 가지|image|images/6.6-2_sound-dropdown.png|1"]
       },
       "group": "merge-sound-data"
