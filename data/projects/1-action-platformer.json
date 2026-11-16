@@ -29,17 +29,22 @@
     },
     {
       "label": "환경",
-      "value": "Unity 6.3 (6000.3.15f1), C#, Rider"
+      "value": "Unity, C#, Rider"
     }
   ],
   "tags": [
-    "Unity 6.3",
+    "Unity",
     "C#",
-    "Kinematic 이동",
-    "Animator 기반 FSM",
-    "캐릭터 교대 & QTE",
-    "중재자 기반 전투 처리",
-    "ScriptableObject"
+    "Kinematic",
+    "Animator FSM",
+    "Combat System",
+    "Scriptable Object"
+  ],
+  "cardTags": [
+    "Unity",
+    "Kinematic",
+    "Animator FSM",
+    "Combat System"
   ],
   "links": {
     "github": "https://github.com/chesherneko/Switch-Strike",
@@ -163,6 +168,26 @@
       "caption": "보스방 진입 연출 (2배속)"
     }
   ],
+  "retroBrief": {
+    "achieved": [
+      "기획서 필수 범위 구현 (패링 제외)",
+      "네 가지 목표 경험을 시스템으로 구현",
+      "이동 수치를 ScriptableObject로 분리해 반복 튜닝",
+      "플레이테스트 반영: 완벽 회피 0.1초 → 0.05초 등"
+    ],
+    "regrets": [
+      "대시 중 투사체가 플레이어를 통과",
+      "교대마다 QTE 게이지 초기화",
+      "교대 중 콤보가 3타까지 이어짐",
+      "히트스탑이 게임 전체를 멈춤"
+    ],
+    "plans": [
+      "프레임 사이 이동 경로 전체 검사",
+      "게이지를 유지해 교대 템포 기술로 발전",
+      "교대 시 남은 콤보 규칙을 명시",
+      "대상 단위 히트스탑으로 전환"
+    ]
+  },
   "retro": {
     "achieved": [
       "기획서의 필수 구현 범위를 모두 구현 (패링은 판단에 따라 제외)",

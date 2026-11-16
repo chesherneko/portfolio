@@ -15,11 +15,20 @@
     "intro": "profile.md 자기소개를 줄바꿈까지 그대로",
     "email": "you@example.com",
     "github": "https://github.com/your-id",
-    "links": [{ "label": "블로그", "url": "https://your-blog.example.com" }]
+    "links": [{ "label": "블로그", "url": "https://your-blog.example.com" }],
+    "heroTitle": "UNITY CLIENT DEVELOPER.",
+    "brand": "Gildong",
+    "slogan": "증상이 아니라 / 원인을 고칩니다.",
+    "greeting": "안녕하세요! 클라이언트 개발자 홍길동입니다.",
+    "aboutImage": "theme/about-sky-light.webp",
+    "aboutImageDark": "theme/about-sky-dark.webp",
+    "keywords": ["원인 추적", "문서화"],
+    "contactKey": ""
   },
   "settings": {
     "layout": "project",
-    "accent": "#2F6FEB"
+    "accent": "#2F6FEB",
+    "cardGif": true
   },
   "skills": [
     {
@@ -28,6 +37,11 @@
         { "text": "Animator 기반 FSM으로 보스 패턴 5종 설계", "project": "1-action-platformer" }
       ]
     }
+  ],
+  "tools": [
+    { "line": 1, "label": "엔진·IDE", "tags": ["Unity", "Rider"] },
+    { "line": 2, "label": "협업 도구", "tags": ["Git"] },
+    { "line": 2, "label": "AI 도구", "tags": ["Claude"] }
   ],
   "projects": ["00-example-crafting", "0-Tidy-Mommy"]
 }
@@ -38,10 +52,15 @@
 | `profile.*` | **`profile.md`에서만.** 자기소개(`intro`)는 고쳐 쓰지 않고 그대로 |
 | `settings.layout` | `"project"` 또는 `"stack"` (profile.md `구성 방식`, 없으면 `"project"`) |
 | `settings.accent` | `#RRGGBB` 형식. 형식이 틀리면 `"#2F6FEB"` + 리포트에 알림 |
+| `profile.heroTitle` · `profile.brand` · `profile.slogan` · `profile.keywords` | profile.md `첫 화면·소개 꾸미기`의 큰 제목(영문)·머리 이름·슬로건·키워드 **그대로**(지어내지 않음). 비면 `""`·`""`·`""`·`[]`. 슬로건의 ` / `는 그대로 둠(렌더러가 줄바꿈). 키워드는 쉼표로 나눠 앞뒤 공백·`#` 제거 |
+| `profile.greeting` · `profile.aboutImage` · `profile.aboutImageDark` | profile.md `인사말`·`소개 그림`·`소개 그림(어두운 모드)` **그대로**. 비면 `""`. 소개 그림은 레포 안 상대경로(대소문자까지 실제 파일과 맞는지 확인, 없으면 `""` + 리포트 **권장**) |
+| `profile.contactKey` | profile.md `메시지 받기 키`(Web3Forms Access Key) **그대로**. 비면 `""`(렌더러가 메일 앱으로 넘김). 리포트에 적지 않음(선택 항목) |
+| `settings.cardGif` | profile.md `카드 GIF`가 `끄기`면 `false`, 그 밖(없음 포함)은 `true` |
 | `skills[]` | 3~8개. 기술마다 `evidence`(근거)가 **1개 이상**. 근거 없는 기술은 넣지 않음 |
 | `skills[].name` | 원문에 나온 기술명, 또는 원문의 **구체 항목을 묶는 상위 범주** (싱글톤·Strategy → "디자인 패턴", `csharp` 코드 → "C#") |
-| `skills[].evidence[].text` | "무엇을 만들었는지" 한 줄(40자 내외). 기술 문서에 있는 사실만. 상위 범주로 묶었다면 **원문의 구체 용어**를 문장에 넣음 |
+| `skills[].evidence[].text` | "무엇을 만들었는지" **짧은 구 하나(20자 안팎, 명사형)**. 화면에는 이 글만 나오고 근거 프로젝트는 데이터에만 둠. 기술 문서에 있는 사실만. 상위 범주로 묶었다면 **원문의 구체 용어**를 문장에 넣음 |
 | `skills[].evidence[].project` | 근거 프로젝트의 **폴더 이름** |
+| `tools[]` | profile.md `## 써 본 도구`의 줄마다 ` \| `로 나눈 묶음 하나 = `{ "line": 줄 번호(1부터), "label": 묶음 이름, "tags": [도구 이름…] }`. 적힌 그대로(지어내지 않음). 절이 없거나 비면 `[]` |
 | `projects` | 표시 순서대로 폴더 이름 배열. profile.md `프로젝트 순서`가 있으면 그 순서 |
 
 ## `data/projects/<폴더 이름>.json`
@@ -89,6 +108,11 @@
   "screenshots": [
     { "src": "images/boss_intro.gif", "caption": "보스방 진입 연출" }
   ],
+  "retroBrief": {
+    "achieved": ["달성 한 줄 요약(상세 창 전용)"],
+    "regrets": ["아쉬운 점 한 줄 요약"],
+    "plans": ["개선 계획 한 줄 요약"]
+  },
   "retro": {
     "achieved": ["달성한 것 — 측정값이 있으면 그대로"],
     "regrets": ["아쉬운 점(기술 부채)"],
@@ -108,13 +132,15 @@
 | `team.size` | "1인", "3인"처럼 짧게. 중도 이탈 같은 사정은 `meta`의 인원에 |
 | `team.role` | **팀: 필수.** 문서의 "내 역할/담당"을 그대로 (여러 곳이면 개요 표 우선). 없으면 `""` + 리포트 **필수**. **개인:** 담당 범위가 적혀 있을 때만, 없으면 `""` + 리포트 **참고**. "1인 개발"에서 "전체"를 유추하지 않음 |
 | `meta` | 장르·기간·인원·환경 순(있는 것만). 문서의 개요 표에서 가져옴 (표가 여러 개면 맨 앞 개요 표 우선, 합쳤다면 "확인해 주세요"). 버전은 원문 그대로 |
-| `tags` | 4~7개, **15자 내외의 짧은 키워드**. 개발 환경·주요 기술·본문에 실제로 나온 기술·패턴. 버전은 줄여도 됨(`Unity 6000.3.15f1` → `Unity 6.3`). IDE는 제외 |
+| `tags` | 4~7개, **15자 내외의 짧은 키워드**. 개발 환경·주요 기술·본문에 실제로 나온 기술·패턴. 버전은 줄여도 됨(`Unity 6000.3.15f1` → `Unity 6.3`). IDE는 제외. **profile.md `## 프로젝트 스택`에 그 폴더가 있으면 `- 그 외:`를 적힌 그대로**(이 규칙들 적용 안 함) |
+| `cardTags` | (선택) 포트폴리오 문서 첫 화면 프로젝트 카드에만 쓰는 태그. profile.md `## 프로젝트 스택`의 `- 인트로 카드:`를 적힌 그대로. 없으면 키를 쓰지 않음 → 카드는 `tags` |
 | `links.*` | 문서·profile에 있는 URL만. `#`·빈 링크는 `""` + 리포트 **권장**. 저장소가 여럿이면 주 저장소를 `github`, 나머지는 `extra`(예: `서버 GitHub`). 기획서·전체 플레이 영상 등도 `extra` |
 | `schemaVersion` | `2`. 이 값과 `deck`이 있으면 발표 덱은 `deck`대로 그리고, 없으면(예전 데이터) 핵심 구현·이슈 해결로 **자동 구성**합니다(아래 「발표 덱」) |
 | `intent` | 포트폴리오 문서·발표 덱 표지의 프로젝트 소개에 나오는 "개발 의도". `{ "text", "verbatim" }`(아래 「글 조각」). 문서의 Why(왜, 무엇에 집중했나) 문단에서. 없으면 `null` |
 | `highlights` | **2~4개**(포트폴리오 문서의 기능 소개용). 핵심 시스템·기능, 또는 구조 섹션의 중요한 설계 결정. `why`는 같은 기능의 "고민과 선택" → 없으면 코드의 `(Why)` 주석·본문 설명 → 그래도 없으면 `""` + 리포트 **필수**. `how`와 `why`는 **같은 결정**을 말해야 함. `image`(선택): 그 기능 절(`section`)에 실제로 있는 이미지 하나 `{ "src", "w", "h", "caption" }` — 없으면 `null` |
 | `troubleshooting` | **0~3개.** 트러블슈팅 섹션 우선, 없으면 본문의 문제→해결 서술. `result`는 **해결 뒤 달라진 점**만 — 없으면 `""` + 리포트 권장(배운 점을 `result`로 옮기지 않음). 배운 점·회고는 `lesson`. 한 절에 사례가 2개면 하나로 묶어도 됨 |
 | `screenshots` | (예전 데이터의 자동 구성용) **최대 6장**, 이미지 파일(`.png .jpg .jpeg .gif .webp`)만. 6장보다 많으면 `highlights` 기능의 화면 우선 + 기능이 겹치지 않게. `caption`은 alt → 짧으면 주변 제목·표 머리와 조합(조합했으면 "확인해 주세요") |
+| `retroBrief` | 포트폴리오 문서의 프로젝트 상세 창 전용 요약본(발표 덱·상세 문서는 `retro` 원문을 씀). `{achieved, regrets, plans}`이 `retro`와 **같은 개수·같은 순서**로, 항목마다 한 줄(20자 안팎, 명사형)로 줄인 것. `retro`에 있는 사실·수치만 쓰고 새로 만들지 않음. 모두 Claude가 줄인 문장이므로 리포트 "확인해 주세요"에 넣음. 비어 있으면 상세 창이 `retro`를 그대로 보임 |
 | `retro` | 문서의 결과·회고 섹션에서. 각 배열 1~4개. 4개보다 많으면 개요의 Why와 관련이 큰 순. `regrets[i]`와 `plans[i]`는 같은 항목끼리 짝. `section`: 회고 절 제목 그대로(없으면 `""`) |
 | `w`, `h` | (선택) `screenshots[]`·`highlights[].image`·발표 덱 이미지의 픽셀 크기. 이미지 파일 머리에서 읽은 값만(추측 금지). 없으면 렌더러가 실행 중에 잽니다 |
 | `section` | 원문 **제목 텍스트 그대로**(앞의 `#` 제외, 코드 블록 안의 `#` 줄은 제목 아님). `how`가 설명된 **가장 구체적인 하위 절** 우선. 렌더러가 이 텍스트로 발표 덱의 그 절 장면을 찾음(포트폴리오 문서의 [발표 덱에서 보기], 발표 덱 옛 주소 `hl-n`·`ts-n`) (`★`·`①`·`:` 등 특수문자 그대로 두어도 됨) |

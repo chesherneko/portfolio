@@ -1,11 +1,11 @@
 // 화면 모드(밝게·어둡게) — 포트폴리오 문서·발표 덱·상세 문서 공용. <head>에서 CSS보다 먼저 실어 첫 화면부터 그 모드로 그림(깜빡임 없음)
 //   html[data-mode="light"|"dark"]만 정하고, 색은 각 페이지 CSS의 html[data-mode="dark"] 블록(화면 전용 — 인쇄·PDF는 늘 밝게)이 바꿈
-//   고른 모드는 localStorage 'pf-mode'에 남아 세 페이지가 같이 따름(처음 열면 밝게). 다른 탭에서 바꾸면 이 탭도 따라감
+//   고른 모드는 localStorage 'pf-mode'에 남아 세 페이지가 같이 따름(처음 열면 어둡게). 다른 탭에서 바꾸면 이 탭도 따라감
 //   단추: PFMode.button()이 만든 [data-pf-mode] — 누르면 바뀜. 바뀔 때마다 window에 'pf-mode' 이벤트(detail = 모드)
 const PFMode = (() => {
   const KEY = 'pf-mode';
   const root = document.documentElement;
-  const read = () => { try { return localStorage.getItem(KEY) === 'dark' ? 'dark' : 'light'; } catch { return 'light'; } };
+  const read = () => { try { return localStorage.getItem(KEY) === 'light' ? 'light' : 'dark'; } catch { return 'dark'; } };   // 처음 열면 어둡게
   const get = () => (root.dataset.mode === 'dark' ? 'dark' : 'light');
   function sync() {
     const dark = get() === 'dark';

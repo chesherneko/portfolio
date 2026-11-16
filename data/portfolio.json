@@ -3,35 +3,45 @@
   "profile": {
     "name": "정태현",
     "nameEn": "Jung Taehyeon",
-    "headline": "증상이 아니라 원인을 고치는 유니티 클라이언트 개발자",
-    "intro": "문제가 생기면 발생 과정부터 추적해 원인을 찾습니다.\n찾은 원인과 해결 근거는 기술 문서로 남겨, 같은 문제가 반복되지 않게 합니다.",
+    "headline": "아이디어를 플레이할 수 있는 시스템으로 만드는 클라이언트 개발자",
+    "intro": "저는 아이디어를 ==손에 잡히는 시스템==으로 바꾸는 일이 가장 즐거운 개발자입니다.\n문제가 생기면 **로그와 재현**으로 원인을 쫓고, 복잡한 구조는 **흐름부터 그려서 정리한 뒤** 풀어냅니다.\n\n퍼즐부터 액션 플랫포머, 온라인 보드게임, 보스 액션까지\n**서로 다른 장르의 게임 4편**을 만들며 시스템을 설계했습니다.\n\n최근에는 **AI와의 협업**을 저만의 개발 방식으로 다듬고 있습니다.\n바로 코드를 맡기지 않고 **설계를 먼저 받아 검토**한 뒤 일을 맡겨, **속도와 품질을 함께** 잡습니다.\n\n처음 만들어 본 작은 비주얼 노벨에서 **세계가 한 스텝씩 쌓이는 즐거움**을 알게 되었습니다.\n==플레이어가 머물고 싶은 세계==를 단단한 시스템으로 받치는 것이 제 **목표**입니다.",
     "email": "chesherneko@gmail.com",
     "github": "https://github.com/chesherneko",
-    "links": []
+    "links": [],
+    "heroTitle": "CLIENT DEVELOPER",
+    "slogan": "I TURN IDEAS / INTO PLAYABLE SYSTEMS.",
+    "greeting": "안녕하세요! 클라이언트 개발자 정태현입니다.",
+    "aboutImage": "theme/about-sky-light.webp",
+    "aboutImageDark": "theme/about-sky-dark.webp",
+    "keywords": [
+      "즐기는",
+      "끈질긴",
+      "믿고맡기는",
+      "설계부터"
+    ],
+    "brand": "TaeHyeon",
+    "contactKey": "4cdfb824-e6f8-404c-8d6f-7ce607d08aa1"
   },
   "settings": {
     "layout": "project",
-    "accent": "#2F6FEB"
+    "accent": "#2F6FEB",
+    "cardGif": true
   },
   "skills": [
     {
       "name": "Unity",
       "evidence": [
         {
-          "text": "Instantiate/Destroy 대신 씬에 미리 둔 블록 36개를 큐로 재사용",
-          "project": "0-Tidy-Mommy"
-        },
-        {
-          "text": "Rigidbody 대신 축별 BoxCast로 충돌을 해결하는 Kinematic 이동 구현",
+          "text": "Kinematic 이동 · BoxCast 충돌 처리",
           "project": "1-action-platformer"
         },
         {
-          "text": "보드 빌더로 칸 배치를 `Board.json`에 저장하고 게임 시작 시 보드 생성",
-          "project": "2-Yggdrasil"
+          "text": "NavMesh와 루트 모션 보스 이동",
+          "project": "3-Project-Oddity"
         },
         {
-          "text": "NavMesh로 경로만 계산하고 루트 모션을 살린 Kinematic 보스 이동",
-          "project": "3-Project-Oddity"
+          "text": "생성·파괴 없는 오브젝트 재사용",
+          "project": "0-Tidy-Mommy"
         }
       ]
     },
@@ -39,20 +49,16 @@
       "name": "C#",
       "evidence": [
         {
-          "text": "게이지를 `ref`로 받는 함수 하나로 폭탄·피버 게이지 감소를 공통 처리",
-          "project": "0-Tidy-Mommy"
-        },
-        {
-          "text": "`abstract` 메서드로 캐릭터별 스킬 State만 자식이 주입하는 확장 구조",
-          "project": "1-action-platformer"
-        },
-        {
-          "text": "제네릭 `DataTable<DTO, Def>`로 TSV 표 읽기를 하나로 통합",
+          "text": "제네릭 데이터 테이블 로더",
           "project": "2-Yggdrasil"
         },
         {
-          "text": "`typeof`·`GetType`으로 상태를 찾아 Enum 키 없이 패턴 상태 전환",
-          "project": "3-Project-Oddity"
+          "text": "abstract 기반 상태 확장 구조",
+          "project": "1-action-platformer"
+        },
+        {
+          "text": "UniTask 비동기 처리",
+          "project": "2-Yggdrasil"
         }
       ]
     },
@@ -60,28 +66,105 @@
       "name": "디자인 패턴",
       "evidence": [
         {
-          "text": "싱글톤 매니저 5개의 중복 코드를 `MonoSingleton<T>`로 축소",
-          "project": "0-Tidy-Mommy"
+          "text": "상태 기계 기반 보스 AI",
+          "project": "3-Project-Oddity"
         },
         {
-          "text": "중재자(`CombatManager`)로 피격 처리 순서를 한 곳에 모음",
+          "text": "중재자로 피격 처리 순서 정리",
           "project": "1-action-platformer"
         },
         {
-          "text": "Strategy + Factory로 칸 효과 7종을 `ITileEffect` 클래스로 분리",
+          "text": "Strategy + Factory 칸 효과",
+          "project": "2-Yggdrasil"
+        }
+      ]
+    },
+    {
+      "name": "데이터 설계",
+      "evidence": [
+        {
+          "text": "TSV → DTO → Def 데이터 파이프라인",
           "project": "2-Yggdrasil"
         },
         {
-          "text": "상태 기계(`MonoBehaviourFSM`)와 전투 이벤트 큐로 보스 AI·전투 기반 설계",
+          "text": "ScriptableObject 조작 수치 분리",
+          "project": "1-action-platformer"
+        },
+        {
+          "text": "보드 배치 JSON 저장·생성",
+          "project": "2-Yggdrasil"
+        }
+      ]
+    },
+    {
+      "name": "ASP.NET Core · WebSocket",
+      "evidence": [
+        {
+          "text": "서버 게임 로직 구현",
+          "project": "2-Yggdrasil"
+        },
+        {
+          "text": "클라이언트 간 턴 진행 동기화",
+          "project": "2-Yggdrasil"
+        }
+      ]
+    },
+    {
+      "name": "전투 · 게임플레이 시스템",
+      "evidence": [
+        {
+          "text": "전투 이벤트 큐로 피해·회복 처리",
           "project": "3-Project-Oddity"
+        },
+        {
+          "text": "게이지 · 피버 시스템",
+          "project": "0-Tidy-Mommy"
         }
       ]
     }
   ],
+  "tools": [
+    {
+      "line": 1,
+      "label": "엔진·IDE",
+      "tags": [
+        "Unity",
+        "Rider"
+      ]
+    },
+    {
+      "line": 1,
+      "label": "라이브러리",
+      "tags": [
+        "DOTween",
+        "UniTask",
+        "Odin Inspector"
+      ]
+    },
+    {
+      "line": 2,
+      "label": "협업 도구",
+      "tags": [
+        "Git",
+        "GitHub",
+        "Fork",
+        "Asana",
+        "Unity VCS"
+      ]
+    },
+    {
+      "line": 2,
+      "label": "AI 도구",
+      "tags": [
+        "Claude",
+        "Codex"
+      ]
+    }
+  ],
   "projects": [
-    "0-Tidy-Mommy",
-    "1-action-platformer",
+    "3-Project-Oddity",
     "2-Yggdrasil",
-    "3-Project-Oddity"
+    "1-action-platformer",
+    "0-Tidy-Mommy"
   ]
 }

@@ -25,17 +25,24 @@
     },
     {
       "label": "환경",
-      "value": "Unity 6 (C#), ASP.NET Core WebSocket 서버 (.NET 10), UniTask, DOTween"
+      "value": "Unity (C#), ASP.NET Core WebSocket 서버 (.NET 10), UniTask, DOTween"
     }
   ],
   "tags": [
-    "Unity 6",
+    "Unity",
     "C#",
     "ASP.NET Core",
     "WebSocket",
     "UniTask",
     "DOTween",
-    "Strategy + Factory"
+    "Strategy+Factory"
+  ],
+  "cardTags": [
+    "Unity",
+    "ASP.NET Core",
+    "WebSocket",
+    "UniTask",
+    "Strategy+Factory"
   ],
   "links": {
     "github": "https://github.com/chesherneko/Yggdrasil",
@@ -161,6 +168,25 @@
       "h": 409
     }
   ],
+  "retroBrief": {
+    "achieved": [
+      "전원 보고 방식 5곳 적용, 2~4인 온라인 시연",
+      "황금카드 11 → 20장 등 데이터만 고쳐 조정",
+      "반 내 투표 완성도 부문 1위"
+    ],
+    "regrets": [
+      "골드·영토 변경 요청을 서버가 검증하지 않음",
+      "결투 시간을 숫자(34초)로 보정",
+      "장비를 데이터로 늘릴 수 없음",
+      "턴 제한·재접속 등 기획 기능 일부 미구현"
+    ],
+    "plans": [
+      "`TurnId`·턴 플레이어 확인, 어긋난 요청 버림",
+      "연출 완료 보고 후부터 서버가 시간 측정",
+      "공용 투사체 + 장비별로 그림만 교체",
+      "활동 상태 기준으로 턴 시간 멈춤"
+    ]
+  },
   "retro": {
     "achieved": [
       "보드 로딩·턴 종료·칸 효과·황금카드·지정 이동 5곳에 전원 보고 방식을 적용해, 2~4인 온라인 플레이를 시연까지 진행",
