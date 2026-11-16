@@ -196,9 +196,9 @@
         "chapter": "overview",
         "layout": "overview",
         "tab": "개요",
-        "title": {"text": "1.2 무엇을 만들었나", "verbatim": true},
+        "title": {"text": "1.2 게임 소개", "verbatim": true},
         "lead": {"text": "엄마의 삼단정리는 계속 쌓이는 블록을 제한 시간 안에 정리하는 2D 액션 퍼즐입니다.", "verbatim": true},
-        "sectionPath": ["1. 프로젝트 개요", "1.2 무엇을 만들었나"],
+        "sectionPath": ["1. 프로젝트 개요", "1.2 게임 소개"],
         "points": [
           {"label": "", "text": "플레이어는 세 줄 가운데 한 줄의 맨 앞 블록을 골라 다른 줄의 맨 앞으로 옮깁니다.", "verbatim": true},
           {"label": "", "text": "옮긴 줄의 앞쪽 세 블록이 같은 색이면 사라지고, 점수와 남은 시간이 늘어납니다.", "verbatim": true},
@@ -220,9 +220,9 @@
         "chapter": "overview",
         "layout": "visual",
         "tab": "개요",
-        "title": {"text": "1.3 왜 만들었나", "verbatim": true},
+        "title": {"text": "1.3 플레이어에게 주고 싶었던 경험", "verbatim": true},
         "lead": null,
-        "sectionPath": ["1. 프로젝트 개요", "1.3 왜 만들었나"],
+        "sectionPath": ["1. 프로젝트 개요", "1.3 플레이어에게 주고 싶었던 경험"],
         "points": [
           {"label": "", "text": "플레이어가 블록 배치를 빠르게 파악하고, 연속으로 맞춰 피버를 터뜨리는 경험을 하길 바랐습니다.", "verbatim": true},
           {"label": "", "text": "그래서 블록이 한눈에 들어오도록 화면 구성은 단순하게 두고, 블록이 나오는 방식으로 난이도를 조절하는 데 집중했습니다", "verbatim": true}
@@ -232,7 +232,7 @@
             "kind": "mermaid",
             "n": 1,
             "fp": "flowchart LR",
-            "sectionPath": ["1. 프로젝트 개요", "1.2 무엇을 만들었나"],
+            "sectionPath": ["1. 프로젝트 개요", "1.2 게임 소개"],
             "caption": {"text": "핵심 플레이 루프", "verbatim": true}
           }
         ],
@@ -593,9 +593,9 @@
         "chapter": "overview",
         "layout": "overview",
         "tab": "개요",
-        "title": {"text": "1.2 무엇을 만들었나", "verbatim": true},
+        "title": {"text": "1.2 게임 소개", "verbatim": true},
         "lead": {"text": "엄마의 삼단정리는 계속 쌓이는 블록을 제한 시간 안에 정리하는 2D 액션 퍼즐입니다.", "verbatim": true},
-        "sectionPath": ["1. 프로젝트 개요", "1.2 무엇을 만들었나"],
+        "sectionPath": ["1. 프로젝트 개요", "1.2 게임 소개"],
         "points": [
           {"label": "", "text": "플레이어는 세 줄 가운데 한 줄의 맨 앞 블록을 골라 다른 줄의 맨 앞으로 옮깁니다.", "verbatim": true},
           {"label": "", "text": "옮긴 줄의 앞쪽 세 블록이 같은 색이면 사라지고, 점수와 남은 시간이 늘어납니다.", "verbatim": true},
@@ -608,34 +608,44 @@
             "w": 300,
             "h": 536,
             "caption": {"text": "맨 앞 블록을 옮겨 같은 색 세 개를 맞추는 장면", "verbatim": true}
-          },
-          {"kind": "mermaid", "n": 1, "fp": "flowchart LR"}
+          }
         ]
       },
       {
         "key": "why",
         "chapter": "overview",
-        "layout": "overview",
+        "layout": "visual",
         "tab": "개요",
-        "title": {"text": "1.3 왜 만들었나", "verbatim": true},
+        "title": {"text": "1.3 플레이어에게 주고 싶었던 경험", "verbatim": true},
         "lead": null,
-        "sectionPath": ["1. 프로젝트 개요", "1.3 왜 만들었나"],
+        "sectionPath": ["1. 프로젝트 개요", "1.3 플레이어에게 주고 싶었던 경험"],
         "points": [
           {"label": "", "text": "플레이어가 블록 배치를 빠르게 파악하고, 연속으로 맞춰 피버를 터뜨리는 경험을 하길 바랐습니다.", "verbatim": true},
           {"label": "", "text": "그래서 블록이 한눈에 들어오도록 화면 구성은 단순하게 두고, 블록이 나오는 방식으로 난이도를 조절하는 데 집중했습니다", "verbatim": true}
         ],
-        "visuals": []
+        "visuals": [
+          {
+            "kind": "mermaid",
+            "n": 1,
+            "fp": "flowchart LR",
+            "sectionPath": ["1. 프로젝트 개요", "1.2 게임 소개"],
+            "caption": {"text": "핵심 플레이 루프", "verbatim": true}
+          }
+        ]
       },
       {
         "key": "problems",
         "chapter": "goals",
         "layout": "full",
         "tab": "개요",
-        "title": {"text": "2.2 풀어야 했던 문제", "verbatim": true},
+        "title": {"text": "설계 목표와 풀어야 했던 문제", "verbatim": true},
         "lead": null,
         "sectionPath": ["2. 설계 목표와 풀어야 했던 문제", "2.2 풀어야 했던 문제"],
         "points": [],
-        "visuals": [{"kind": "table", "n": 1, "fp": "문제|상황|다루는 절"}]
+        "visuals": [
+          {"kind": "table", "n": 1, "fp": "순위|목표", "sectionPath": ["2. 설계 목표와 풀어야 했던 문제", "2.1 설계 목표"]},
+          {"kind": "table", "n": 1, "fp": "문제|상황|다루는 절"}
+        ]
       },
       {
         "key": "arch-flow",
@@ -715,7 +725,22 @@
             "verbatim": true
           }
         ],
-        "visuals": [{"kind": "table", "n": 2, "fp": "초반 (색 2가지)|후반 (색 6가지)"}]
+        "visuals": [
+          {
+            "kind": "image",
+            "src": "images/level_low.png",
+            "w": 300,
+            "h": 536,
+            "caption": {"text": "초반 (색 2가지)", "verbatim": true}
+          },
+          {
+            "kind": "image",
+            "src": "images/level_high.png",
+            "w": 300,
+            "h": 536,
+            "caption": {"text": "후반 (색 6가지)", "verbatim": true}
+          }
+        ]
       },
       {
         "key": "weight-flow",
@@ -955,6 +980,6 @@
         "visuals": [{"kind": "code", "n": 1, "fp": "public void PlayBlockMoveSFX()"}]
       }
     ],
-    "applied": "e62f902e22461410"
+    "applied": "db6d6a68ec6fd4a6"
   }
 }

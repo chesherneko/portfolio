@@ -7,9 +7,9 @@
       "chapter": "intro",
       "layout": "gallery",
       "tab": "개요",
-      "title": {"text": "1.2 무엇을 만들었나", "verbatim": true},
+      "title": {"text": "1.2 게임 소개", "verbatim": true},
       "lead": null,
-      "sectionPath": ["1.2 무엇을 만들었나"],
+      "sectionPath": ["1.2 게임 소개"],
       "points": [],
       "visuals": [
         {"kind": "table", "n": 1, "fp": "보스|난이도|유형"},
@@ -42,9 +42,9 @@
       "chapter": "intro",
       "layout": "overview",
       "tab": "개요",
-      "title": {"text": "1.3 왜 만들었나", "verbatim": true},
+      "title": {"text": "1.3 플레이어에게 주고 싶었던 경험", "verbatim": true},
       "lead": null,
-      "sectionPath": ["1.3 왜 만들었나"],
+      "sectionPath": ["1.3 플레이어에게 주고 싶었던 경험"],
       "points": [
         {
           "label": "스스로 공격 기회를 만드는 전투",
@@ -684,9 +684,9 @@
       "chapter": "intro",
       "layout": "visual",
       "tab": "개요",
-      "title": {"text": "1.2 무엇을 만들었나", "verbatim": true},
+      "title": {"text": "1.2 게임 소개", "verbatim": true},
       "lead": {"text": "ODDITY는 근미래를 배경으로 한 3인칭 보스 액션입니다.", "verbatim": true},
-      "sectionPath": ["1.2 무엇을 만들었나"],
+      "sectionPath": ["1.2 게임 소개"],
       "points": [
         {"label": "핵심 플레이 루프", "text": "플레이어는 로비에서 미션을 받아 난이도별 보스에게 도전하고, 보스를 잡으면 보상으로 증강칩을 얻습니다.", "verbatim": true},
         {"label": "", "text": "칩을 격자에 배치해 스킬과 능력치를 조합한 뒤 다음 보스에 도전합니다.", "verbatim": true},
@@ -704,8 +704,8 @@
       ],
       "from": {
         "key": "loop",
-        "sectionPath": ["1.2 무엇을 만들었나"],
-        "sig": ["1.2 무엇을 만들었나|image|images/1.2-1_chip-grid.png|1", "1.2 무엇을 만들었나|mermaid|1|flowchart LR"]
+        "sectionPath": ["1.2 게임 소개"],
+        "sig": ["1.2 게임 소개|image|images/1.2-1_chip-grid.png|1", "1.2 게임 소개|mermaid|1|flowchart LR"]
       }
     },
     {
