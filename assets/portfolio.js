@@ -278,6 +278,9 @@
     users: '<circle cx="9" cy="8" r="3.2"/><path d="M3 19.5c.6-3.3 3-5 6-5s5.4 1.7 6 5"/><path d="M15.5 4.9a3.2 3.2 0 0 1 0 6.2M17.5 14.7c1.8.6 3 2.2 3.4 4.8"/>',
     pad: '<rect x="2.5" y="7" width="19" height="11" rx="5.5"/><path d="M7.5 10.5v4M5.5 12.5h4"/><circle cx="15.5" cy="11.3" r=".9" fill="currentColor"/><circle cx="17.6" cy="13.7" r=".9" fill="currentColor"/>',
     check: '<circle cx="12" cy="12" r="8.5"/><path d="M8.5 12.5l2.3 2.3 4.7-5"/>',
+    play: '<path d="M8 5.5v13l10.5-6.5z" fill="currentColor"/>',
+    slides: '<rect x="3" y="4" width="18" height="12" rx="2"/><path d="M12 16v4M8 20h8"/>',
+    doc: '<path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4M9 12h6M9 16h6"/>',
   };
   const svg = (k) => `<svg viewBox="0 0 24 24">${ICONS[k]}</svg>`;
   function skillKey(name) {
@@ -320,18 +323,41 @@
   }
 
   // 프로젝트 링크(발표 덱 · 상세 문서 · GitHub · 영상 · 그 밖). short = 카드용(그 밖의 링크 빼고 짧은 이름)
-  function linkList(p, cls, short = false) {
+  function linkList(p, cls, short = false, icons = false) {
     const extra = short ? [] : (p.links?.extra || []).filter((l) => isUrl(l.url));
-    return [link({ href: PF.projectUrl(p.id), label: T('name.deck'), kind: 'page', cls }), link({ href: PF.docUrl(p.id), label: T(short ? 'name.doc-short' : 'name.doc'), kind: 'page', cls }),
-      isUrl(p.links?.github) && link({ href: p.links.github, label: 'GitHub', cls }), isUrl(p.links?.video) && link({ href: p.links.video, label: T('name.video'), cls }),
+    const ic = (k, label) => icons ? `<span class="lk-i" aria-hidden="true">${svg(k)}</span>${label}` : label;   // 앞 아이콘(상세 창 위쪽 링크 줄)
+    // 순서: 시연 영상 · 발표 덱 · 상세 문서 · GitHub · 그 밖. 시연 영상·발표 덱은 강조(hot — 파랗게 채운 버튼)
+    return [isUrl(p.links?.video) && link({ href: p.links.video, label: ic('play', T('name.video')), cls: `${cls} hot` }),
+      link({ href: PF.projectUrl(p.id), label: ic('slides', T('name.deck')), kind: 'page', cls: `${cls} hot` }),
+      link({ href: PF.docUrl(p.id), label: ic('doc', T(short ? 'name.doc-short' : 'name.doc')), kind: 'page', cls }),
+      isUrl(p.links?.github) && link({ href: p.links.github, label: ic('hub', 'GitHub'), cls }),
       ...extra.map((l) => link({ href: l.url, label: esc(l.label), cls }))].filter(Boolean).join('');
   }
 
   // ── 상세 창(카드를 누르면): 큰 그림 + 썸네일 줄 → 제목·링크 · 개발 의도 · 정보 · 기술 스택 · 주요 기능 · 트러블슈팅 · 결과와 회고 · 바로 가기(버튼) ──
   let modal = null, pushed = false, lastFocus = null;
+  // 유튜브 주소 → 영상 id·세로 영상(Shorts) 여부. 유튜브가 아니면 null
+  function youtube(u) {
+    if (!isUrl(u)) return null;
+    let url; try { url = new URL(u); } catch { return null; }
+    const host = url.hostname.replace(/^(www\.|m\.)/, '');
+    let id = '', shorts = false;
+    if (host === 'youtu.be') id = url.pathname.slice(1).split('/')[0];
+    else if (/^(youtube\.com|youtube-nocookie\.com)$/.test(host)) {
+      const m = url.pathname.match(/^\/(shorts|embed|live)\/([^/?#]+)/);
+      if (m) { id = m[2]; shorts = m[1] === 'shorts'; } else id = url.searchParams.get('v') || '';
+    }
+    return /^[\w-]{6,}$/.test(id) ? { id, shorts } : null;
+  }
+  // 유튜브 플레이어(쿠키 덜 쓰는 주소). 저절로 재생하지 않음
+  const player = (id, shorts, cap) => `<div class="pm-yt${shorts ? ' shorts' : ''}"><iframe src="https://www.youtube-nocookie.com/embed/${encodeURIComponent(id)}?rel=0&amp;playsinline=1" title="${esc(cap)}"
+    allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe></div>`;
+  // 그림 넘기기 목록: 시연 영상(유튜브면 맨 앞) → 대표 화면 → 스크린샷 → 주요 기능 그림
   function gallery(p) {
     const seen = new Set(), list = [];
     const add = (s, w, h, cap) => { if (s && !seen.has(s)) { seen.add(s); list.push({ src: s, w, h, cap: capText(cap) }); } };
+    const yt = youtube(p.links?.video);
+    if (yt) list.push({ yt, cap: t('name.video') });
     add(p.cover, null, null, p.title);
     (p.screenshots || []).forEach((s) => add(s.src, s.w, s.h, s.caption));
     (p.highlights || []).forEach((h) => h.image && add(h.image.src, h.image.w, h.image.h, h.image.caption || h.title));
@@ -341,7 +367,9 @@
     : /환경|엔진|플랫폼|env|engine|platform/i.test(l) ? 'ide' : 'check');
   function detail(p) {
     const g = gallery(p);
-    const img = (x) => `<img src="${src(p, x.src)}" alt="${esc(x.cap || p.title)}"${x.w && x.h ? ` width="${x.w}" height="${x.h}"` : ''}>`;
+    const img = (x) => x.yt ? `<img src="https://i.ytimg.com/vi/${esc(x.yt.id)}/hqdefault.jpg" alt="${esc(x.cap)}">`
+      : `<img src="${src(p, x.src)}" alt="${esc(x.cap || p.title)}"${x.w && x.h ? ` width="${x.w}" height="${x.h}"` : ''}>`;
+    const thumb = (x, i) => `<button type="button" role="listitem" data-gi="${i}"${x.yt ? ` class="yt" data-yt="${esc(x.yt.id)}"${x.yt.shorts ? ' data-shorts' : ''}` : ''} aria-label="${esc(x.cap || `${i + 1}`)}"${i ? '' : ' aria-current="true"'}>${img(x)}</button>`;
     const ts = p.troubleshooting || [];
     const r = p.retro || {};
     const retro = [['achieved', 'deck.achieved', '✓'], ['regrets', 'deck.regrets', '△'], ['plans', 'deck.plans', '→']].filter(([k]) => (r[k] || []).length);
@@ -359,14 +387,14 @@
     }).join('');
     return `<div class="pm-sc">
       <button type="button" class="pm-x" data-close aria-label="${T('ui.close-esc')}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
-      ${g.length ? `<div class="pm-spacer" aria-hidden="true"></div><div class="pm-gal"><figure class="pm-view"><div class="pm-stage">${img(g[0])}</div><figcaption>${esc(g[0].cap)}</figcaption>
+      ${g.length ? `<div class="pm-spacer" aria-hidden="true"></div><div class="pm-gal"><figure class="pm-view"><div class="pm-stage">${g[0].yt ? player(g[0].yt.id, g[0].yt.shorts, g[0].cap) : img(g[0])}</div><figcaption>${esc(g[0].cap)}</figcaption>
           ${g.length > 1 ? `<button type="button" class="pm-nav prev" data-step="-1" aria-label="이전 그림">‹</button><button type="button" class="pm-nav next" data-step="1" aria-label="다음 그림">›</button>` : ''}</figure>
-        ${g.length > 1 ? `<div class="pm-th" role="list">${g.map((x, i) => `<button type="button" role="listitem" data-gi="${i}" aria-label="${esc(x.cap || `${i + 1}`)}"${i ? '' : ' aria-current="true"'}>${img(x)}</button>`).join('')}</div>` : ''}</div>` : ''}
+        ${g.length > 1 ? `<div class="pm-th" role="list">${g.map(thumb).join('')}</div>` : ''}</div>` : ''}
       <div class="pm-body">
         <p class="eyebrow">${esc(NO[p.id])} · ${esc(PF.teamLabel(p.team))}</p>
         <h2 id="pm-title">${esc(p.title)}</h2>
         ${p.tagline ? `<p class="pm-tl">${inline(p.tagline)}</p>` : ''}
-        <p class="pm-lks">${linkList(p, 'pm-lk')}</p>
+        <p class="pm-lks">${linkList(p, 'pm-lk', false, true)}</p>
         ${p.intent?.text ? `<div class="pm-intro"><p class="k" lang="en">${T('en.intent')}</p><p>${inline(p.intent.text)}</p></div>` : ''}
         ${facts.length ? `<dl class="pm-facts">${facts.map(([k, v]) => `<div><dt><span class="pm-fi" aria-hidden="true">${factIcon(k)}</span>${esc(k)}</dt><dd>${v}</dd></div>`).join('')}</dl>` : ''}
         ${(p.tags || []).length ? part('page.stack', `<ul class="pm-tags">${p.tags.map((x) => `<li>${esc(x)}</li>`).join('')}</ul>`) : ''}
@@ -376,7 +404,7 @@
               .map(([k, l]) => `<div class="${k}"><dt>${esc(PF.label(l))}</dt><dd>${inline(x[k])}</dd></div>`).join('')}</dl></details>`).join('')}</div>`) : ''}
         ${retro.length ? part('page.retro', `<div class="pm-retro">${retro.map(([k, key, mark]) => `<div class="${k}"><h4><span aria-hidden="true">${mark}</span> ${T(key)}</h4>
             <ul>${(p.retroBrief?.[k]?.length ? p.retroBrief[k] : r[k]).map((x) => `<li>${inline(x)}</li>`).join('')}</ul></div>`).join('')}</div>`) : ''}
-        ${part('page.links', `<div class="pm-go">${linkList(p, 'btn pm-btn')}</div>`)}
+        ${part('page.links', `<div class="pm-go">${linkList(p, 'btn pm-btn', false, true)}</div>`)}
       </div></div>
       ${g.length ? `<div class="pm-shade" aria-hidden="true"></div><p class="pm-hint" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>${T('page.scroll-info')}</p>` : ''}`;
   }
@@ -426,7 +454,11 @@
   //   close 이벤트를 기다리지 않음(가려진 창 등에서 늦거나 오지 않음) → 닫은 자리에서 바로 뒷정리. Esc는 cancel을 막고 같은 길로
   //   닫을 때는 판이 아래로 내려간 뒤 닫힘(.closing). animationend가 오지 않는 경우(가려진 창)에 대비해 시간으로도 끝냄
   let closing = 0;
-  function finishClose() { clearTimeout(closing); closing = 0; modal.classList.remove('closing'); if (modal.open) { modal.close(); onClosed(); } }
+  function finishClose() {
+    clearTimeout(closing); closing = 0; modal.classList.remove('closing');
+    modal.querySelectorAll('.pm-yt').forEach((v) => v.remove());       // 창은 숨기기만 하므로 영상 플레이어를 지워 소리도 멈춤
+    if (modal.open) { modal.close(); onClosed(); }
+  }
   function closeModal(animate = true) {
     if (!modal.open) return;
     if (!animate || reduced) return finishClose();
@@ -447,10 +479,15 @@
     const items = [...modal.querySelectorAll('.pm-th [data-gi]')];
     if (!items.length) return;
     i = (i + items.length) % items.length;
-    const from = items[i].querySelector('img');
-    const view = modal.querySelector('.pm-view img');
-    view.src = from.src; view.alt = from.alt;
-    ['width', 'height'].forEach((a) => { const v = from.getAttribute(a); if (v) view.setAttribute(a, v); else view.removeAttribute(a); });
+    const b = items[i], from = b.querySelector('img');
+    const stage = modal.querySelector('.pm-stage');
+    if (b.dataset.yt) stage.innerHTML = player(b.dataset.yt, b.hasAttribute('data-shorts'), from.alt);   // 영상: 다른 그림으로 넘기면 플레이어를 지워 재생도 멈춤
+    else {
+      let view = stage.querySelector('img');
+      if (!view) { stage.innerHTML = '<img alt="">'; view = stage.querySelector('img'); view.decoding = 'async'; }
+      view.src = from.src; view.alt = from.alt;
+      ['width', 'height'].forEach((a) => { const v = from.getAttribute(a); if (v) view.setAttribute(a, v); else view.removeAttribute(a); });
+    }
     modal.querySelector('.pm-view figcaption').textContent = from.alt;
     items.forEach((b, j) => b.toggleAttribute('aria-current', j === i));
     items[i].scrollIntoView({ block: 'nearest', inline: 'center', behavior: reduced ? 'instant' : 'smooth' });

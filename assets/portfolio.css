@@ -518,6 +518,13 @@ html.pm-lock { overflow: hidden; }
 .pm-th button:hover { opacity: .9; }
 .pm-th button[aria-current] { opacity: 1; border-color: var(--accent); }
 .pm-th img { width: 100%; height: 100%; object-fit: cover; }
+/*   시연 영상(유튜브): 맨 앞 칸. 16:9(Shorts는 9:16)로 무대 높이에 맞춤, 썸네일에는 재생 표시 */
+.pm-yt { width: min(100%, calc(min(60vh, 640px) * 16 / 9)); aspect-ratio: 16 / 9; border-radius: 12px; overflow: hidden; border: 1px solid rgb(255 255 255 / .12); box-shadow: 0 20px 34px rgb(0 0 0 / .3); background: #000; }
+.pm-yt.shorts { width: auto; height: 100%; aspect-ratio: 9 / 16; }
+.pm-yt iframe { display: block; width: 100%; height: 100%; border: 0; }
+.pm-th button.yt { position: relative; }
+.pm-th button.yt::after { content: ""; position: absolute; left: 50%; top: 50%; width: 40px; height: 28px; margin: -14px 0 0 -20px; border-radius: 8px; background: rgb(255 0 0 / .88)
+  url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M9 7l8 5-8 5z' fill='%23fff'/%3E%3C/svg%3E") center / 18px no-repeat; pointer-events: none; }
 /*   정보: 처음에는 숨김(투명 + 아래로 밀림), 내리면 올라오며 나타남 */
 .pm-body { position: relative; z-index: 1; min-height: calc(100% - 80px); padding: clamp(36px, 4.5vw, 60px) var(--pm-side) 96px; background: var(--paper); border-radius: 18px 18px 0 0;
            box-shadow: 0 -24px 48px -28px rgb(0 0 0 / .7); opacity: 0; visibility: hidden; transform: translateY(180px);
@@ -548,11 +555,16 @@ html.pm-lock { overflow: hidden; }
            box-shadow: 0 14px 30px -12px rgb(0 0 0 / .6); backdrop-filter: blur(8px); transition: opacity .25s, transform .25s; pointer-events: none; }
 .pm-hint svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; animation: s-bob 1.8s ease-in-out infinite; }
 .pm.scrolled .pm-hint, .pm.flat .pm-hint { transform: translate(-50%, 100%); }
-.pm-lks { display: flex; flex-wrap: wrap; gap: 6px 18px; margin-top: 16px; }
-.pm-lk { display: inline-flex; align-items: center; gap: 3px; font-size: 14.5px; font-weight: 700; color: color-mix(in srgb, var(--accent) 45%, var(--ink)); text-decoration: none; }
-.pm-lk:hover { text-decoration: underline; text-underline-offset: 3px; }
-.pm-lk svg { width: 13px; height: 13px; opacity: .7; }
-.pm-facts { display: grid; grid-template-columns: minmax(0, 1fr); gap: 26px 40px; margin-top: 36px; }
+/*   위쪽 링크 줄: 알약 버튼 + 앞 아이콘. 시연 영상·발표 덱(.hot)은 채운 버튼, 나머지는 테두리 버튼(아래 바로 가기와 같은 규칙) */
+.pm-lks { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
+.pm-lk { display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; border: 1px solid var(--accent-fill); border-radius: 10px; font-size: 14px; font-weight: 700;
+  color: var(--ink); text-decoration: none; transition: background .15s; }
+.pm-lk:hover { background: var(--accent-soft); }
+.pm-lk.hot { background: var(--accent-fill); color: #fff; }
+.pm-lk.hot:hover { background: var(--accent-ink); }
+.pm-lk .lk-i { display: inline-flex; }
+.pm-lk .lk-i svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; }
+.pm-lk .pf-newtab-icon { width: 11px; height: 11px; opacity: .7; }.pm-facts { display: grid; grid-template-columns: minmax(0, 1fr); gap: 26px 40px; margin-top: 36px; }
 .pm-facts dt { display: flex; align-items: center; gap: 8px; font-size: 16px; font-weight: 800; color: var(--ink); }
 .pm-fi { display: block; width: 20px; height: 20px; color: color-mix(in srgb, var(--accent) 55%, var(--ink)); }
 .pm-fi svg, .pm-fi svg * { width: 100%; height: 100%; }
@@ -591,9 +603,11 @@ html.pm-lock { overflow: hidden; }
 .pm-retro li::before { content: ""; position: absolute; left: 0; top: .7em; width: 5px; height: 5px; border-radius: 50%; background: var(--muted); }
 .pm-go { display: flex; flex-wrap: wrap; gap: 10px; }
 .pm-btn { gap: 6px; padding: 12px 20px; border-radius: 12px; font-size: 15px; font-weight: 700; color: var(--ink); text-decoration: none; }
-.pm-btn:first-child { background: var(--accent-fill); color: #fff; }
-.pm-btn:first-child:hover { background: var(--accent-ink); }
+.pm-btn.hot { background: var(--accent-fill); color: #fff; }
+.pm-btn.hot:hover { background: var(--accent-ink); }
 .pm-btn svg { width: 12px; height: 12px; opacity: .75; }
+.pm-btn .lk-i { display: inline-flex; margin-right: 2px; }
+.pm-btn .lk-i svg { width: 18px; height: 18px; opacity: 1; fill: none; stroke: currentColor; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; }
 
 /* 떠오르기(JS가 html.rv를 붙였을 때만 — JS 없이·움직임 줄이기에서는 그냥 보임) */
 html.rv .scr [data-reveal] { opacity: 0; transform: translateY(26px); transition: opacity .7s cubic-bezier(.2, .7, .2, 1), transform .7s cubic-bezier(.2, .7, .2, 1); }
@@ -637,6 +651,7 @@ html.rv .scr [data-reveal].in { opacity: 1; transform: none; }
   .pm.flat .pm-spacer { display: none; }
   .pm-stage { height: auto; max-height: 56vh; }
   .pm-view img { max-height: 56vh; }
+  .pm-yt { height: auto; width: 100%; }  .pm-yt.shorts { width: auto; height: 56vh; }
   .pm-gal { padding-top: 60px; }
   .pm-gal { padding: 14px 12px 12px; }
   .pm-th button { flex-basis: 40%; }
